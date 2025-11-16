@@ -1,0 +1,36 @@
+/* Variables CSS de la Marca Glowie */
+:root {
+      /* Añadí estas variables para que los estilos en línea funcionen */
+      --color-fondo: #EFDFBB;
+      --color-gris-crema: #92ADA4;
+      --color-chai: #000000;
+      --color-casi-blanco: #FFFBF0;
+      --color-cinna: #53161D;
+    }
+
+/* * Aquí puedes añadir cualquier CSS personalizado que no puedas lograr con Tailwind.
+ * Por ahora, lo mantenemos simple y delegamos casi todo a Tailwind CSS.
+ */
+
+/* Ejemplo: animación sutil para enlaces de navegación */
+.nav-link {
+    position: relative;
+    padding-bottom: 2px;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    display: block;
+    margin-top: 5px;
+    right: 0;
+    /* Usamos la variable de color Chai/Amarillo */
+    background: var(--color-chai);
+    transition: width 0.3s ease;
+}
+.nav-link:hover::after, .nav-link.active::after {
+    left: 0;
+    right: auto;
+    width: 100%;
+}

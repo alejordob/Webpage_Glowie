@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glowie | Velas Artesanales</title>
+
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- SEO ESTÁTICO: Página por defecto (para Google y redes) -->
+  <meta name="description" content="Velas artesanales de cera de soja 100% natural. Aromas premium, diseños únicos. Envío gratis en Cali desde $50.000. Hecho a mano con amor.">
+  <meta property="og:title" content="Glowie | Velas Artesanales en Cali">
+  <meta property="og:description" content="Velas de soja natural, hechas a mano en Cali. Aromas que transforman tu espacio. Envío gratis desde $50.000.">
+  <meta property="og:image" content="https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141308/anis_amarillo_ftb5xv.webp">
+  <meta property="og:url" content="https://velasglowie.com">
+  <meta property="og:type" content="website">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5R324L2LPN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5R324L2LPN');
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fuente Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />  
+  <link rel="stylesheet" href="./styles.css" />
+
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: var(--color-casi-blanco); 
+      scroll-behavior: smooth;
+    }
+    .nav-link.active {
+      color: var(--color-chai);
+      border-bottom: 3px solid var(--color-chai);
+      padding-bottom: 4px;
+    }
+    #mobile-menu {
+      top: 100%;
+    }
+    @media (min-width: 768px) {
+      .desktop-nav {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+    #whatsapp-float-btn {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        z-index: 999;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex justify-between items-center relative">
+        
+        <!-- Hamburguesa (Móvil) -->
+        <div class="md:hidden z-10">
+          <button id="hamburger-btn" class="text-gray-700 focus:outline-none p-2">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+
+        <!-- Logo Móvil (Centrado) -->
+        <a href="/catalogo" class="absolute left-1/2 transform -translate-x-1/2 md:hidden link-route">
+          <img src="./img/logo_glowie.png" alt="Glowie Logo" class="h-14 object-contain" />
+        </a>
+
+        <!-- Logo Desktop (Izquierda) -->
+        <a href="/catalogo" class="hidden md:block md:flex-none md:ml-0 md:text-left link-route">
+          <img src="./img/logo_glowie.png" alt="Glowie Logo" class="h-16 object-contain" />
+        </a>
+
+        <!-- Botón Carrito -->
+        <div class="md:flex-none z-10">
+          <button id="open-cart-btn"
+            class="relative p-2 text-gray-600 rounded-full transition duration-150 shrink-0"
+            style="color: var(--color-cinna); background-color: rgba(207, 179, 169, 0.05);"
+            onmouseover="this.style.backgroundColor='var(--color-gris-crema)'"
+            onmouseout="this.style.backgroundColor='rgba(207, 179, 169, 0.05)'">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <path d="M3 6h18"></path>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span id="cart-count"
+              class="absolute top-0 right-0 px-2 py-1 text-xs font-bold text-white rounded-full"
+              style="background-color: var(--color-cinna);">0</span>
+          </button>
+        </div>
+
+        <!-- Navegación Desktop -->
+        <nav class="hidden md:block desktop-nav">
+          <div class="flex space-x-8 text-lg">
+            <a href="/catalogo" class="nav-link text-gray-700 hover:text-amber-600 font-medium link-route">Catálogo</a>
+            <a href="/ofertas" class="nav-link text-gray-700 hover:text-amber-600 font-medium link-route">Ofertas</a>
+            <a href="/tips" class="nav-link text-gray-700 hover:text-amber-600 font-medium link-route">Tips & Cuidado</a>
+          </div>
+        </nav>
+      </div>
+      
+      <!-- Menú Móvil -->
+      <nav id="mobile-menu" class="hidden md:hidden absolute w-full left-0 bg-white shadow-lg border-t border-gray-100 p-4 z-40">
+        <a href="/catalogo" class="block py-2 text-gray-700 hover:text-amber-600 font-medium border-b border-gray-100 link-route">Catálogo</a>
+        <a href="/ofertas" class="block py-2 text-gray-700 hover:text-amber-600 font-medium border-b border-gray-100 link-route">Ofertas</a>
+        <a href="/tips" class="block py-2 text-gray-700 hover:text-amber-600 font-medium border-b border-gray-100 link-route">Tips & Cuidado</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app-content" class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 min-h-screen">
+    <div class="text-center p-20 text-gray-500">Cargando contenido...</div>
+  </main>
+
+  <footer class="bg-white border-t border-gray-100 mt-12 py-8 text-center text-gray-500 text-sm">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="mb-3">
+        © 2025 Glowie. Hecho en Cali.
+      </p>
+
+      <!-- REDES SOCIALES -->
+      <div class="flex justify-center space-x-6 mb-3">
+        <a href="https://wa.me/573156265846" 
+          target="_blank" 
+          class="text-gray-500 hover:text-green-500 transition-colors duration-200"
+          aria-label="Contáctanos por WhatsApp">
+          <i class="fab fa-whatsapp text-xl"></i>
+        </a>
+        <a href="https://www.instagram.com/glowie.velas?igsh=aWZ5dnRwYW00ZWY3" 
+          target="_blank" 
+          class="text-gray-500 hover:text-pink-600 transition-colors duration-200"
+          aria-label="Síguenos en Instagram">
+          <i class="fab fa-instagram text-xl"></i>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61583394446413#" 
+          target="_blank" 
+          class="text-gray-500 hover:text-blue-600 transition-colors duration-200"
+          aria-label="Síguenos en Facebook">
+          <i class="fab fa-facebook-f text-xl"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Botón Flotante WhatsApp + TRACKING GA4 -->
+  <a id="whatsapp-float-btn"
+    href="https://wa.me/573156265846?text=Hola%21%20Estoy%20interesado%20en%20sus%20velas%20artesanales."
+    target="_blank"
+    onclick="trackWhatsappFloatClick()"
+    class="fixed bottom-6 right-6 bg-green-500 text-white w-16 h-16 flex items-center justify-center rounded-full shadow-xl hover:bg-green-600 transition-all duration-300 z-50 transform hover:scale-110">
+    <i class="fab fa-whatsapp text-3xl"></i>
+  </a>
+
+  <!-- CARRITO LATERAL -->
+  <div id="cart-sidebar"
+       class="fixed top-0 right-0 w-full md:w-96 h-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-[1001]">
+    <div class="p-6 h-full flex flex-col">
+      <!-- Cabecera -->
+      <div class="flex justify-between items-center pb-4 border-b border-gray-100">
+        <h2 class="text-2xl font-bold text-gray-800">Tu Carrito</h2>
+        <button id="close-cart-btn"
+                class="p-2 text-gray-500 hover:text-red-500 rounded-full hover:bg-red-50 transition duration-150">
+          X
+        </button>
+      </div>
+
+      <!-- Productos -->
+      <div id="cart-items" class="flex-grow overflow-y-auto py-4 space-y-4">
+        <p id="empty-cart-message" class="text-center text-gray-500 italic">El carrito está vacío.</p>
+      </div>
+
+      <!-- PIE DEL CARRITO -->
+      <div class="border-t border-gray-200 pt-4 mt-4">
+        <div id="subtotal-container" class="flex justify-between text-sm text-gray-600 hidden">
+          <span>Subtotal</span>
+          <span id="cart-subtotal" class="font-medium"></span>
+        </div>
+        <div id="discount-container" class="flex justify-between text-sm text-green-600 font-medium hidden">
+          <span>Descuento</span>
+          <span id="cart-discount-total"></span>
+        </div>
+        <div id="shipping-container" class="flex justify-between text-sm text-gray-600 mt-2">
+          <span>Envío</span>
+          <span id="shipping-text" class="font-medium text-green-600">Gratis en Cali</span>
+        </div>
+        <div class="flex justify-between text-lg font-bold text-gray-800 mt-3 pt-3 border-t border-gray-300">
+          <span id="final-total-label">Total a pagar</span>
+          <span id="final-total" class="text-amber-600"></span>
+        </div>
+
+        <button id="checkout-whatsapp-btn" 
+                class="w-full mt-4 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-3 rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center space-x-2 hidden">
+          <i class="fab fa-whatsapp text-2xl"></i>
+          <span>Enviar pedido por WhatsApp</span>
+        </button>
+
+        <div class="mt-3 text-xs text-gray-500 text-center space-y-1">
+          <p>Entrega en 1-3 días hábiles en Cali</p>
+          <p>Pago contra entrega o transferencia</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div id="cart-overlay"
+       class="fixed inset-0 bg-black opacity-0 transition-opacity duration-300 ease-in-out z-[1000] pointer-events-none"
+       onclick="window.Cart.toggleCart(false)"></div>
+  
+  <script type="module" src="./js/app.js"></script>
+
+  <script>
+    // --- ENRUTAMIENTO + SEO DINÁMICO MEJORADO ---
+    const routes = {
+      '/catalogo': 'catalog',
+      '/ofertas': 'offers',
+      '/tips': 'tips',
+      '/': 'catalog',
+      '': 'catalog'
+    };
+
+    function getPageNameFromPath(path) {
+      const normalizedPath = path.toLowerCase().replace(/\/$/, '');
+      return routes[normalizedPath] || routes['/'];
+    }
+
+    function navigate(path, shouldPushState = true) {
+      const pageName = getPageNameFromPath(path);
+      if (shouldPushState) {
+        history.pushState({ page: pageName }, '', path);
+      }
+
+      // === SEO DINÁMICO MEJORADO ===
+      const seoData = {
+        '/catalogo': {
+          title: 'Catálogo de Velas | Glowie - Cali',
+          description: 'Descubre velas artesanales de cera de soja 100% natural. Diseños únicos, aromas premium. Envío gratis en Cali desde $50.000.',
+          ogImage: 'https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141308/anis_amarillo_ftb5xv.webp'
+        },
+        '/ofertas': {
+          title: 'Ofertas en Velas | Glowie - Descuentos Exclusivos',
+          description: 'Ofertas limitadas: 2x1, 20% OFF. Velas Glowie a precios especiales. ¡Stock limitado!',
+          ogImage: 'https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141079/flama_amarillo_tiioli.webp'
+        },
+        '/tips': {
+          title: 'Tips de Cuidado de Velas | Glowie',
+          description: 'Aprende a cuidar tus velas: primer encendido, mecha corta, quema uniforme. Guía completa de Glowie.',
+          ogImage: 'https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141054/jarron_vacio_dsoypn.webp'
+        }
+      };
+
+      const data = seoData[path] || {
+        title: 'Glowie | Velas Artesanales en Cali',
+        description: 'Velas de soja natural, hechas a mano en Cali. Aromas que transforman tu espacio. Envío gratis desde $50.000.',
+        ogImage: 'https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141308/anis_amarillo_ftb5xv.webp'
+      };
+
+      // Título
+      document.title = data.title;
+
+      // Meta description
+      let desc = document.querySelector('meta[name="description"]');
+      if (!desc) { desc = document.createElement('meta'); desc.name = 'description'; document.head.appendChild(desc); }
+      desc.content = data.description;
+
+      // Open Graph
+      ['og:title', 'og:description', 'og:image', 'og:url', 'og:type'].forEach(prop => {
+        let tag = document.querySelector(`meta[property="${prop}"]`);
+        if (!tag) { tag = document.createElement('meta'); tag.setAttribute('property', prop); document.head.appendChild(tag); }
+        if (prop === 'og:title') tag.content = data.title;
+        if (prop === 'og:description') tag.content = data.description;
+        if (prop === 'og:image') tag.content = data.ogImage;
+        if (prop === 'og:url') tag.content = window.location.href;
+        if (prop === 'og:type') tag.content = 'website';
+      });
+
+      // Resto del código original
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href').toLowerCase() === path.toLowerCase());
+      });
+
+      if (typeof window.loadAppContent === 'function') {
+        window.loadAppContent(pageName);
+      } else {
+        document.getElementById('app-content').innerHTML = `
+          <h1 class="text-3xl font-bold text-center mb-6">Página: ${pageName.toUpperCase()}</h1>
+          <p class="text-center text-gray-600">Ruta: <strong>${path}</strong></p>`;
+      }
+
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+      }
+
+      // GA4 page_view
+      if (typeof gtag === 'function') {
+        gtag('event', 'page_view', {
+          page_path: path,
+          page_title: document.title
+        });
+      }
+    }
+
+    // === EVENTOS ===
+    document.addEventListener('click', e => {
+      const link = e.target.closest('a.link-route');
+      if (link && link.getAttribute('href')?.startsWith('/')) {
+        e.preventDefault();
+        navigate(link.getAttribute('href'));
+      }
+    });
+
+    window.addEventListener('popstate', () => navigate(window.location.pathname, false));
+
+    window.addEventListener('load', () => {
+      let initialPath = window.location.pathname;
+      if (initialPath === '/' || !routes[initialPath.toLowerCase()]) {
+        history.replaceState({ page: 'catalog' }, '', '/catalogo');
+        initialPath = '/catalogo';
+      }
+      navigate(initialPath, false);
+    });
+
+    document.getElementById('hamburger-btn').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', e => {
+      const menu = document.getElementById('mobile-menu');
+      const btn = document.getElementById('hamburger-btn');
+      if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // TRACKING: WhatsApp flotante
+    function trackWhatsappFloatClick() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'whatsapp_float_click', {
+          event_category: 'engagement',
+          event_label: 'float_button',
+          value: 1,
+          currency: 'COP'
+        });
+        console.log('GA4: Click en botón flotante de WhatsApp');
+      }
+    }
+  </script>
+</body>
+</html>

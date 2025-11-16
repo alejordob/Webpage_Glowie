@@ -1,0 +1,20 @@
+{
+  "name": "Glowie Velas",
+  "short_name": "Glowie",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/catalogo",
+  "display": "standalone",
+  "theme_color": "#d4a574",
+  "background_color": "#fdfaf7"
+}
