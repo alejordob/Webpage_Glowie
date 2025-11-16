@@ -200,7 +200,6 @@ const selectionStatusEl = document.getElementById('selection-status');
 const addToCartBtn = document.getElementById('add-to-cart-modal');
 const modalErrorMsg = document.getElementById('modal-error-message');
 
-
 // === ABRIR MODAL ===
 export function openModal(product, products) {
   if (!product) {
@@ -210,17 +209,12 @@ export function openModal(product, products) {
   currentProduct = product;
   currentImageIndex = 0;
 
-  // Datos
   document.getElementById('modal-name').textContent = product.name;
   updatePrice(product);
-  
-  // Inicialización de variaciones y listeners
   populateSelects(product);
-  
   updateImage();
   updateStockInfo();
 
-  // === CANTIDAD DE CERA ===
   const ceraInfo = document.getElementById('cera-info');
   const isBase = product.color_cera?.includes('N/A');
   if (!isBase && product.cantidad_cera && product.cantidad_cera > 0) {
@@ -230,7 +224,6 @@ export function openModal(product, products) {
     ceraInfo.classList.add('hidden');
   }
 
-  // --- DESCRIPCIÓN "VER MÁS" ---
   const descriptionEl = document.getElementById('modal-description');
   const toggleBtn = document.getElementById('toggle-description');
   descriptionEl.textContent = product.description || 'Sin descripción disponible.';
@@ -248,7 +241,6 @@ export function openModal(product, products) {
     toggleBtn.textContent = descriptionEl.classList.contains('line-clamp-2') ? 'Ver más' : 'Ver menos';
   };
 
-  // Scroll fix
   scrollPosition = window.pageYOffset;
   document.body.classList.add('modal-open');
   document.body.style.top = `-${scrollPosition}px`;
@@ -257,12 +249,10 @@ export function openModal(product, products) {
   document.getElementById('modal-success-message').classList.add('hidden');
   modalErrorMsg.classList.add('hidden');
 
-  // Listeners
   document.getElementById('close-modal').addEventListener('click', closeModal);
   addToCartBtn.addEventListener('click', addToCartFromModal);
   modal.addEventListener('click', handleOutsideClick);
 
-  // Navegación de imágenes (se mantiene la lógica original)
   const imageNav = document.getElementById('image-nav');
   if (product.images?.length > 1 && !hasColorVariations(product)) {
     imageNav.classList.remove('hidden');
@@ -280,22 +270,18 @@ export function closeModal() {
   document.body.style.top = '';
   window.scrollTo(0, scrollPosition);
 
-  // Limpiar y clonar para remover listeners
   const elements = ['close-modal', 'add-to-cart-modal', 'color-cera', 'color-cemento', 'aroma', 'prev-image', 'next-image'];
   elements.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.replaceWith(el.cloneNode(true));
   });
   
-  // Re-obtener los selectores para la próxima apertura
   [colorCeraSelect, colorCementoSelect, aromaSelect].forEach(s => {
     if (s) s.value = '';
   });
 
-  // Limpiar variables globales
   currentProduct = null;
   currentImageIndex = 0;
-
   modal.removeEventListener('click', handleOutsideClick);
 }
 
@@ -313,127 +299,102 @@ function updatePrice(product) {
 }
 
 // =================================================================
-// === LÓGICA CRÍTICA: GESTIÓN DE VARIACIONES Y FILTRADO DE STOCK ===
+// === LÓGICA DE VARIACIONES (SIMPLIFICADA Y FUNCIONAL) ===
 // =================================================================
 
-/**
- * Rellena un select con opciones, manteniendo la selección actual si es válida.
- * @param {HTMLElement} selectEl - El elemento <select>.
- * @param {string[]} options - Array de strings de opciones válidas.
- * @param {string} type - Tipo de variación (cera, cemento, aroma).
- */
-const fillSelect = (selectEl, options, type) => {
-    const currentValue = selectEl.value;
-    selectEl.innerHTML = ''; // Limpiar opciones
+function populateSelects(product) {
+  const ceraGroup = document.getElementById('cera-variation-group');
+  const cementoGroup = document.getElementById('cemento-variation-group');
+  const aromaGroup = document.getElementById('aroma-variation-group');
 
-    // Añadir opción por defecto o placeholder
-    const placeholder = document.createElement('option');
-    placeholder.value = "";
-    placeholder.textContent = `Selecciona ${type}...`;
-    placeholder.disabled = true;
-    placeholder.selected = true; // Por defecto es la seleccionada, a menos que el currentValue sea válido
-    selectEl.appendChild(placeholder);
+  const isBase = product.color_cera?.includes('N/A');
+  if (isBase) {
+    ceraGroup.classList.add('hidden');
+    aromaGroup.classList.add('hidden');
+    cementoGroup.classList.add('hidden');
+    return;
+  } else {
+    ceraGroup.classList.remove('hidden');
+    aromaGroup.classList.remove('hidden');
+    cementoGroup.classList.remove('hidden');
+  }
 
-    // Añadir las opciones válidas
-    options.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt;
-        option.textContent = opt;
-        selectEl.appendChild(option);
+  [colorCeraSelect, colorCementoSelect, aromaSelect].forEach(s => {
+    s.innerHTML = '';
+    s.value = '';
+    s.removeEventListener('change', updateVariations);
+    s.addEventListener('change', updateVariations);
+  });
+
+  const addOptions = (select, values) => {
+    const arr = Array.isArray(values) ? values : [values];
+    arr.filter(v => v && v !== 'N/A').forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      select.appendChild(opt);
     });
+  };
 
-    // Restaurar la selección si el valor actual sigue siendo una opción válida
-    if (currentValue && options.includes(currentValue)) {
-        selectEl.value = currentValue;
-    } else {
-        // Si el valor actual ya no es válido, se borra y queda el placeholder
-        selectEl.value = ''; 
-    }
-};
+  addOptions(colorCeraSelect, product.color_cera);
+  addOptions(colorCementoSelect, product.color_Cemento);
+  addOptions(aromaSelect, product.aroma);
 
-/**
- * Función principal que actualiza los selectores de variación basado en las selecciones actuales.
- */
-function updateVariations() {
-    if (!currentProduct || !currentProduct.stock_variations) return;
-
-    // Obtener las selecciones actuales
-    const selectedCera = colorCeraSelect.value || null;
-    const selectedCemento = colorCementoSelect.value || null;
-    const selectedAroma = aromaSelect.value || null;
-
-    const variations = currentProduct.stock_variations;
-    const validKeys = Object.keys(variations).filter(key => variations[key] > 0);
-
-    // 1. Filtrar las opciones válidas para Cemento (basado en Cera y Aroma)
-    const possibleCemento = new Set();
-    validKeys.forEach(key => {
-        const [cemento, cera, aroma] = key.split('-');
-        if ((selectedCera === null || selectedCera === cera) &&
-            (selectedAroma === null || selectedAroma === aroma)) {
-            possibleCemento.add(cemento);
-        }
-    });
-    fillSelect(colorCementoSelect, Array.from(possibleCemento).sort(), "Color Cemento");
-
-    // 2. Filtrar las opciones válidas para Cera (basado en Cemento y Aroma)
-    const possibleCera = new Set();
-    validKeys.forEach(key => {
-        const [cemento, cera, aroma] = key.split('-');
-        if ((selectedCemento === null || selectedCemento === cemento) &&
-            (selectedAroma === null || selectedAroma === aroma)) {
-            possibleCera.add(cera);
-        }
-    });
-    fillSelect(colorCeraSelect, Array.from(possibleCera).sort(), "Color Cera");
-
-
-    // 3. Filtrar las opciones válidas para Aroma (basado en Cera y Cemento)
-    const possibleAroma = new Set();
-    validKeys.forEach(key => {
-        const [cemento, cera, aroma] = key.split('-');
-        if ((selectedCemento === null || selectedCemento === cemento) &&
-            (selectedCera === null || selectedCera === cera)) {
-            possibleAroma.add(aroma);
-        }
-    });
-    fillSelect(aromaSelect, Array.from(possibleAroma).sort(), "Aroma");
-
-    // Llama a las actualizaciones de estado e imagen después de ajustar las selecciones
-    updateStockInfo();
-    updateImage();
+  updateVariations();
 }
 
-/**
- * Inicializa los selectores y establece los listeners de cambio.
- */
-function populateSelects(product) {
-    const ceraGroup = document.getElementById('cera-variation-group');
-    const cementoGroup = document.getElementById('cemento-variation-group');
-    const aromaGroup = document.getElementById('aroma-variation-group');
+function updateVariations() {
+  if (!currentProduct || !currentProduct.stock_variations) return;
 
-    // Ocultar si es un producto simple (ej. N/A)
-    const isBase = product.color_cera?.includes('N/A');
-    if (isBase) {
-        ceraGroup.classList.add('hidden');
-        aromaGroup.classList.add('hidden');
-        cementoGroup.classList.add('hidden');
-        return;
-    } else {
-        ceraGroup.classList.remove('hidden');
-        aromaGroup.classList.remove('hidden');
-        cementoGroup.classList.remove('hidden');
-    }
+  const cera = colorCeraSelect.value;
+  const cemento = colorCementoSelect.value;
+  const aroma = aromaSelect.value;
 
-    // Inicializar los listeners para disparar el filtrado encadenado
-    [colorCeraSelect, colorCementoSelect, aromaSelect].forEach(s => {
-        // Importante: Remover listeners viejos antes de añadir nuevos
-        s.removeEventListener('change', updateVariations);
-        s.addEventListener('change', updateVariations);
+  const validKeys = Object.keys(currentProduct.stock_variations)
+    .filter(k => currentProduct.stock_variations[k] > 0);
+
+  const exists = (ce, ca, ar) => validKeys.includes(`${ce}-${ca}-${ar}`);
+
+  [colorCeraSelect, colorCementoSelect, aromaSelect].forEach(s => {
+    Array.from(s.options).forEach(opt => {
+      opt.disabled = false;
+      opt.style.color = '';
+      opt.style.fontStyle = '';
     });
+  });
 
-    // Iniciar el filtrado para poblar con las opciones iniciales válidas
-    updateVariations();
+  if (cera && cemento) {
+    aromaSelect.querySelectorAll('option').forEach(opt => {
+      if (!exists(cemento, cera, opt.value)) {
+        opt.disabled = true;
+        opt.style.color = '#9ca3af';
+        opt.style.fontStyle = 'italic';
+      }
+    });
+  }
+
+  if (cera && aroma) {
+    colorCementoSelect.querySelectorAll('option').forEach(opt => {
+      if (!exists(opt.value, cera, aroma)) {
+        opt.disabled = true;
+        opt.style.color = '#9ca3af';
+        opt.style.fontStyle = 'italic';
+      }
+    });
+  }
+
+  if (cemento && aroma) {
+    colorCeraSelect.querySelectorAll('option').forEach(opt => {
+      if (!exists(cemento, opt.value, aroma)) {
+        opt.disabled = true;
+        opt.style.color = '#9ca3af';
+        opt.style.fontStyle = 'italic';
+      }
+    });
+  }
+
+  updateStockInfo();
+  updateImage();
 }
 
 function hasColorVariations(product) {
@@ -465,7 +426,6 @@ function updateImage() {
 
   const foundImage = currentProduct.images.find(img => {
     const fileName = normalize(img.split('/').pop().split('.')[0]);
-    // La imagen debe contener el nombre de la vela, más (idealmente) alguna variación seleccionada.
     return fileName.includes(normalize(currentProduct.id)) && 
            (fileName.includes(normalize(colorCemento)) || 
            fileName.includes(normalize(colorCera)) || 
@@ -482,9 +442,7 @@ function navigateImage(direction) {
   updateImage();
 }
 
-/**
- * Muestra el estado del stock o el mensaje de selección incompleta.
- */
+// === STOCK INFO ===
 function updateStockInfo() {
   const cera = colorCeraSelect.value;
   const cemento = colorCementoSelect.value;
@@ -495,27 +453,25 @@ function updateStockInfo() {
   stockInfoEl.classList.add('hidden');
   selectionStatusEl.classList.remove('hidden');
   addToCartBtn.disabled = true;
-  modalErrorMsg.classList.add('hidden');
 
   if (!allSelected) {
     selectionStatusEl.textContent = 'Selecciona Color Cera, Color Cemento y Aroma.';
     selectionStatusEl.className = 'mt-2 text-xs font-medium text-gray-500';
     return;
   }
-  
-  // Si todo está seleccionado, comprobamos el stock
-  selectionStatusEl.classList.add('hidden');
-  stockInfoEl.classList.remove('hidden');
 
   const key = `${cemento}-${cera}-${aroma}`;
   const stock = currentProduct.stock_variations?.[key] ?? 0;
+
+  selectionStatusEl.classList.add('hidden');
+  stockInfoEl.classList.remove('hidden');
 
   if (stock > 0) {
     stockInfoEl.textContent = `¡En stock! Quedan ${stock} unidades.`;
     stockInfoEl.className = 'mt-2 text-xs font-medium text-green-600';
     addToCartBtn.disabled = false;
   } else {
-    stockInfoEl.textContent = 'Esta combinación está agotada. Por favor, cambia una opción.';
+    stockInfoEl.textContent = 'Esta combinación está agotada. Cambia una opción.';
     stockInfoEl.className = 'mt-2 text-xs font-medium text-red-600';
     addToCartBtn.disabled = true;
   }
@@ -540,13 +496,12 @@ function addToCartFromModal() {
     return;
   }
   
-  modalErrorMsg.classList.add('hidden'); // Ocultar si la validación es exitosa
+  modalErrorMsg.classList.add('hidden');
 
   const effectivePrice = currentProduct.on_sale && currentProduct.on_sale_price < currentProduct.price 
     ? currentProduct.on_sale_price 
     : currentProduct.price;
 
-  // Creamos un ID único y seguro para el carrito
   const cartItemId = `${currentProduct.id}-${colorCera.replace(/ /g, '')}-${colorCemento.replace(/ /g, '')}-${aroma.replace(/ /g, '')}`;
 
   addToCart({
@@ -563,14 +518,12 @@ function addToCartFromModal() {
     }
   });
 
-  // Aseguramos la resta del stock antes de cerrar
   if (currentProduct.stock_variations[variationKey] !== undefined) {
       currentProduct.stock_variations[variationKey] -= 1;
   }
   
   updateStockInfo();
   document.getElementById('modal-success-message').classList.remove('hidden');
-  // Usamos requestAnimationFrame para asegurar que el mensaje se muestre antes de cerrar el modal
   requestAnimationFrame(() => {
       setTimeout(closeModal, 800);
   });
