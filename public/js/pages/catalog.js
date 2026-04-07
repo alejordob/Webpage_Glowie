@@ -321,6 +321,20 @@ export function setAllProducts(products) {
 // ============================================================
 
 /**
+ * Debounce utility to delay function execution
+ * @param {Function} func - Function to debounce
+ * @param {number} delay - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
+function debounce(func, delay) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+}
+
+/**
  * Aplica filtros desde parámetros (usados al restaurar desde URL)
  * @param {Object} filters - Objeto con aroma y categoria
  */
@@ -341,6 +355,13 @@ export function applyFiltersFromUrl(filters) {
  * @param {Object} filters - Objeto con aroma y categoria (opcional)
  */
 function filterByAromaAndCategory(filters = {}) {
+  // Validate products are loaded
+  if (!allProducts || allProducts.length === 0) {
+    console.warn('No products loaded yet');
+    renderProducts([]);
+    return;
+  }
+
   const aroma = filters.aroma || document.getElementById('aroma-filter')?.value.trim().toLowerCase() || '';
   const categoria = filters.categoria || document.getElementById('categoria-filter')?.value.trim().toLowerCase() || '';
 
@@ -655,5 +676,10 @@ export const initializeCatalogListeners = async () => {
   }
 
   // Adjuntar listeners para cambios futuros de filtros
-  document.getElementById('aroma-filter')?.addEventListener('input', filterByAroma);
+  // Debounce aroma input (text field) to reduce overhead on each keystroke
+  const debouncedFilterByAroma = debounce(filterByAroma, 300);
+  document.getElementById('aroma-filter')?.addEventListener('input', debouncedFilterByAroma);
+
+  // Add listener for categoria filter (dropdown)
+  document.getElementById('categoria-filter')?.addEventListener('change', filterByAroma);
 };
