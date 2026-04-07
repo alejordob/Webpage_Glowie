@@ -76,11 +76,13 @@ window.loadAppContent = async function(pageName) {
     console.error("⚠️ No se encontró el contenedor #app-content en el HTML.");
     return;
   }
-  
+
   updateActiveLink(pageName);
 
-  // Fade-out del contenido actual si ya hay algo renderizado
-  if (appContent.children.length > 0) {
+  // Fade-out del contenido actual solo si ya hay contenido JS renderizado
+  // (no aplicar si es el fallback estático del SSR)
+  const isStaticFallback = appContent.querySelector('h1') && !appContent.querySelector('.catalog-product-card, .tips-card, .nos-section');
+  if (!isStaticFallback && appContent.children.length > 0) {
     appContent.classList.add('page-leaving');
     await new Promise(r => setTimeout(r, 180));
     appContent.classList.remove('page-leaving');
@@ -90,7 +92,7 @@ window.loadAppContent = async function(pageName) {
     try {
       console.log("Página detectada:", pageName);
 
-      // Renderizar el contenido HTML
+      // Renderizar el contenido HTML inmediatamente (sin esperar Firebase)
       appContent.innerHTML = route.render();
       appContent.style.animation = 'none';
       appContent.offsetHeight; // force reflow
@@ -239,9 +241,7 @@ function setupGlobalEvents() {
 // -----------------------------------------
 async function init() {
   try {
-    // Esperar a que Firebase esté listo
-    await isFirebaseReady();
-
+    // Configurar eventos globales inmediatamente (no dependen de Firebase)
     window.Cart.updateCartUI();
     setupGlobalEvents();
 
@@ -252,6 +252,11 @@ async function init() {
         applyFiltersFromUrl({ aroma, categoria });
       }
     });
+
+    // Esperar Firebase en segundo plano — loadAppContent ya está disponible
+    // desde que el módulo cargó, así que el router de index.html puede llamarlo
+    // sin esperar. Los productos se cargan cuando Firebase esté listo.
+    isFirebaseReady().catch(e => console.warn('Firebase init error:', e));
 
     // NOTA: La primera carga de contenido (el equivalente a handleRouting)
     // se maneja ahora en el script de index.html, que llama a window.loadAppContent

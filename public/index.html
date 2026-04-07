@@ -511,7 +511,10 @@
     }
     document.addEventListener('click', e => { const a = e.target.closest('a.link-route'); if (a && a.href?.includes('/')) { e.preventDefault(); navigate(a.getAttribute('href')); } });
     window.addEventListener('popstate', () => navigate(location.pathname, false));
-    window.addEventListener('load', () => {
+    // Navega en cuanto loadAppContent esté disponible (módulo app.js ya parseado).
+    // Usar polling liviano en lugar de 'load' (que espera imágenes/fuentes) para
+    // eliminar el flash del fallback estático lo antes posible.
+    (function waitAndNavigate() {
       let p = location.pathname;
       const isProductRoute = p.startsWith('/catalogo/') && p.split('/').filter(Boolean).length > 1;
       const isKnownRoute = routes[p] !== undefined;
@@ -519,8 +522,13 @@
         history.replaceState({page:'catalog'}, '', '/catalogo');
         p = '/catalogo';
       }
-      navigate(p, false);
-    });
+      if (typeof window.loadAppContent === 'function') {
+        navigate(p, false);
+      } else {
+        // app.js (módulo ES) aún no terminó de parsear — reintenta en el siguiente tick
+        requestAnimationFrame(waitAndNavigate);
+      }
+    })();
     document.getElementById('hamburger-btn')?.addEventListener('click', () => document.getElementById('mobile-menu').classList.toggle('hidden'));
   </script>
 </body>
