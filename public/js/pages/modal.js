@@ -49,6 +49,10 @@ const buttonStyles = `
   #close-modal { transition: all 0.3s ease-in-out; }
   #close-modal:hover { transform: rotate(180deg) scale(1.1); background-color: rgba(0,0,0,0.05) !important; }
   #modal-description { overflow: hidden; line-height: 1.5; transition: all 0.3s ease; }
+  select {
+    font-size: 16px;
+    min-height: 44px;
+  }
   select option:disabled { color: #9ca3af !important; font-style: italic; background-color: #f9fafb !important; }
   select:disabled { opacity: 0.7; cursor: not-allowed; background-color: #f3f4f6; }
   select.is-auto-selected:disabled {
