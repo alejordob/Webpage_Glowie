@@ -6,21 +6,57 @@ import { isFirebaseReady, db, getPublicCollectionPath } from './firebase.js';
 import { getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Importar render/listeners del catálogo
-import { renderCatalogPage, initializeCatalogListeners } from './pages/catalog.js';
+import { renderCatalogPage, initializeCatalogListeners, applyFiltersFromUrl } from './pages/catalog.js';
 
 // Importaciones de otras páginas
 import { renderOffersPage, initializeOffersListeners } from './pages/offers.js';
-import { renderTipsPage } from './pages/tips.js';
+import { renderTipsPage, initializeTipsListeners } from './pages/tips.js';
+import { renderNosotrosPage, initializeNosotrosListeners } from './pages/nosotros.js';
+import { renderProductPage, initializeProductListeners } from './pages/product.js';
 
 // Asignar window.Cart al inicio para que esté disponible globalmente
 window.Cart = CartModule;
+
+// -----------------------------------------
+// QUERY PARAMS UTILITIES
+// -----------------------------------------
+
+/**
+ * Extrae los parámetros de filtro de la URL
+ * @returns {Object} Objeto con aroma, categoria, y disponible
+ */
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    aroma: params.get('aroma') || '',
+    categoria: params.get('categoria') || '',
+    disponible: params.get('disponible') === 'true',
+  };
+}
+
+/**
+ * Actualiza la URL con los parámetros de filtro actuales
+ * @param {Object} filters - Objeto con aroma, categoria, disponible
+ */
+function pushFilterParams(filters) {
+  const params = new URLSearchParams();
+  if (filters.aroma) params.append('aroma', filters.aroma);
+  if (filters.categoria) params.append('categoria', filters.categoria);
+  if (filters.disponible) params.append('disponible', 'true');
+
+  const queryString = params.toString();
+  const newUrl = queryString ? `/catalogo?${queryString}` : '/catalogo';
+  window.history.pushState({ filters }, '', newUrl);
+}
 
 // --- CONFIGURACIÓN DE RUTAS ---
 // Las claves son ahora los NOMBRES DE PÁGINA (ej: 'catalog'), no los fragmentos.
 const pageRoutes = {
   'catalog': { render: renderCatalogPage, init: initializeCatalogListeners },
   'offers': { render: renderOffersPage, init: initializeOffersListeners },
-  'tips': { render: renderTipsPage, init: null },
+  'tips': { render: renderTipsPage, init: initializeTipsListeners },
+  'nosotros': { render: renderNosotrosPage, init: initializeNosotrosListeners },
+  'product': { render: renderProductPage, init: initializeProductListeners },
 };
 
 // -----------------------------------------
@@ -41,9 +77,14 @@ window.loadAppContent = async function(pageName) {
     return;
   }
   
-  // Limpiar y mostrar mensaje de carga
-  appContent.innerHTML = `<div class="text-center p-20 text-gray-500">Cargando ${pageName}...</div>`;
-  updateActiveLink(pageName); // Actualizar el enlace activo inmediatamente
+  updateActiveLink(pageName);
+
+  // Fade-out del contenido actual si ya hay algo renderizado
+  if (appContent.children.length > 0) {
+    appContent.classList.add('page-leaving');
+    await new Promise(r => setTimeout(r, 180));
+    appContent.classList.remove('page-leaving');
+  }
 
   if (route) {
     try {
@@ -51,6 +92,9 @@ window.loadAppContent = async function(pageName) {
 
       // Renderizar el contenido HTML
       appContent.innerHTML = route.render();
+      appContent.style.animation = 'none';
+      appContent.offsetHeight; // force reflow
+      appContent.style.animation = 'glowiePageIn 0.35s ease-out';
 
       // Inicializar los listeners y la lógica de la página (ej: cargar productos)
       if (route.init) await route.init();
@@ -72,10 +116,20 @@ window.loadAppContent = async function(pageName) {
   } else {
     // Manejo de 404
     appContent.innerHTML = `
-      <div class="text-center py-20">
-        <h2 class="text-5xl font-extrabold text-red-500">404</h2>
-        <p class="text-2xl text-gray-600">Página no encontrada.</p>
-        <a href="/catalogo" class="link-route text-amber-600 hover:underline mt-4 inline-block">Volver al Catálogo</a>
+      <div class="flex flex-col items-center justify-center text-center py-24 px-4">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center mb-6"
+             style="background: var(--color-fondo);">
+          <i class="fas fa-map-marker-alt text-4xl" style="color: var(--color-cinna); opacity: 0.35;"></i>
+        </div>
+        <p class="text-7xl font-black mb-4" style="color: var(--color-cinna); opacity: 0.15;">404</p>
+        <h2 class="text-3xl font-extrabold mb-2" style="color: var(--color-cinna);">Página no encontrada</h2>
+        <p class="text-gray-500 text-sm mb-8 max-w-sm">
+          Esta página no existe o fue movida. Puedes explorar nuestras velas artesanales desde el catálogo.
+        </p>
+        <a href="/catalogo" class="link-route px-8 py-3 rounded-2xl font-bold text-white text-sm transition-all hover:opacity-90"
+           style="background: var(--color-cinna);">
+          Ver catálogo
+        </a>
       </div>
     `;
     updateActiveLink('catalog'); // Activa el link del catálogo por defecto en 404
@@ -89,27 +143,58 @@ window.loadAppContent = async function(pageName) {
  * Actualiza la clase 'active' en los enlaces de navegación basándose en el nombre de la página.
  * @param {string} currentPageName - El nombre de la página activa ('catalog', 'offers', 'tips').
  */
-function updateActiveLink(currentPageName) {
-  // Mapeo inverso de nombres a rutas de URL para la comparación
-  const urlMap = {
-      'catalog': '/catalogo',
-      'offers': '/ofertas',
-      'tips': '/tips',
-  };
-  
-  const currentPath = urlMap[currentPageName];
+const PAGE_META = {
+  catalog: {
+    title: 'Catálogo de Velas Artesanales | Glowie',
+    description: 'Velas artesanales de cera de soja 100% natural. Aromas premium: coco, vainilla, bambú, café y más. Diseños únicos, hechas a mano en Cali. Envío gratis desde $60.000.',
+    canonical: 'https://velasglowie.com/catalogo',
+  },
+  offers: {
+    title: 'Ofertas en Velas Artesanales | Glowie',
+    description: 'Descuentos exclusivos en velas artesanales de cera de soja natural. Encuentra las mejores promociones en velas aromáticas hechas a mano en Cali.',
+    canonical: 'https://velasglowie.com/ofertas',
+  },
+  tips: {
+    title: 'Tips & Cuidado de Velas | Glowie',
+    description: 'Guía completa para cuidar tus velas artesanales de cera de soja. Consejos de uso, duración y mantenimiento para sacarles el máximo provecho.',
+    canonical: 'https://velasglowie.com/tips',
+  },
+  nosotros: {
+    title: 'Nuestra Historia | Glowie',
+    description: 'Conoce la historia de Glowie. Velas artesanales de cera de soja 100% natural, hechas a mano con dedicación en Cali, Colombia.',
+    canonical: 'https://velasglowie.com/nosotros',
+  },
+  product: {
+    title: 'Vela Artesanal | Glowie',
+    description: 'Vela artesanal de cera de soja natural, hecha a mano en Cali. Aromas premium y diseños únicos.',
+    canonical: 'https://velasglowie.com/catalogo',
+  },
+};
 
+function updateActiveLink(currentPageName) {
+  const urlMap = {
+    'catalog': '/catalogo',
+    'offers': '/ofertas',
+    'tips': '/tips',
+    'nosotros': '/nosotros',
+    'product': '/catalogo',
+  };
+
+  const currentPath = urlMap[currentPageName];
   document.querySelectorAll('.nav-link').forEach(link => {
-    // Compara el atributo href del link con la ruta de URL de la página actual
     link.classList.toggle('active', link.getAttribute('href') === currentPath);
   });
-  
-  // También actualizamos el título de la página
-  const title = document.querySelector('title');
-  if (title) {
-      const pageTitle = currentPageName.charAt(0).toUpperCase() + currentPageName.slice(1);
-      title.textContent = `Glowie | ${pageTitle}`;
-  }
+
+  // Actualizar title, meta description y canonical por página
+  const meta = PAGE_META[currentPageName] || PAGE_META.catalog;
+
+  document.title = meta.title;
+
+  let descTag = document.querySelector('meta[name="description"]');
+  if (descTag) descTag.setAttribute('content', meta.description);
+
+  let canonicalTag = document.querySelector('link[rel="canonical"]');
+  if (canonicalTag) canonicalTag.setAttribute('href', meta.canonical);
 }
 
 // -----------------------------------------
@@ -156,12 +241,20 @@ async function init() {
   try {
     // Esperar a que Firebase esté listo
     await isFirebaseReady();
-    
+
     window.Cart.updateCartUI();
     setupGlobalEvents();
-    
-    // NOTA: La primera carga de contenido (el equivalente a handleRouting) 
-    // se maneja ahora en el script de index.html, que llama a window.loadAppContent 
+
+    // Manejar el botón atrás/adelante del navegador para restaurar filtros
+    window.addEventListener('popstate', (event) => {
+      if (event.state?.filters) {
+        const { aroma, categoria } = event.state.filters;
+        applyFiltersFromUrl({ aroma, categoria });
+      }
+    });
+
+    // NOTA: La primera carga de contenido (el equivalente a handleRouting)
+    // se maneja ahora en el script de index.html, que llama a window.loadAppContent
     // después de inicializar el router. No necesitamos llamarla aquí.
 
   } catch (error) {
@@ -170,3 +263,8 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// -----------------------------------------
+// EXPORTAR FUNCIONES DE FILTRO
+// -----------------------------------------
+export { getQueryParams, pushFilterParams };

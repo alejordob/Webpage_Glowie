@@ -15,6 +15,7 @@ import {
   where,
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { openModal } from './modal.js';
+import { getQueryParams, pushFilterParams } from '../app.js';
 
 const MAX_RETRIES = 10;
 const BASE_DELAY_MS = 80;
@@ -316,18 +317,69 @@ export function setAllProducts(products) {
 }
 
 // ============================================================
-// FILTRO POR AROMA
+// FILTROS POR AROMA Y CATEGORÍA
 // ============================================================
-function filterByAroma() {
-  const query = document.getElementById('aroma-filter')?.value.trim().toLowerCase() || '';
-  if (!query) { renderProducts(allProducts); return; }
 
-  const filtered = allProducts.filter(product => {
-    if (Array.isArray(product.aroma))
-      return product.aroma.some(a => typeof a === 'string' && a.toLowerCase().includes(query));
-    return typeof product.aroma === 'string' && product.aroma.toLowerCase().includes(query);
-  });
+/**
+ * Aplica filtros desde parámetros (usados al restaurar desde URL)
+ * @param {Object} filters - Objeto con aroma y categoria
+ */
+export function applyFiltersFromUrl(filters) {
+  const aromaFilter = document.getElementById('aroma-filter');
+
+  // Restaurar el valor del filtro de aroma desde la URL
+  if (filters.aroma && aromaFilter) {
+    aromaFilter.value = filters.aroma;
+  }
+
+  // Aplicar los filtros
+  filterByAromaAndCategory(filters);
+}
+
+/**
+ * Filtra productos por aroma y categoría
+ * @param {Object} filters - Objeto con aroma y categoria (opcional)
+ */
+function filterByAromaAndCategory(filters = {}) {
+  const aroma = filters.aroma || document.getElementById('aroma-filter')?.value.trim().toLowerCase() || '';
+  const categoria = filters.categoria || document.getElementById('categoria-filter')?.value.trim().toLowerCase() || '';
+
+  let filtered = allProducts;
+
+  // Filtrar por aroma
+  if (aroma) {
+    filtered = filtered.filter(product => {
+      if (Array.isArray(product.aroma))
+        return product.aroma.some(a => typeof a === 'string' && a.toLowerCase().includes(aroma));
+      return typeof product.aroma === 'string' && product.aroma.toLowerCase().includes(aroma);
+    });
+  }
+
+  // Filtrar por categoría
+  if (categoria) {
+    filtered = filtered.filter(product => {
+      const productCategories = product.categoria || [];
+      return productCategories.some(c => c.toLowerCase().includes(categoria));
+    });
+  }
+
   renderProducts(filtered);
+}
+
+/**
+ * Filtra por aroma (desde input del usuario)
+ * Actualiza la URL con los parámetros de filtro actuales
+ */
+function filterByAroma() {
+  const aroma = document.getElementById('aroma-filter')?.value.trim().toLowerCase() || '';
+  const categoria = document.getElementById('categoria-filter')?.value.trim().toLowerCase() || '';
+
+  // Actualizar la URL con el estado actual de filtros
+  const filters = { aroma, categoria };
+  pushFilterParams(filters);
+
+  // Aplicar los filtros
+  filterByAromaAndCategory(filters);
 }
 
 // ============================================================
@@ -595,5 +647,13 @@ export const renderCatalogPage = () => `
 export const initializeCatalogListeners = async () => {
   initScrollAnimations();
   await loadProducts();
+
+  // Restaurar filtros desde la URL al cargar la página
+  const filters = getQueryParams();
+  if (filters.aroma || filters.categoria) {
+    applyFiltersFromUrl(filters);
+  }
+
+  // Adjuntar listeners para cambios futuros de filtros
   document.getElementById('aroma-filter')?.addEventListener('input', filterByAroma);
 };
