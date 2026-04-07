@@ -140,6 +140,37 @@ modal.innerHTML = `
 `;
 document.body.appendChild(modal);
 
+// --- INTERSECTION OBSERVER FOR LAZY-LOADED THUMBNAILS ---
+function initLazyLoadThumbnails() {
+  const thumbnailImages = document.querySelectorAll('#modal-thumbnails img');
+  if (thumbnailImages.length === 0) return;
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+          }
+          obs.unobserve(img);
+        }
+      });
+    }, { rootMargin: '50px' });
+
+    thumbnailImages.forEach(img => observer.observe(img));
+  } else {
+    // Fallback: load all immediately on older browsers
+    thumbnailImages.forEach(img => {
+      if (img.dataset.src) {
+        img.src = img.dataset.src;
+        img.removeAttribute('data-src');
+      }
+    });
+  }
+}
+
 // Escape cierra el modal — comportamiento estándar esperado
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
@@ -214,6 +245,9 @@ export function openModal(product) {
   modal.classList.remove('hidden');
   document.getElementById('modal-success-message').classList.add('hidden');
   modalErrorMsg.classList.add('hidden');
+
+  // Initialize lazy loading for thumbnails after DOM is ready
+  setTimeout(() => initLazyLoadThumbnails(), 0);
 
   document.getElementById('close-modal').onclick = closeModal;
   addToCartBtn.onclick = addToCartFromModal;
@@ -425,7 +459,16 @@ function renderModalThumbnails(images) {
 
   images.forEach((img, i) => {
     const thumb = document.createElement('img');
-    thumb.src = optimizeThumb(img);
+    const optimizedUrl = optimizeThumb(img);
+
+    // Use data-src for lazy loading; first thumbnail loads immediately
+    if (i === 0) {
+      thumb.src = optimizedUrl;
+    } else {
+      thumb.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\'%3E%3C/svg%3E';
+      thumb.dataset.src = optimizedUrl;
+    }
+
     thumb.alt = '';
     thumb.className = `w-14 h-14 object-contain rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${i === 0 ? 'border-amber-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
     thumb.style.backgroundColor = 'var(--color-casi-blanco)';
