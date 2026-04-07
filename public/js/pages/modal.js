@@ -1,20 +1,27 @@
 /**
  * js/pages/modal.js
  * -------------------------------------------------------------
- * Controla la apertura y cierre del modal de detalles de producto.
- * Mantiene la lógica de variaciones (color, aroma) y es responsive.
+ * MODAL FINAL: AROMA PRIMERO + DISEÑO AUTOMÁTICO (FIXED STOCK)
  * -------------------------------------------------------------
  */
 
-// Importaciones
 import { formatPriceCOP, addToCart } from '../cart.js';
+import { renderReviewsSection } from '../reviews.js';
 
-// --- VARIABLES Y ESTRUCTURA DEL MODAL ---
+function optimizeThumb(url) {
+  if (!url || !url.includes('cloudinary')) return url;
+  if (url.includes('/f_auto')) return url;
+  return url.replace('/upload/', '/upload/f_auto,q_80,w_120/');
+}
+
+// --- ESTRUCTURA DEL MODAL ---
 const modal = document.createElement('div');
 modal.id = 'product-modal';
 modal.className = 'fixed inset-0 bg-black/60 flex items-center justify-center z-[1002] hidden p-0 md:p-4 overflow-hidden';
+modal.setAttribute('role', 'dialog');
+modal.setAttribute('aria-modal', 'true');
+modal.setAttribute('aria-labelledby', 'modal-name');
 
-// --- ESTILOS ---
 const buttonStyles = `
   #add-to-cart-modal {
     position: relative;
@@ -23,7 +30,6 @@ const buttonStyles = `
     color: white;
     transition: all 0.3s ease-out;
   }
-
   #add-to-cart-modal .hover-bar {
     content: '';
     position: absolute;
@@ -37,148 +43,92 @@ const buttonStyles = `
     pointer-events: none;
     border-radius: 10px;
   }
-
-  #add-to-cart-modal:hover .hover-bar {
-    width: 100%;
-  }
-
-  #add-to-cart-modal > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  body.modal-open {
-    overflow: hidden !important;
-    position: fixed;
-    width: 100%;
-    top: 0;
-  }
-
-  #close-modal {
-    transition: all 0.3s ease-in-out;
-  }
-
-  #close-modal:hover {
-    transform: rotate(180deg) scale(1.1);
-    background-color: rgba(0,0,0,0.05) !important;
-  }
-
-  #modal-description {
-    overflow: hidden;
-    line-height: 1.5;
-    transition: all 0.3s ease;
-  }
-
-  #toggle-description.hidden {
-    display: none;
-  }
-
-  /* Opciones deshabilitadas */
-  select option:disabled {
-    color: #9ca3af !important;
-    font-style: italic;
+  #add-to-cart-modal:hover .hover-bar { width: 100%; }
+  #add-to-cart-modal > * { position: relative; z-index: 1; }
+  body.modal-open { overflow: hidden !important; position: fixed; width: 100%; top: 0; }
+  #close-modal { transition: all 0.3s ease-in-out; }
+  #close-modal:hover { transform: rotate(180deg) scale(1.1); background-color: rgba(0,0,0,0.05) !important; }
+  #modal-description { overflow: hidden; line-height: 1.5; transition: all 0.3s ease; }
+  select option:disabled { color: #9ca3af !important; font-style: italic; background-color: #f9fafb !important; }
+  select:disabled { opacity: 0.7; cursor: not-allowed; background-color: #f3f4f6; }
+  select.is-auto-selected:disabled {
+    opacity: 1;
+    cursor: default;
+    background-color: var(--color-gris-crema);
+    border-color: var(--color-cinna);
+    font-weight: 600;
   }
 `;
 
 modal.innerHTML = `
   <style>${buttonStyles}</style>
-
-  <!-- Contenedor principal -->
-  <div class="relative rounded-xl shadow-2xl w-full max-w-full h-[90vh] md:h-auto md:max-w-5xl transform transition-all duration-300 md:max-h-[95vh] overflow-hidden p-6 md:p-8" 
+  <div class="relative rounded-xl shadow-2xl w-full max-w-full h-[90vh] md:h-auto md:max-w-5xl transform transition-all duration-300 md:max-h-[95vh] overflow-hidden p-4 md:p-8"
        style="background-color: var(--color-casi-blanco);">
-    
-    <!-- Botón Cerrar -->
-    <button id="close-modal" 
-            class="absolute top-4 right-4 text-xl font-black z-10 transition-all shadow-lg duration-300 rounded-full flex items-center justify-center w-9 h-9 leading-none cursor-pointer"
-            style="color: var(--color-cinna); background-color: var(--color-gris-crema);">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
+
+    <!-- Close Button -->
+    <button id="close-modal" class="absolute top-4 right-4 text-xl font-black z-50 transition-all shadow-lg duration-300 rounded-full flex items-center justify-center w-9 h-9 cursor-pointer" style="color: var(--color-cinna); background-color: var(--color-gris-crema);">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
     </button>
 
-    <!-- Estructura de dos columnas -->
+    <!-- Mobile-First Single Scroll Container -->
     <div class="flex flex-col md:flex-row md:space-x-8 h-full">
 
-      <!-- Imagen -->
-      <div id="modal-image-container" class="w-full relative mb-2 md:mb-0 md:w-1/2 rounded-xl p-2 flex justify-center items-center" style="background-color: var(--color-casi-blanco);"> 
-        <img id="modal-image" 
-             src="" 
-             alt="Producto" 
-             class="w-full h-48 md:h-[500px] object-contain rounded-xl shadow-xl border-2" 
-             style="border-color: var(--color-casi-blanco); transition: border-color 0.3s;"
-             onerror="this.src='https://placehold.co/800x600/CFB3A9/FFFFFF?text=Sin+Imagen';">
-        
-        <!-- Flechas de navegación -->
-        <div id="image-nav" class="absolute inset-x-0 bottom-4 flex justify-center space-x-4 hidden">
-          <button id="prev-image" class="text-white hover:text-white bg-black/50 hover:bg-black/70 p-3 rounded-full transition-colors font-bold shadow-md">&lt;</button>
-          <button id="next-image" class="text-white hover:text-white bg-black/50 hover:bg-black/70 p-3 rounded-full transition-colors font-bold shadow-md">&gt;</button>
-        </div>
+      <!-- Left Column: Image + Thumbnails (Mobile: Full, Desktop: 1/2) -->
+      <div id="modal-image-container" class="w-full md:w-1/2 flex flex-col items-center justify-start pt-0 md:pt-4">
+
+        <!-- Image - Fullwidth on Mobile, Vertical on Desktop -->
+        <img id="modal-image" src="" alt="Producto" class="w-full md:w-60 h-72 md:h-[420px] object-contain rounded-xl shadow-xl border-2 mb-4" style="border-color: var(--color-casi-blanco);">
+
+        <!-- Thumbnails -->
+        <div id="modal-thumbnails" class="hidden flex-row gap-2 justify-center flex-wrap w-full md:w-auto"></div>
       </div>
 
-      <!-- Detalles -->
-      <div class="w-full md:w-1/2 relative pt-0 flex flex-col overflow-y-auto">
-        
-        <!-- Contenido fijo superior -->
+      <!-- Right Column: Content (Mobile: Full with scroll, Desktop: 1/2 with scroll) -->
+      <div class="w-full md:w-1/2 relative pt-4 md:pt-0 flex flex-col overflow-y-auto">
+
+        <!-- Product Info (scrolls up on mobile) -->
         <div class="flex-shrink-0">
           <h2 id="modal-name" class="text-2xl md:text-4xl font-extrabold mb-1 md:mb-2 text-gray-800"></h2>
           <p id="modal-price" class="text-xl md:text-3xl font-black mb-2 md:mb-6" style="color: var(--color-cinna);"></p>
-          
-          <!-- CANTIDAD DE CERA -->
           <p id="cera-info" class="text-sm text-gray-600 font-medium mb-3 italic hidden"></p>
-
-          <!-- DESCRIPCIÓN CON "VER MÁS" -->
           <div class="mb-4">
-            <p id="modal-description" class="text-gray-600 text-xs md:text-sm line-clamp-2 transition-all duration-300"></p>
-            <button id="toggle-description" class="text-xs md:text-sm font-medium text-amber-600 hover:text-amber-700 mt-1 focus:outline-none">
-              Ver más
-            </button>
+            <p id="modal-description" class="text-gray-600 text-xs md:text-sm line-clamp-2"></p>
+            <button id="toggle-description" class="text-xs md:text-sm font-medium text-amber-600 mt-1">Ver más</button>
           </div>
         </div>
 
-        <!-- Variaciones -->
-        <div class="space-y-3 mb-4 flex-grow overflow-y-auto">
-          
-          <div class="variation-group" id="cera-variation-group">
-            <label class="block text-xs font-semibold mb-1" style="color: var(--color-cinna);">Color de Cera</label>
-            <select id="color-cera" class="w-full p-2 text-sm border rounded-xl shadow-inner appearance-none transition-all cursor-pointer" 
-                    style="border-color: var(--color-gris-crema); background-color: var(--color-casi-blanco); color: var(--color-cinna); font-weight: 500;">
-            </select>
+        <!-- Variations (selectors) -->
+        <div class="space-y-4 mb-4 flex-grow">
+          <div id="aroma-variation-group" class="hidden">
+            <label class="block text-xs md:text-sm font-semibold mb-2" style="color: var(--color-cinna);">Aroma</label>
+            <select id="aroma" class="w-full p-3 md:p-2 text-sm md:text-base border rounded-xl shadow-inner appearance-none" style="font-size: 16px;"></select>
           </div>
-
-          <div class="variation-group" id="cemento-variation-group"> 
-            <label class="block text-xs font-semibold mb-1" style="color: var(--color-cinna);">Color de Cemento</label>
-            <select id="color-cemento" class="w-full p-2 text-sm border rounded-xl shadow-inner appearance-none transition-all cursor-pointer" 
-                    style="border-color: var(--color-gris-crema); background-color: var(--color-casi-blanco); color: var(--color-cinna); font-weight: 500;">
-            </select>
+          <div id="combinacion-variation-group" class="hidden">
+            <label class="block text-xs md:text-sm font-semibold mb-2" style="color: var(--color-cinna);">Diseño</label>
+            <select id="combinacion" class="w-full p-3 md:p-2 text-sm md:text-base border rounded-xl shadow-inner appearance-none" style="font-size: 16px;"></select>
           </div>
-
-          <div class="variation-group" id="aroma-variation-group">
-            <label class="block text-xs font-semibold mb-1" style="color: var(--color-cinna);">Aroma</label>
-            <select id="aroma" class="w-full p-2 text-sm border rounded-xl shadow-inner appearance-none transition-all cursor-pointer" 
-                    style="border-color: var(--color-gris-crema); background-color: var(--color-casi-blanco); color: var(--color-cinna); font-weight: 500;">
-            </select>
-          </div>
-          
-          <!-- Mensaje de error/selección si falta algo -->
-          <p id="selection-status" class="mt-2 text-xs font-medium text-gray-500">Selecciona las combinaciones deseadas.</p>
-          <!-- Mensaje de stock -->
-          <p id="stock-info" class="mt-2 text-xs font-medium"></p> 
+          <p id="selection-status" class="mt-2 text-xs font-medium text-gray-500 hidden">Selecciona un aroma.</p>
+          <p id="stock-info" class="mt-2 text-xs font-medium hidden"></p>
         </div>
 
-        <!-- Botón Añadir al Carrito -->
+        <!-- Add to Cart Button -->
         <div class="flex-shrink-0 pt-4 border-t" style="border-color: var(--color-gris-crema);">
-          <button id="add-to-cart-modal" 
-                  class="w-full py-2 mt-2 text-base rounded-xl font-bold shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
-            <span class="hover-bar"></span>
-            Añadir al Carrito
+          <button id="add-to-cart-modal" class="w-full py-3 md:py-2 mt-2 text-base md:text-sm rounded-xl font-bold shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="hover-bar"></span> Añadir al Carrito
           </button>
-          
-          <div id="modal-success-message" class="mt-2 text-center text-green-600 font-bold hidden text-sm">
-            ¡Producto añadido al carrito!
-          </div>
-          <div id="modal-error-message" class="mt-2 text-center text-red-600 font-bold hidden text-sm">
-            ¡Por favor, selecciona todas las opciones para continuar!
-          </div>
+          <div id="modal-success-message" class="mt-2 text-center text-green-600 font-bold hidden text-sm">¡Producto añadido al carrito!</div>
+          <div id="modal-error-message" class="mt-2 text-center text-red-600 font-bold hidden text-sm">¡Selecciona un aroma!</div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="flex-shrink-0 mt-4">
+          <button id="toggle-reviews-btn"
+                  class="w-full py-2 text-xs md:text-sm font-semibold rounded-xl border transition-colors duration-200 flex items-center justify-between px-4"
+                  style="border-color: var(--color-fondo); color: var(--color-cinna); background: transparent;">
+            <span id="reviews-btn-label">Ver reseñas</span>
+            <i id="reviews-chevron" class="fas fa-chevron-down text-xs transition-transform duration-200"></i>
+          </button>
+          <div id="modal-reviews-container" class="hidden mt-3 max-h-64 overflow-y-auto text-sm"></div>
         </div>
       </div>
     </div>
@@ -186,345 +136,340 @@ modal.innerHTML = `
 `;
 document.body.appendChild(modal);
 
-// --- LÓGICA DEL MODAL ---
-let currentProduct = null;
-let currentImageIndex = 0;
-let scrollPosition = 0;
+// Escape cierra el modal — comportamiento estándar esperado
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+});
 
-// === SELECTORES CLAVE ===
-const colorCeraSelect = document.getElementById('color-cera');
-const colorCementoSelect = document.getElementById('color-cemento');
+let currentProduct = null;
+let scrollPosition = 0;
+let triggerElement = null;
+
 const aromaSelect = document.getElementById('aroma');
+const combinacionSelect = document.getElementById('combinacion');
+const combinacionGroup = document.getElementById('combinacion-variation-group');
+const aromaGroup = document.getElementById('aroma-variation-group');
 const stockInfoEl = document.getElementById('stock-info');
 const selectionStatusEl = document.getElementById('selection-status');
 const addToCartBtn = document.getElementById('add-to-cart-modal');
 const modalErrorMsg = document.getElementById('modal-error-message');
 
-// === ABRIR MODAL ===
-export function openModal(product, products) {
-  if (!product) {
-    console.error('No se recibió un producto para abrir el modal');
-    return;
-  }
-  currentProduct = product;
-  currentImageIndex = 0;
+export function openModal(product) {
+  if (!product) return;
 
-  document.getElementById('modal-name').textContent = product.name;
-  updatePrice(product);
-  populateSelects(product);
-  updateImage();
-  updateStockInfo();
+  triggerElement = document.activeElement;
+
+  // Normalizar campos antes de asignar a currentProduct
+  // Firestore puede guardar las imágenes como 'images' o 'imageUrls' — soportar ambos
+  currentProduct = {
+    ...product,
+    images: product.images || product.imageUrls || [],
+    combinaciones: product.combinaciones || [],
+    stock_variations: product.stock_variations || {},
+  };
+
+  document.getElementById('modal-name').textContent = currentProduct.name;
+  updatePrice(currentProduct);
+  updateImage(currentProduct.images[0]);
+  renderModalThumbnails(currentProduct.images);
 
   const ceraInfo = document.getElementById('cera-info');
-  const isBase = product.color_cera?.includes('N/A');
-  if (!isBase && product.cantidad_cera && product.cantidad_cera > 0) {
-    ceraInfo.innerHTML = `Esta mágica vela contiene <strong>${product.cantidad_cera} g</strong> de cera de soya`;
-    ceraInfo.classList.remove('hidden');
-  } else {
-    ceraInfo.classList.add('hidden');
-  }
+  ceraInfo.classList.toggle('hidden', !(product.cantidad_cera > 0));
+  if (product.cantidad_cera > 0) ceraInfo.innerHTML = `Contiene <strong>${product.cantidad_cera} g</strong> de cera de soya`;
 
-  const descriptionEl = document.getElementById('modal-description');
+  const desc = document.getElementById('modal-description');
+  desc.textContent = currentProduct.description || 'Sin descripción.';
+  desc.classList.add('line-clamp-2'); // resetear al estado colapsado en cada apertura
+
   const toggleBtn = document.getElementById('toggle-description');
-  descriptionEl.textContent = product.description || 'Sin descripción disponible.';
-  descriptionEl.classList.add('line-clamp-2');
   toggleBtn.textContent = 'Ver más';
-  toggleBtn.classList.remove('hidden');
-  setTimeout(() => {
-    if (descriptionEl.scrollHeight <= descriptionEl.clientHeight + 5) {
-      toggleBtn.classList.add('hidden');
-    }
-  }, 100);
-  toggleBtn.onclick = (e) => {
-    e.stopPropagation();
-    descriptionEl.classList.toggle('line-clamp-2');
-    toggleBtn.textContent = descriptionEl.classList.contains('line-clamp-2') ? 'Ver más' : 'Ver menos';
+  toggleBtn.onclick = () => {
+    desc.classList.toggle('line-clamp-2');
+    toggleBtn.textContent = desc.classList.contains('line-clamp-2') ? 'Ver más' : 'Ver menos';
   };
+
+  const hasAromas = Array.isArray(product.aroma) && product.aroma.length > 0;
+
+  if (hasAromas) {
+    aromaGroup.classList.remove('hidden');
+    combinacionGroup.classList.add('hidden');
+    populateAromas(currentProduct);
+    selectionStatusEl.classList.remove('hidden');
+    selectionStatusEl.textContent = 'Selecciona un aroma.';
+    updateStockInfo(false);
+  } else {
+    aromaGroup.classList.add('hidden');
+    combinacionGroup.classList.remove('hidden');
+    selectionStatusEl.classList.add('hidden');
+    populateDesignsForBases(currentProduct);
+  }
 
   scrollPosition = window.pageYOffset;
   document.body.classList.add('modal-open');
   document.body.style.top = `-${scrollPosition}px`;
-
   modal.classList.remove('hidden');
   document.getElementById('modal-success-message').classList.add('hidden');
   modalErrorMsg.classList.add('hidden');
 
-  document.getElementById('close-modal').addEventListener('click', closeModal);
-  addToCartBtn.addEventListener('click', addToCartFromModal);
-  modal.addEventListener('click', handleOutsideClick);
+  document.getElementById('close-modal').onclick = closeModal;
+  addToCartBtn.onclick = addToCartFromModal;
 
-  const imageNav = document.getElementById('image-nav');
-  if (product.images?.length > 1 && !hasColorVariations(product)) {
-    imageNav.classList.remove('hidden');
-    document.getElementById('prev-image').onclick = () => navigateImage(-1);
-    document.getElementById('next-image').onclick = () => navigateImage(1);
-  } else {
-    imageNav.classList.add('hidden');
-  }
+  // Reseñas colapsables — cargar al abrir, toggle al hacer click
+  const reviewsContainer = document.getElementById('modal-reviews-container');
+  const reviewsToggleBtn = document.getElementById('toggle-reviews-btn');
+  const reviewsLabel = document.getElementById('reviews-btn-label');
+  const chevron = document.getElementById('reviews-chevron');
+  let reviewsLoaded = false;
+  reviewsContainer.classList.add('hidden');
+  reviewsLabel.textContent = 'Ver reseñas';
+  chevron.style.transform = 'rotate(0deg)';
+
+  reviewsToggleBtn.onclick = async () => {
+    const isOpen = !reviewsContainer.classList.contains('hidden');
+    if (isOpen) {
+      reviewsContainer.classList.add('hidden');
+      reviewsLabel.textContent = 'Ver reseñas';
+      chevron.style.transform = 'rotate(0deg)';
+    } else {
+      reviewsContainer.classList.remove('hidden');
+      reviewsLabel.textContent = 'Ocultar reseñas';
+      chevron.style.transform = 'rotate(180deg)';
+      if (!reviewsLoaded) {
+        reviewsLoaded = true;
+        await renderReviewsSection(currentProduct.id, '#modal-reviews-container');
+      }
+    }
+  };
+
+  modal.addEventListener('keydown', trapFocus);
+  document.getElementById('close-modal').focus();
 }
 
-// === CERRAR MODAL ===
 export function closeModal() {
   modal.classList.add('hidden');
+  modal.removeEventListener('keydown', trapFocus);
+  triggerElement?.focus();
+  triggerElement = null;
   document.body.classList.remove('modal-open');
   document.body.style.top = '';
   window.scrollTo(0, scrollPosition);
-
-  const elements = ['close-modal', 'add-to-cart-modal', 'color-cera', 'color-cemento', 'aroma', 'prev-image', 'next-image'];
-  elements.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.replaceWith(el.cloneNode(true));
-  });
-  
-  [colorCeraSelect, colorCementoSelect, aromaSelect].forEach(s => {
-    if (s) s.value = '';
-  });
-
   currentProduct = null;
-  currentImageIndex = 0;
-  modal.removeEventListener('click', handleOutsideClick);
 }
 
-function handleOutsideClick(e) {
-  if (e.target === modal) closeModal();
+function trapFocus(e) {
+  if (e.key !== 'Tab') return;
+  const focusable = Array.from(
+    modal.querySelectorAll('button:not([disabled]), select:not([disabled]), input:not([disabled])')
+  ).filter(el => !el.closest('.hidden'));
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
 }
 
 function updatePrice(product) {
-  const priceElement = document.getElementById('modal-price');
+  const priceEl = document.getElementById('modal-price');
   if (product.on_sale && product.on_sale_price < product.price) {
-    priceElement.innerHTML = `<span style="color: var(--color-cinna);">${formatPriceCOP(product.on_sale_price)}</span> <span class="text-sm md:text-lg text-gray-500 line-through font-normal ml-2">${formatPriceCOP(product.price)}</span>`;
+    priceEl.innerHTML = `<span style="color: var(--color-cinna);">${formatPriceCOP(product.on_sale_price)}</span> <span class="text-sm text-gray-500 line-through font-normal ml-2">${formatPriceCOP(product.price)}</span>`;
   } else {
-    priceElement.textContent = formatPriceCOP(product.price);
+    priceEl.textContent = formatPriceCOP(product.price);
   }
 }
 
-// =================================================================
-// === LÓGICA DE VARIACIONES (SIMPLIFICADA Y FUNCIONAL) ===
-// =================================================================
+function populateAromas(product) {
+  aromaSelect.innerHTML = '<option value="">Selecciona aroma</option>';
+  product.aroma.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a;
+    opt.textContent = a;
+    aromaSelect.appendChild(opt);
+  });
+  aromaSelect.onchange = updateFromAroma;
+}
 
-function populateSelects(product) {
-  const ceraGroup = document.getElementById('cera-variation-group');
-  const cementoGroup = document.getElementById('cemento-variation-group');
-  const aromaGroup = document.getElementById('aroma-variation-group');
+function populateDesignsForBases(product) {
+  const available = product.combinaciones.filter(comb => (product.stock_variations[comb.id] ?? 0) > 0);
+  combinacionSelect.innerHTML = '';
+  combinacionSelect.disabled = false;
+  combinacionSelect.classList.remove('is-auto-selected');
 
-  const isBase = product.color_cera?.includes('N/A');
-  if (isBase) {
-    ceraGroup.classList.add('hidden');
-    aromaGroup.classList.add('hidden');
-    cementoGroup.classList.add('hidden');
+  if (available.length === 0) {
+    combinacionSelect.innerHTML = '<option value="">Sin stock</option>';
+    combinacionSelect.disabled = true;
+    updateStockInfo(false, 0, 'Sin stock disponible.');
     return;
+  }
+
+  available.forEach(comb => {
+    const opt = document.createElement('option');
+    opt.value = comb.id;
+    opt.textContent = comb.label;
+    combinacionSelect.appendChild(opt);
+  });
+
+  if (available.length === 1) {
+    const comb = available[0];
+    combinacionSelect.disabled = true;
+    combinacionSelect.classList.add('is-auto-selected');
+    updateImageByComb(comb);
+    updateStockInfo(true, product.stock_variations[comb.id]);
   } else {
-    ceraGroup.classList.remove('hidden');
-    aromaGroup.classList.remove('hidden');
-    cementoGroup.classList.remove('hidden');
+    const placeholder = document.createElement('option');
+    placeholder.value = ''; placeholder.textContent = 'Elige diseño'; placeholder.disabled = true; placeholder.selected = true;
+    combinacionSelect.prepend(placeholder);
+    combinacionSelect.onchange = () => {
+      const comb = available.find(c => c.id === combinacionSelect.value);
+      if (comb) { updateImageByComb(comb); updateStockInfo(true, product.stock_variations[comb.id]); }
+    };
   }
-
-  [colorCeraSelect, colorCementoSelect, aromaSelect].forEach(s => {
-    s.innerHTML = '';
-    s.value = '';
-    s.removeEventListener('change', updateVariations);
-    s.addEventListener('change', updateVariations);
-  });
-
-  const addOptions = (select, values) => {
-    const arr = Array.isArray(values) ? values : [values];
-    arr.filter(v => v && v !== 'N/A').forEach(v => {
-      const opt = document.createElement('option');
-      opt.value = v;
-      opt.textContent = v;
-      select.appendChild(opt);
-    });
-  };
-
-  addOptions(colorCeraSelect, product.color_cera);
-  addOptions(colorCementoSelect, product.color_Cemento);
-  addOptions(aromaSelect, product.aroma);
-
-  updateVariations();
 }
 
-function updateVariations() {
-  if (!currentProduct || !currentProduct.stock_variations) return;
-
-  const cera = colorCeraSelect.value;
-  const cemento = colorCementoSelect.value;
+// === LÓGICA DE CLAVES CORREGIDA ===
+function updateFromAroma() {
   const aroma = aromaSelect.value;
-
-  const validKeys = Object.keys(currentProduct.stock_variations)
-    .filter(k => currentProduct.stock_variations[k] > 0);
-
-  const exists = (ce, ca, ar) => validKeys.includes(`${ce}-${ca}-${ar}`);
-
-  [colorCeraSelect, colorCementoSelect, aromaSelect].forEach(s => {
-    Array.from(s.options).forEach(opt => {
-      opt.disabled = false;
-      opt.style.color = '';
-      opt.style.fontStyle = '';
-    });
-  });
-
-  if (cera && cemento) {
-    aromaSelect.querySelectorAll('option').forEach(opt => {
-      if (!exists(cemento, cera, opt.value)) {
-        opt.disabled = true;
-        opt.style.color = '#9ca3af';
-        opt.style.fontStyle = 'italic';
-      }
-    });
-  }
-
-  if (cera && aroma) {
-    colorCementoSelect.querySelectorAll('option').forEach(opt => {
-      if (!exists(opt.value, cera, aroma)) {
-        opt.disabled = true;
-        opt.style.color = '#9ca3af';
-        opt.style.fontStyle = 'italic';
-      }
-    });
-  }
-
-  if (cemento && aroma) {
-    colorCeraSelect.querySelectorAll('option').forEach(opt => {
-      if (!exists(cemento, opt.value, aroma)) {
-        opt.disabled = true;
-        opt.style.color = '#9ca3af';
-        opt.style.fontStyle = 'italic';
-      }
-    });
-  }
-
-  updateStockInfo();
-  updateImage();
-}
-
-function hasColorVariations(product) {
-  const count = (arr) => (Array.isArray(arr) ? arr : [arr]).filter(o => o && !o.toLowerCase().includes('n/a')).length;
-  return count(product.color_cera) > 1 || count(product.color_Cemento) > 1 || count(product.aroma) > 1;
-}
-
-// === CAMBIO DE IMAGEN ===
-function updateImage() {
-  if (!currentProduct || !currentProduct.images) return;
-
-  const imageElement = document.getElementById('modal-image');
-  const imageNav = document.getElementById('image-nav');
-
-  const isBase = currentProduct.color_cera?.includes('N/A');
-  if (isBase) {
-    imageElement.src = currentProduct.images[0];
-    imageNav.classList.add('hidden');
+  if (!aroma) {
+    combinacionGroup.classList.add('hidden');
+    selectionStatusEl.classList.remove('hidden');
+    updateStockInfo(false);
     return;
   }
 
-  const colorCera = colorCeraSelect?.value || '';
-  const colorCemento = colorCementoSelect?.value || '';
-  const aroma = aromaSelect?.value || '';
-
-  const variationKey = `${colorCemento}-${colorCera}-${aroma}`;
-  const normalize = (str) => (str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-  const keyNorm = normalize(variationKey);
-
-  const foundImage = currentProduct.images.find(img => {
-    const fileName = normalize(img.split('/').pop().split('.')[0]);
-    return fileName.includes(normalize(currentProduct.id)) && 
-           (fileName.includes(normalize(colorCemento)) || 
-           fileName.includes(normalize(colorCera)) || 
-           fileName.includes(normalize(aroma)));
+  // Filtrar combinaciones usando la clave "IDDISEÑO-AROMA"
+  const available = currentProduct.combinaciones.filter(comb => {
+    const key = `${comb.id}-${aroma}`;
+    return (currentProduct.stock_variations[key] ?? 0) > 0;
   });
 
-  imageElement.src = foundImage || currentProduct.images[0];
-  imageNav.classList.add('hidden');
-}
-
-function navigateImage(direction) {
-  if (!currentProduct || !currentProduct.images || currentProduct.images.length <= 1) return;
-  currentImageIndex = (currentImageIndex + direction + currentProduct.images.length) % currentProduct.images.length;
-  updateImage();
-}
-
-// === STOCK INFO ===
-function updateStockInfo() {
-  const cera = colorCeraSelect.value;
-  const cemento = colorCementoSelect.value;
-  const aroma = aromaSelect.value;
-
-  const allSelected = cera && cemento && aroma;
-
-  stockInfoEl.classList.add('hidden');
-  selectionStatusEl.classList.remove('hidden');
-  addToCartBtn.disabled = true;
-
-  if (!allSelected) {
-    selectionStatusEl.textContent = 'Selecciona Color Cera, Color Cemento y Aroma.';
-    selectionStatusEl.className = 'mt-2 text-xs font-medium text-gray-500';
-    return;
-  }
-
-  const key = `${cemento}-${cera}-${aroma}`;
-  const stock = currentProduct.stock_variations?.[key] ?? 0;
-
+  combinacionGroup.classList.remove('hidden');
   selectionStatusEl.classList.add('hidden');
-  stockInfoEl.classList.remove('hidden');
 
-  if (stock > 0) {
-    stockInfoEl.textContent = `¡En stock! Quedan ${stock} unidades.`;
-    stockInfoEl.className = 'mt-2 text-xs font-medium text-green-600';
-    addToCartBtn.disabled = false;
+  if (available.length === 0) {
+    combinacionSelect.innerHTML = '<option value="">Sin stock</option>';
+    combinacionSelect.disabled = true;
+    updateStockInfo(false, 0, 'Sin stock para este aroma.');
+    return;
+  }
+
+  combinacionSelect.innerHTML = '';
+  combinacionSelect.disabled = false;
+  combinacionSelect.classList.remove('is-auto-selected');
+
+  available.forEach(comb => {
+    const opt = document.createElement('option');
+    opt.value = comb.id;
+    opt.textContent = comb.label;
+    combinacionSelect.appendChild(opt);
+  });
+
+  if (available.length === 1) {
+    const comb = available[0];
+    const key = `${comb.id}-${aroma}`;
+    combinacionSelect.disabled = true;
+    combinacionSelect.classList.add('is-auto-selected');
+    updateImageByComb(comb);
+    updateStockInfo(true, currentProduct.stock_variations[key]);
   } else {
-    stockInfoEl.textContent = 'Esta combinación está agotada. Cambia una opción.';
-    stockInfoEl.className = 'mt-2 text-xs font-medium text-red-600';
-    addToCartBtn.disabled = true;
+    const placeholder = document.createElement('option');
+    placeholder.value = ''; placeholder.textContent = 'Elige diseño'; placeholder.disabled = true; placeholder.selected = true;
+    combinacionSelect.prepend(placeholder);
+    combinacionSelect.onchange = () => {
+      const key = `${combinacionSelect.value}-${aroma}`;
+      const comb = available.find(c => c.id === combinacionSelect.value);
+      if (comb) { updateImageByComb(comb); updateStockInfo(true, currentProduct.stock_variations[key]); }
+    };
   }
 }
 
-// === AÑADIR AL CARRITO ===
+function updateImageByComb(comb) {
+  if (comb.image) {
+    const img = currentProduct.images.find(i => i.includes(comb.image));
+    if (img) updateImage(img);
+  }
+}
+
+function updateImage(src) { document.getElementById('modal-image').src = src || currentProduct.images[0]; }
+
+function renderModalThumbnails(images) {
+  const container = document.getElementById('modal-thumbnails');
+  if (images.length <= 1) {
+    container.classList.add('hidden');
+    container.classList.remove('flex');
+    return;
+  }
+  container.innerHTML = '';
+  container.classList.remove('hidden');
+  container.classList.add('flex');
+
+  images.forEach((img, i) => {
+    const thumb = document.createElement('img');
+    thumb.src = optimizeThumb(img);
+    thumb.alt = '';
+    thumb.className = `w-14 h-14 object-contain rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${i === 0 ? 'border-amber-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`;
+    thumb.style.backgroundColor = 'var(--color-casi-blanco)';
+    thumb.onclick = () => {
+      updateImage(img);
+      container.querySelectorAll('img').forEach(t => {
+        t.className = t.className.replace('border-amber-500', 'border-transparent').replace('opacity-100', 'opacity-60');
+      });
+      thumb.className = thumb.className.replace('border-transparent', 'border-amber-500').replace('opacity-60', 'opacity-100');
+    };
+    container.appendChild(thumb);
+  });
+}
+
+function updateStockInfo(hasStock, stock = 0, msg = '') {
+  stockInfoEl.classList.remove('hidden');
+  addToCartBtn.disabled = !hasStock;
+  if (hasStock && stock > 0) {
+    stockInfoEl.textContent = `¡En stock! Queda ${stock} ${stock === 1 ? 'unidad' : 'unidades'}.`;
+    stockInfoEl.className = 'mt-2 text-xs font-medium text-green-600';
+  } else {
+    stockInfoEl.textContent = msg || 'Selecciona una opción.';
+    stockInfoEl.className = 'mt-2 text-xs font-medium text-red-600';
+  }
+}
+
 function addToCartFromModal() {
-  const colorCera = colorCeraSelect.value;
-  const colorCemento = colorCementoSelect.value;
-  const aroma = aromaSelect.value;
-  const variationKey = `${colorCemento}-${colorCera}-${aroma}`;
-  const stock = currentProduct.stock_variations?.[variationKey];
+  const hasAromas = Array.isArray(currentProduct.aroma) && currentProduct.aroma.length > 0;
+  let aroma = hasAromas ? aromaSelect.value : 'N/A';
+  let combId = combinacionSelect.value;
 
-  if (!colorCera || !colorCemento || !aroma) {
-    modalErrorMsg.textContent = '¡Por favor, selecciona todas las opciones para continuar!';
+  if (!combId || (hasAromas && aroma === '')) {
+    modalErrorMsg.textContent = '¡Selecciona las opciones!';
     modalErrorMsg.classList.remove('hidden');
     return;
   }
-  if (!stock || stock <= 0) {
-    modalErrorMsg.textContent = 'Esta combinación no está disponible o está agotada.';
-    modalErrorMsg.classList.remove('hidden');
-    return;
-  }
-  
-  modalErrorMsg.classList.add('hidden');
 
-  const effectivePrice = currentProduct.on_sale && currentProduct.on_sale_price < currentProduct.price 
-    ? currentProduct.on_sale_price 
-    : currentProduct.price;
+  const key = hasAromas ? `${combId}-${aroma}` : combId;
+  const stock = currentProduct.stock_variations[key];
 
-  const cartItemId = `${currentProduct.id}-${colorCera.replace(/ /g, '')}-${colorCemento.replace(/ /g, '')}-${aroma.replace(/ /g, '')}`;
+  if (!stock || stock <= 0) return;
+
+  const comb = currentProduct.combinaciones.find(c => c.id === combId);
+  const price = currentProduct.on_sale ? currentProduct.on_sale_price : currentProduct.price;
 
   addToCart({
-    id: cartItemId,
+    id: `${currentProduct.id}-${key.replace(/ /g, '')}`,
     productId: currentProduct.id,
     name: currentProduct.name,
-    price: effectivePrice,
+    price,
     image: document.getElementById('modal-image').src,
     quantity: 1,
-    variation: { 
-        cera: colorCera, 
-        cemento: colorCemento, 
-        aroma: aroma 
+    variation: {
+      aroma: aroma === 'N/A' ? null : aroma,
+      diseño: comb.label
     }
   });
 
-  if (currentProduct.stock_variations[variationKey] !== undefined) {
-      currentProduct.stock_variations[variationKey] -= 1;
-  }
-  
-  updateStockInfo();
+  currentProduct.stock_variations[key]--;
+  hasAromas ? updateFromAroma() : populateDesignsForBases(currentProduct);
+
   document.getElementById('modal-success-message').classList.remove('hidden');
-  requestAnimationFrame(() => {
-      setTimeout(closeModal, 800);
-  });
+  setTimeout(closeModal, 800);
 }
