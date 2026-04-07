@@ -397,7 +397,20 @@ function updateImageByComb(comb) {
   }
 }
 
-function updateImage(src) { document.getElementById('modal-image').src = src || currentProduct.images[0]; }
+function updateImage(src) {
+  const img = document.getElementById('modal-image');
+  const targetSrc = src || currentProduct.images[0];
+
+  // Only animate if changing to a different image
+  if (img.src === targetSrc) return;
+
+  img.style.opacity = '0';
+  img.style.transition = 'opacity 0.15s ease';
+  setTimeout(() => {
+    img.src = targetSrc;
+    img.style.opacity = '1';
+  }, 150);
+}
 
 function renderModalThumbnails(images) {
   const container = document.getElementById('modal-thumbnails');
