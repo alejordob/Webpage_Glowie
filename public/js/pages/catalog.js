@@ -225,11 +225,14 @@ function generateProductSchema(product, rating = null) {
   return schema;
 }
 
-async function getRatingsMap() {
+async function fetchAndApplyRatings() {
   try {
     const app = getApp();
     const db = getFirestore(app);
-    const snapshot = await getDocs(query(collection(db, 'reviews'), where('approved', '==', true)));
+    const snapshot = await withTimeout(
+      getDocs(query(collection(db, 'reviews'), where('approved', '==', true))),
+      FIREBASE_TIMEOUT_MS
+    );
 
     const ratingsMap = {};
     snapshot.docs.forEach(doc => {
@@ -247,10 +250,21 @@ async function getRatingsMap() {
       ratingsMap[productId].reviewCount = entry.count;
     });
 
-    return ratingsMap;
+    // Update DOM card rating displays
+    document.querySelectorAll('.catalog-product-card[data-product-id]').forEach(card => {
+      const entry = ratingsMap[card.dataset.productId];
+      if (!entry || entry.count === 0) return;
+      const avg = entry.ratingValue;
+      const slot = card.querySelector('.card-ratings');
+      if (slot) {
+        slot.innerHTML = `<span class="text-xs font-semibold" style="color:#FFD700;">★ ${avg}</span><span class="text-xs ml-1" style="color:rgba(255,255,255,0.65);">· ${entry.count}</span>`;
+      }
+    });
+
+    return { ratingsMap, success: true };
   } catch (error) {
-    console.error('Error fetching ratings for schema:', error);
-    return {};
+    console.error('Error fetching ratings:', error);
+    return { ratingsMap: {}, success: false };
   }
 }
 
@@ -441,9 +455,8 @@ async function loadProducts(retryCount = 0) {
   if (cached) {
     setAllProducts(cached);
     renderProducts(cached);
-    const ratingsMap = await getRatingsMap();
+    const { ratingsMap } = await fetchAndApplyRatings();
     injectProductSchemas(cached, ratingsMap);
-    loadAndDisplayRatings();
     return;
   }
 
@@ -464,9 +477,8 @@ async function loadProducts(retryCount = 0) {
     setAllProducts(products);
     setCachedProducts(products);
     renderProducts(products);
-    const ratingsMap = await getRatingsMap();
+    const { ratingsMap } = await fetchAndApplyRatings();
     injectProductSchemas(products, ratingsMap);
-    loadAndDisplayRatings();
 
   } catch (error) {
     if ((error.code === 'app/no-app' || error.message?.includes('No Firebase App')) && retryCount < MAX_RETRIES) {
@@ -478,39 +490,6 @@ async function loadProducts(retryCount = 0) {
   }
 }
 
-// ============================================================
-// RATINGS EN TARJETAS
-// ============================================================
-async function loadAndDisplayRatings() {
-  try {
-    const app = getApp();
-    const db  = getFirestore(app);
-    const snapshot = await getDocs(query(collection(db, 'reviews'), where('approved', '==', true)));
-
-    // Agrupar por productId y calcular promedio
-    const ratingsMap = {};
-    snapshot.docs.forEach(doc => {
-      const { productId, rating } = doc.data();
-      if (!productId || !rating) return;
-      if (!ratingsMap[productId]) ratingsMap[productId] = { sum: 0, count: 0 };
-      ratingsMap[productId].sum   += Number(rating);
-      ratingsMap[productId].count += 1;
-    });
-
-    // Inyectar en cada tarjeta del DOM
-    document.querySelectorAll('.catalog-product-card[data-product-id]').forEach(card => {
-      const entry = ratingsMap[card.dataset.productId];
-      if (!entry || entry.count === 0) return;
-      const avg = Math.round((entry.sum / entry.count) * 10) / 10;
-      const slot = card.querySelector('.card-ratings');
-      if (slot) {
-        slot.innerHTML = `<span class="text-xs font-semibold" style="color:#FFD700;">★ ${avg}</span><span class="text-xs ml-1" style="color:rgba(255,255,255,0.65);">· ${entry.count}</span>`;
-      }
-    });
-  } catch {
-    // Best-effort: si falla no afecta la carga del catálogo
-  }
-}
 
 // ============================================================
 // RENDER DE LA PÁGINA
