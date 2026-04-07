@@ -230,6 +230,7 @@
             <a href="/catalogo" class="nav-link font-medium link-route transition-colors duration-200" style="color: #555;">Catálogo</a>
             <a href="/ofertas" class="nav-link font-medium link-route transition-colors duration-200" style="color: #555;">Ofertas</a>
             <a href="/tips" class="nav-link font-medium link-route transition-colors duration-200" style="color: #555;">Tips & Cuidado</a>
+            <a href="/aromas" class="nav-link font-medium link-route transition-colors duration-200" style="color: #555;">Aromas</a>
             <a href="/nosotros" class="nav-link font-medium link-route transition-colors duration-200" style="color: #555;">Nosotros</a>
           </div>
         </nav>
@@ -238,6 +239,7 @@
         <a href="/catalogo" class="block py-2 text-gray-700 hover:text-amber-600 font-medium border-b border-gray-100 link-route">Catálogo</a>
         <a href="/ofertas" class="block py-2 text-gray-700 hover:text-amber-600 font-medium border-b border-gray-100 link-route">Ofertas</a>
         <a href="/tips" class="block py-2 text-gray-700 hover:text-amber-600 font-medium border-b border-gray-100 link-route">Tips & Cuidado</a>
+        <a href="/aromas" class="block py-2 text-gray-700 hover:text-amber-600 font-medium border-b border-gray-100 link-route">Aromas</a>
         <a href="/nosotros" class="block py-2 text-gray-700 hover:text-amber-600 font-medium link-route">Nosotros</a>
       </nav>
     </div>
@@ -440,7 +442,7 @@
 
   <!-- NAVEGACIÓN Y RUTAS -->
   <script>
-    const routes = { '/catalogo': 'catalog', '/ofertas': 'offers', '/tips': 'tips', '/nosotros': 'nosotros', '/': 'catalog', '': 'catalog' };
+    const routes = { '/catalogo': 'catalog', '/ofertas': 'offers', '/tips': 'tips', '/aromas': 'aromas', '/nosotros': 'nosotros', '/': 'catalog', '': 'catalog' };
     const BREADCRUMBS = {
       '/catalogo': [
         { position: 1, name: 'Inicio', item: 'https://velasglowie.com' },
@@ -453,6 +455,10 @@
       '/tips': [
         { position: 1, name: 'Inicio', item: 'https://velasglowie.com' },
         { position: 2, name: 'Tips & Cuidado', item: 'https://velasglowie.com/tips' }
+      ],
+      '/aromas': [
+        { position: 1, name: 'Inicio', item: 'https://velasglowie.com' },
+        { position: 2, name: 'Guía de Aromas', item: 'https://velasglowie.com/aromas' }
       ],
       '/nosotros': [
         { position: 1, name: 'Inicio', item: 'https://velasglowie.com' },
@@ -471,6 +477,10 @@
       '/tips': {
         title: 'Cómo Cuidar Velas Artesanales — Tips | Glowie',
         description: 'Guía completa para cuidar tus velas artesanales de cera de soja. Consejos para maximizar la vida y el aroma de tus velas Glowie hechas en Cali.'
+      },
+      '/aromas': {
+        title: 'Guía de Aromas — Velas Aromáticas en Cali | Glowie',
+        description: 'Descubre qué aroma de vela es perfecto para ti. Bambú, coco & vainilla, durazno, café mocka y más. Guía completa de fragancias artesanales en Cali.'
       },
       '/nosotros': {
         title: 'Nuestra Historia — Velas Glowie | Artesanal en Cali',

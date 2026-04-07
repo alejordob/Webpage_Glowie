@@ -12,6 +12,7 @@ import { renderCatalogPage, initializeCatalogListeners, applyFiltersFromUrl } fr
 import { renderOffersPage, initializeOffersListeners } from './pages/offers.js';
 import { renderTipsPage, initializeTipsListeners } from './pages/tips.js';
 import { renderNosotrosPage, initializeNosotrosListeners } from './pages/nosotros.js';
+import { renderAromasPage, initializeAromasListeners } from './pages/aromas.js';
 import { renderProductPage, initializeProductListeners } from './pages/product.js';
 
 // Asignar window.Cart al inicio para que esté disponible globalmente
@@ -55,6 +56,7 @@ const pageRoutes = {
   'catalog': { render: renderCatalogPage, init: initializeCatalogListeners },
   'offers': { render: renderOffersPage, init: initializeOffersListeners },
   'tips': { render: renderTipsPage, init: initializeTipsListeners },
+  'aromas': { render: renderAromasPage, init: initializeAromasListeners },
   'nosotros': { render: renderNosotrosPage, init: initializeNosotrosListeners },
   'product': { render: renderProductPage, init: initializeProductListeners },
 };
@@ -161,6 +163,11 @@ const PAGE_META = {
     description: 'Guía completa para cuidar tus velas artesanales de cera de soja. Consejos de uso, duración y mantenimiento para sacarles el máximo provecho.',
     canonical: 'https://velasglowie.com/tips',
   },
+  aromas: {
+    title: 'Guía de Aromas — Velas Aromáticas en Cali | Glowie',
+    description: 'Descubre qué aroma de vela es perfecto para ti. Bambú, coco & vainilla, durazno, café mocka y más. Guía completa de fragancias artesanales en Cali.',
+    canonical: 'https://velasglowie.com/aromas',
+  },
   nosotros: {
     title: 'Nuestra Historia | Glowie',
     description: 'Conoce la historia de Glowie. Velas artesanales de cera de soja 100% natural, hechas a mano con dedicación en Cali, Colombia.',
@@ -178,6 +185,7 @@ function updateActiveLink(currentPageName) {
     'catalog': '/catalogo',
     'offers': '/ofertas',
     'tips': '/tips',
+    'aromas': '/aromas',
     'nosotros': '/nosotros',
     'product': '/catalogo',
   };
