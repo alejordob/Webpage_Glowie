@@ -20,14 +20,14 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/img/icono/apple-touch-icon.png">
 
   <!-- SEO -->
-  <meta name="description" content="Velas artesanales, aromáticas y decorativas en Cali. Cera de soja 100% natural, hechas a mano. Aromas únicos: coco, vainilla, bambú y más. Envío gratis desde $60.000.">
+  <meta name="description" content="Velas artesanales, aromáticas y decorativas en Cali. Cera de soja 100% natural, hechas a mano. Envío gratis desde $60.000.">
   <link rel="canonical" href="https://velasglowie.com/">
   <meta name="theme-color" content="#CFB3A9">
 
   <!-- Open Graph -->
   <meta property="og:site_name" content="Glowie">
   <meta property="og:title" content="Velas Artesanales en Cali | Glowie — Cera de Soja Natural">
-  <meta property="og:description" content="Velas artesanales, aromáticas y decorativas en Cali. Cera de soja 100% natural, hechas a mano. Aromas únicos: coco, vainilla, bambú y más. Envío gratis desde $60.000.">
+  <meta property="og:description" content="Velas artesanales, aromáticas y decorativas en Cali. Cera de soja 100% natural, hechas a mano. Envío gratis desde $60.000.">
   <meta property="og:image" content="https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1762141308/anis_amarillo_ftb5xv.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -42,18 +42,47 @@
   <meta name="twitter:description" content="Velas artesanales, aromáticas y decorativas en Cali. Cera de soja 100% natural, hechas a mano. Envío gratis desde $60.000.">
   <meta name="twitter:image" content="https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1762141308/anis_amarillo_ftb5xv.webp">
 
-  <!-- JSON-LD: Schema.org LocalBusiness -->
+  <!-- JSON-LD: Schema.org Organization -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "Organization",
+    "@id": "https://velasglowie.com/#organization",
+    "name": "Glowie",
+    "url": "https://velasglowie.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://velasglowie.com/img/logo_glowie.png",
+      "width": 200,
+      "height": 60
+    },
+    "sameAs": [
+      "https://www.instagram.com/glowie.velas",
+      "https://www.facebook.com/profile.php?id=61583394446413"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+57 315 6265846",
+      "contactType": "customer service",
+      "availableLanguage": "Spanish"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: Schema.org HomeGoodsStore (Local) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HomeGoodsStore",
+    "@id": "https://velasglowie.com/#localbusiness",
     "name": "Glowie",
     "url": "https://velasglowie.com",
     "description": "Velas artesanales de cera de soja natural, hechas a mano en Cali, Colombia",
     "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto,w_1200/v1762141308/anis_amarillo_ftb5xv.webp",
     "logo": "https://velasglowie.com/img/logo_glowie.png",
-    "telephone": "+57-315-6265846",
+    "telephone": "+57 315 6265846",
     "priceRange": "$$",
+    "parentOrganization": {"@id": "https://velasglowie.com/#organization"},
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Cali",
@@ -62,16 +91,26 @@
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 3.4516,
-      "longitude": -76.5320
+      "latitude": 3.45161,
+      "longitude": -76.53201
     },
     "areaServed": { "@type": "City", "name": "Cali" },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+57-315-6265846",
+      "telephone": "+57 315 6265846",
       "contactType": "sales",
       "availableLanguage": "Spanish"
     },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      }
+    ],
+    "currenciesAccepted": "COP",
+    "paymentAccepted": ["WhatsApp", "Credit Card", "Debit Card"],
     "sameAs": [
       "https://www.instagram.com/glowie.velas",
       "https://www.facebook.com/profile.php?id=61583394446413"
@@ -85,7 +124,15 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Glowie",
-    "url": "https://velasglowie.com"
+    "url": "https://velasglowie.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://velasglowie.com/catalogo?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
   }
   </script>
 
@@ -174,8 +221,8 @@
   </script>
 
   <!-- GSAP + ScrollTrigger (animaciones scroll, libre desde 2024) -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
 
   <!-- Tailwind + Fuentes + Iconos -->
   <link rel="stylesheet" href="/tailwind.css" />
@@ -287,6 +334,93 @@
         <span class="text-sm">Cargando catálogo...</span>
       </div>
     </div>
+
+    <!-- FALLBACK ESTÁTICO PARA /AROMAS -->
+    <div id="aromas-fallback" class="hidden max-w-4xl mx-auto py-10">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-6" style="color: var(--color-cinna);">Guía de Aromas — Elige tu Aroma Ideal</h1>
+      <p class="text-lg text-gray-600 mb-8 leading-relaxed">En Glowie creemos que cada aroma cuenta una historia. Descubre nuestros 5 aromas artesanales y encuentra el que resuene con tu espacio y estado de ánimo.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-2xl font-bold mb-2">🌿 Bambú</h2>
+          <p class="text-sm text-gray-600 mb-3">Frescura que despeja la mente. Fragancia limpia y herbácea. Perfecta para oficina, estudio y concentración.</p>
+          <p class="text-xs text-gray-500">Duración: 50–60 horas · Intensidad: 3/5</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-2xl font-bold mb-2">🥥 Coco & Vainilla</h2>
+          <p class="text-sm text-gray-600 mb-3">El aroma del descanso perfecto. Dulzura tropical funde con calidez envolvente. Ideal para dormitorio y relax.</p>
+          <p class="text-xs text-gray-500">Duración: 45–55 horas · Intensidad: 4/5</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-2xl font-bold mb-2">🍑 Durazno</h2>
+          <p class="text-sm text-gray-600 mb-3">Fruta madura, energía positiva. Nota frutal y floral que eleva el ánimo. Perfecta para espacios sociales.</p>
+          <p class="text-xs text-gray-500">Duración: 45–55 horas · Intensidad: 4/5</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-2xl font-bold mb-2">☕ Café Mocka</h2>
+          <p class="text-sm text-gray-600 mb-3">El ritual del café en tu espacio. Tostado con chocolate oscuro. Ideal para quien necesita concentración.</p>
+          <p class="text-xs text-gray-500">Duración: 40–50 horas · Intensidad: 5/5</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-2xl font-bold mb-2">🏝️ Coco</h2>
+          <p class="text-sm text-gray-600 mb-3">Vacaciones en tu hogar. Tropical puro y refrescante. Funciona en cualquier espacio del hogar.</p>
+          <p class="text-xs text-gray-500">Duración: 45–55 horas · Intensidad: 3/5</p>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 p-8 rounded-2xl mb-10">
+        <h2 class="text-2xl font-bold mb-4" style="color: var(--color-cinna);">Velas Artesanales y Pebeteros en Cali</h2>
+        <p class="text-gray-600 mb-4">Nuestras <strong>velas artesanales en Cali</strong> se fabrican con cera de soja 100% natural, aceites esenciales premium y mechas de algodón puro. Cada vela dura entre 40–60 horas dependiendo del tamaño y cuidados.</p>
+        <p class="text-gray-600">Ofrecemos <strong>pebeteros cerámicos en Cali</strong>, <strong>waxmelt artesanal</strong> y <strong>velas decorativas personalizadas</strong> para regalos y eventos. Envío gratis en Cali desde $60.000 y a todo Colombia.</p>
+      </div>
+    </div>
+
+    <!-- FALLBACK ESTÁTICO PARA /TIPS -->
+    <div id="tips-fallback" class="hidden max-w-4xl mx-auto py-10">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-6" style="color: var(--color-cinna);">8 Secretos que Alargan la Vida de tu Vela</h1>
+      <p class="text-lg text-gray-600 mb-8 leading-relaxed">Aprende cómo cuidar y mantener tus velas artesanales para maximizar su duración, fragancia y belleza.</p>
+
+      <div class="space-y-6">
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">1️⃣ Forma la piscina completa en el primer encendido</h2>
+          <p class="text-gray-600 text-sm">La cera debe derretirse completamente en toda la superficie en el primer uso. Si no lo haces, la vela formará un túnel y perderás hasta el 40% de la cera.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">2️⃣ Corta la mecha a 5mm antes de cada uso</h2>
+          <p class="text-gray-600 text-sm">Una mecha larga provoca humo, hollín y acorta la vida de la vela. Usa un cortamechas o unas tijeras y corta siempre a 5mm de altura.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">3️⃣ Nunca dejes la vela encendida más de 3 horas</h2>
+          <p class="text-gray-600 text-sm">El límite seguro es 3 horas. Déjala enfriar 2 horas antes de encenderla nuevamente. Esto previene sobrecalentamiento y alarga su duración.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">4️⃣ Deja enfriar totalmente entre encendidos</h2>
+          <p class="text-gray-600 text-sm">Espera al menos 2 horas para permitir que la cera se solidifique nuevamente. Esto asegura un quemado parejo y más duración.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">5️⃣ Evita corrientes de aire directo</h2>
+          <p class="text-gray-600 text-sm">Coloca la vela lejos de ventanas abiertas, puertas y aires acondicionados. El aire causa un quemado desigual y pérdida de fragancia.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">6️⃣ Nunca soplen la vela — dip la mecha</h2>
+          <p class="text-gray-600 text-sm">En lugar de soplar, inclina la mecha dentro de la cera derretida para apagarla. Esto evita humo y alarga la vida de la mecha.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">7️⃣ Guarda en un lugar fresco y oscuro</h2>
+          <p class="text-gray-600 text-sm">La luz solar directa y el calor debilitan los aromas y la estructura de la cera. Almacena en un lugar con temperatura estable.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-gray-200 bg-white">
+          <h2 class="text-xl font-bold mb-2">8️⃣ Usa un quemador eléctrico para mayor seguridad</h2>
+          <p class="text-gray-600 text-sm">Nuestros waxmelt funcionan perfecto en pebeteros eléctricos sin llama. Son seguros para hogares con niños y mascotas.</p>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 p-8 rounded-2xl mt-10">
+        <h2 class="text-2xl font-bold mb-4" style="color: var(--color-cinna);">Cómo Cuidar tus Velas Artesanales en Cali</h2>
+        <p class="text-gray-600">Las <strong>velas de soja artesanales</strong> que hacemos en Cali duran entre 40–60 horas si las cuidas correctamente. Sigue estos 8 secretos y tu vela te durará mucho más, regalaría más fragancia y se verá hermosa hasta el final.</p>
+      </div>
+    </div>
+
   </main>
 
   <footer class="bg-white border-t border-gray-100 mt-12">

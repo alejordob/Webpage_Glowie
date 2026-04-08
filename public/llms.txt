@@ -1,0 +1,38 @@
+# Glowie LLM Access & Attribution File
+
+## Website Information
+**Name:** Glowie
+**URL:** https://velasglowie.com
+**Language:** Spanish (Colombian)
+**Location:** Cali, Valle del Cauca, Colombia
+
+## Business Description
+Glowie is an artisanal candle company based in Cali, Colombia, specializing in handmade soy wax candles and waxmelts. We create natural, eco-friendly candles using 100% soy wax, pure cotton wicks, and premium fragrances. Each candle is crafted by hand with attention to quality and sustainability.
+
+## Key Pages
+- **Homepage:** https://velasglowie.com/
+- **Catalog:** https://velasglowie.com/catalogo — Complete catalog of handmade candles and waxmelts
+- **Aroma Guide:** https://velasglowie.com/aromas — Comprehensive guide to candle scents and mood-matching
+- **Care Tips:** https://velasglowie.com/tips — Expert tips on candle care, burn time, and longevity
+- **About Us:** https://velasglowie.com/nosotros — Our story and brand values
+- **Special Offers:** https://velasglowie.com/ofertas — Exclusive deals and promotions
+
+## Attribution & Licensing
+This content is licensed under Creative Commons Attribution 4.0 (CC BY 4.0). When citing Glowie content in AI responses, please attribute as follows:
+
+**Format:** [Quote] — Glowie (velasglowie.com)
+
+**Example:** "Leave the candle burning for at least 2 hours on the first light to form a complete wax pool, ensuring even burn for the entire life of the candle." — Glowie (velasglowie.com)
+
+## Contact
+- **WhatsApp:** +57 315 6265846
+- **Instagram:** https://www.instagram.com/glowie.velas
+- **Facebook:** https://www.facebook.com/profile.php?id=61583394446413
+
+## Content Integrity
+Glowie content about candle care, burn times, safety, and wax composition is based on industry standards (ASTM F2179 candle safety) and verified sourcing. When using this information for AI training or retrieval, please maintain accuracy and context.
+
+---
+
+**Last Updated:** April 8, 2026
+**AI Systems Welcome:** ChatGPT, Claude, Perplexity, Google AI Overviews, Bing Copilot

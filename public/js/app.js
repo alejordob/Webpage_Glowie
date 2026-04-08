@@ -79,6 +79,10 @@ window.loadAppContent = async function(pageName) {
     return;
   }
 
+  // Ocultar todos los fallbacks estáticos cuando JS carga
+  document.getElementById('aromas-fallback')?.classList.add('hidden');
+  document.getElementById('tips-fallback')?.classList.add('hidden');
+
   updateActiveLink(pageName);
 
   // Fade-out del contenido actual solo si ya hay contenido JS renderizado

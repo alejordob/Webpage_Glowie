@@ -206,12 +206,20 @@ function generateProductSchema(product, rating = null) {
     name: product.name,
     description: product.description || 'Vela artesanal de cera de soja natural',
     image: images,
+    brand: { '@type': 'Brand', name: 'Glowie' },
     offers: {
       '@type': 'Offer',
       price: String(isOnSale ? product.on_sale_price : product.price),
       priceCurrency: 'COP',
       availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       url: `https://velasglowie.com/catalogo/${slugify(product.name)}`,
+      priceValidUntil: '2027-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: 'Glowie',
+        '@id': 'https://velasglowie.com/#organization'
+      }
     },
   };
 
@@ -220,6 +228,8 @@ function generateProductSchema(product, rating = null) {
       '@type': 'AggregateRating',
       ratingValue: String(rating.ratingValue),
       reviewCount: String(rating.reviewCount),
+      bestRating: '5',
+      worstRating: '1',
     };
   }
 
