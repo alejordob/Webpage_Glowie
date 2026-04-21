@@ -110,8 +110,31 @@ export function updateCartQuantity(productId, newQuantity) {
     const itemIndex = cart.findIndex(item => item.id.toString() === productId.toString());
     if (itemIndex > -1) {
         if (newQuantity <= 0) {
+            const removedItem = cart[itemIndex];
             cart.splice(itemIndex, 1);
             alertUser('Producto eliminado del carrito.');
+
+            // Track remove_from_cart event
+            if (typeof gtag === 'function') {
+                gtag('event', 'remove_from_cart', {
+                    currency: 'COP',
+                    value: removedItem.price * removedItem.quantity,
+                    items: [{
+                        item_id: removedItem.id,
+                        item_name: removedItem.name,
+                        price: removedItem.price,
+                        quantity: removedItem.quantity
+                    }]
+                });
+            }
+            if (typeof fbq === 'function') {
+                fbq('track', 'RemoveFromCart', {
+                    content_ids: [removedItem.id],
+                    content_name: removedItem.name,
+                    value: removedItem.price * removedItem.quantity,
+                    currency: 'COP'
+                });
+            }
         } else {
             cart[itemIndex].quantity = newQuantity;
         }

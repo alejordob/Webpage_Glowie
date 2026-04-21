@@ -203,6 +203,30 @@ export function openModal(product) {
     stock_variations: product.stock_variations || {},
   };
 
+  // Track view_item event
+  if (typeof gtag === 'function') {
+    gtag('event', 'view_item', {
+      currency: 'COP',
+      value: parseFloat(product.price) || 0,
+      items: [{
+        item_id: product.id,
+        item_name: product.name,
+        price: parseFloat(product.price) || 0,
+        item_category: product.categoria || 'velas',
+        quantity: 1
+      }]
+    });
+  }
+  if (typeof fbq === 'function') {
+    fbq('track', 'ViewContent', {
+      content_ids: [product.id],
+      content_name: product.name,
+      content_type: 'product',
+      value: parseFloat(product.price) || 0,
+      currency: 'COP'
+    });
+  }
+
   document.getElementById('modal-name').textContent = currentProduct.name;
   updatePrice(currentProduct);
   updateImage(currentProduct.images[0]);

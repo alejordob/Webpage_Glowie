@@ -405,6 +405,17 @@ function filterByAroma() {
   const aroma = document.getElementById('aroma-filter')?.value.trim().toLowerCase() || '';
   const categoria = document.getElementById('categoria-filter')?.value.trim().toLowerCase() || '';
 
+  // Track filter click event
+  if (aroma || categoria) {
+    if (typeof gtag === 'function') {
+      gtag('event', 'click_filter', {
+        filter_type: aroma ? 'aroma' : 'categoria',
+        filter_value: aroma || categoria,
+        event_category: 'engagement'
+      });
+    }
+  }
+
   // Actualizar la URL con el estado actual de filtros
   const filters = { aroma, categoria };
   pushFilterParams(filters);
@@ -691,4 +702,22 @@ export const initializeCatalogListeners = async () => {
 
   // Add listener for categoria filter (dropdown)
   document.getElementById('categoria-filter')?.addEventListener('change', filterByAroma);
+
+  // Track scroll depth in catalog
+  const scrollDepthThresholds = { 25: false, 50: false, 75: false, 100: false };
+  window.addEventListener('scroll', () => {
+    const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+
+    [25, 50, 75, 100].forEach(threshold => {
+      if (scrollPercentage >= threshold && !scrollDepthThresholds[threshold]) {
+        scrollDepthThresholds[threshold] = true;
+        if (typeof gtag === 'function') {
+          gtag('event', 'scroll_depth', {
+            depth: `${threshold}%`,
+            event_category: 'engagement'
+          });
+        }
+      }
+    });
+  });
 };
