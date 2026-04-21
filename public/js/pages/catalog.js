@@ -501,6 +501,7 @@ function renderProducts(products) {
              sizes="(max-width: 640px) 250px, (max-width: 1024px) 400px, 600px"
              alt="${product.name}"
              loading="lazy"
+             width="400" height="400"
              class="w-full h-64 object-contain rounded-xl mb-4 opacity-95 hover:opacity-100 transition-opacity relative z-10"
              onerror="this.src='https://placehold.co/400x300/fbf3e0/2e2e2e?text=Vela'">
         <a href="/catalogo/${slugify(product.name)}"
