@@ -1,7 +1,8 @@
 /**
  * js/cart.js
  * Módulo para manejar toda la lógica del carrito de compras.
- * Exporta funciones y la variable global Cart para acceso.
+ * Envío CORRECTO: < 60k → "Domicilio $8.000" | ≥ 60k → "Gratis en Cali"
+ * WhatsApp: Mensaje dividido → nunca se corta
  */
 
 let cart = JSON.parse(window.localStorage.getItem('candleCart')) || [];
@@ -12,11 +13,10 @@ const cartOverlay = document.getElementById('cart-overlay');
 const cartItemsContainer = document.getElementById('cart-items');
 const cartTotalElement = document.getElementById('cart-total');
 const cartCountElement = document.getElementById('cart-count');
-const emptyMessage = document.getElementById('empty-cart-message');
 const cartSubtotalElement = document.getElementById('cart-subtotal');
 const cartDiscountElement = document.getElementById('cart-discount-total');
 
-// NUEVOS ELEMENTOS PARA ENVÍO
+// Elementos envío
 const shippingContainer = document.getElementById('shipping-container');
 const shippingTextElement = document.getElementById('shipping-text');
 const finalTotalElement = document.getElementById('final-total');
@@ -26,6 +26,10 @@ const finalTotalLabel = document.getElementById('final-total-label');
 const openCartBtn = document.getElementById('open-cart-btn');
 const closeCartBtn = document.getElementById('close-cart-btn');
 const checkoutWhatsappBtn = document.getElementById('checkout-whatsapp-btn');
+
+// CONSTANTES
+const SHIPPING_THRESHOLD = 60000; // 60.000 para envío gratis
+const SHIPPING_COST = 8000;
 
 // -------------------------------------------------------------
 // FUNCIONES
@@ -83,28 +87,11 @@ export function addToCart(product) {
         });
     }
 
-        // === TRACKING: Añadir al carrito ===
     if (typeof gtag === 'function') {
-        const item = {
-            item_id: product.id,
-            item_name: product.name,
-            price: finalPrice,
-            quantity: 1
-        };
-
-        if (product.variation) {
-            const v = product.variation;
-            let variant = '';
-            if (v.colorCera && v.colorCera.toLowerCase() !== 'n/a') variant += `Cera: ${v.colorCera} | `;
-            if (v.colorCemento && v.colorCemento.toLowerCase() !== 'n/a') variant += `Cemento: ${v.colorCemento} | `;
-            if (v.aroma && v.aroma.toLowerCase() !== 'n/a') variant += `Aroma: ${v.aroma} | `;
-            if (variant) item.item_variant = variant.slice(0, -3);
-        }
-
         gtag('event', 'add_to_cart', {
             currency: 'COP',
             value: finalPrice,
-            items: [item]
+            items: [{ item_id: product.id, item_name: product.name, price: finalPrice, quantity: 1 }]
         });
     }
 
@@ -112,10 +99,11 @@ export function addToCart(product) {
     updateCartUI();
     toggleCart(true);
 
-        // Después de toggleCart(true);
     const cartBtn = document.getElementById('open-cart-btn');
-    cartBtn.classList.add('added');
-    setTimeout(() => cartBtn.classList.remove('added'), 600);
+    if (cartBtn) {
+        cartBtn.classList.add('added');
+        setTimeout(() => cartBtn.classList.remove('added'), 600);
+    }
 }
 
 export function updateCartQuantity(productId, newQuantity) {
@@ -132,60 +120,14 @@ export function updateCartQuantity(productId, newQuantity) {
     updateCartUI();
 }
 
-export function removeItemById(productId) {
-    updateCartQuantity(productId, 0);
-}
-
-export function handleWhatsappCheckout() {
-    const phoneNumber = '573156265846';
-    let message = "*¡Hola Glowie!* %0A%0ATengo un pedido listo: %0A%0A";
-    let subtotal = 0;
-
-    cart.forEach(item => {
-        const itemSubtotal = item.price * item.quantity;
-        subtotal += itemSubtotal;
-
-        let variation = '';
-        const v = item.variation || {};
-        if (v.colorCera && v.colorCera.toLowerCase() !== 'n/a') variation += `Cera: ${v.colorCera} | `;
-        if (v.colorCemento && v.colorCemento.toLowerCase() !== 'n/a') variation += `Cemento: ${v.colorCemento} | `;
-        if (v.aroma && v.aroma.toLowerCase() !== 'n/a') variation += `Aroma: ${v.aroma} | `;
-        if (variation) variation = variation.slice(0, -3);
-
-        message += `• *${item.name}* ${variation ? `(${variation})` : ''} × ${item.quantity} = ${formatPriceCOP(itemSubtotal)}%0A`;
-    });
-
-    // CÁLCULO DE ENVÍO
-    const shippingCost = subtotal >= 50000 ? 0 : 8000;
-    const shippingText = subtotal >= 50000 
-        ? `*Gratis en Cali*` 
-        : `*Envío a Cali: $${shippingCost.toLocaleString('es-CO')}*`;
-
-    const finalTotal = subtotal + shippingCost;
-
-    message += `%0A`;
-    message += `*Subtotal: ${formatPriceCOP(subtotal)}*%0A`;
-    message += `*Envío: ${shippingText}*%0A`;
-    message += `*Total a pagar: ${formatPriceCOP(finalTotal)}*%0A%0A`;
-    message += `Entrega: *1-3 días hábiles*%0A%0A`;
-    message += `Por favor confirma disponibilidad y método de pago. ¡Gracias!`;
-
-    const whatsappLink = `https://wa.me/${phoneNumber}?text=${message}`;
-    window.open(whatsappLink, '_blank');
-
+export function clearCart() {
     cart = [];
     saveCart();
     updateCartUI();
-    alertUser('¡Pedido enviado! Te responderemos pronto.');
-    toggleCart(false);
 }
 
-export function alertUser(message) {
-    const alertBox = document.createElement('div');
-    alertBox.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 p-3 bg-green-500 text-white text-center font-bold rounded-xl shadow-2xl transition-all duration-300 z-[9999]';
-    alertBox.textContent = message;
-    document.body.appendChild(alertBox);
-    setTimeout(() => alertBox.remove(), 3000);
+export function removeItemById(productId) {
+    updateCartQuantity(productId, 0);
 }
 
 export function updateCartUI() {
@@ -198,127 +140,274 @@ export function updateCartUI() {
     let totalDiscount = 0;
 
     cart.forEach(item => {
-        const itemOriginalPriceUnit = item.originalPrice || item.price;
-        subtotalBeforeDiscount += itemOriginalPriceUnit * item.quantity;
-        const itemDiscount = item.originalPrice && item.originalPrice > item.price
-            ? (item.originalPrice - item.price) * item.quantity
-            : 0;
-        totalDiscount += itemDiscount;
+        const unitPrice = item.originalPrice || item.price;
+        subtotalBeforeDiscount += unitPrice * item.quantity;
+        if (item.originalPrice && item.originalPrice > item.price) {
+            totalDiscount += (item.originalPrice - item.price) * item.quantity;
+        }
     });
 
     const subtotal = subtotalBeforeDiscount - totalDiscount;
-    const shippingCost = subtotal >= 50000 ? 0 : 8000;
+    const isFreeShipping = subtotal >= SHIPPING_THRESHOLD;
+    const shippingCost = isFreeShipping ? 0 : SHIPPING_COST;
     const finalTotal = subtotal + shippingCost;
+    const isEmpty = cart.length === 0;
 
+    // --- Contador del header ---
     if (cartCountElement) cartCountElement.textContent = totalItems;
 
-    // Subtotal y descuento
-    const subtotalContainer = document.getElementById('subtotal-container');
-    const discountContainer = document.getElementById('discount-container');
-    const hasDiscount = totalDiscount > 0;
-
-    if (cartSubtotalElement && subtotalContainer) {
-        cartSubtotalElement.textContent = formatPriceCOP(subtotalBeforeDiscount);
-        subtotalContainer.classList.toggle('hidden', !hasDiscount);
+    // --- Badge de cuenta en sidebar header ---
+    const cartBadge = document.getElementById('cart-count-badge');
+    if (cartBadge) {
+        cartBadge.textContent = totalItems;
+        cartBadge.classList.toggle('hidden', totalItems === 0);
     }
 
+    // --- Barra de progreso de envío gratis ---
+    const progressBar = document.getElementById('shipping-progress-bar');
+    const progressLabel = document.getElementById('shipping-progress-label');
+    const progressAmount = document.getElementById('shipping-progress-amount');
+    const progressContainer = document.getElementById('shipping-progress-container');
+
+    if (progressContainer) {
+        progressContainer.classList.toggle('hidden', isEmpty);
+        if (!isEmpty && progressBar && progressLabel && progressAmount) {
+            const progress = Math.min((subtotal / SHIPPING_THRESHOLD) * 100, 100);
+            const remaining = SHIPPING_THRESHOLD - subtotal;
+            progressBar.style.width = `${progress}%`;
+            if (progress >= 100) {
+                progressLabel.textContent = '¡Tienes envío gratis! 🎉';
+                progressLabel.style.color = '#16a34a';
+                progressBar.style.background = '#16a34a';
+                progressAmount.textContent = '';
+            } else {
+                progressLabel.textContent = 'Faltan para envío gratis:';
+                progressLabel.style.color = '';
+                progressBar.style.background = 'var(--color-cinna)';
+                progressAmount.textContent = formatPriceCOP(remaining);
+            }
+        }
+    }
+
+    // --- Subtotal (visible solo cuando hay items) ---
+    const subtotalContainer = document.getElementById('subtotal-container');
+    if (subtotalContainer) subtotalContainer.classList.toggle('hidden', isEmpty);
+    if (cartSubtotalElement) cartSubtotalElement.textContent = formatPriceCOP(subtotal);
+
+    // --- Descuento ---
+    const discountContainer = document.getElementById('discount-container');
     if (cartDiscountElement && discountContainer) {
         cartDiscountElement.textContent = `- ${formatPriceCOP(totalDiscount)}`;
-        discountContainer.classList.toggle('hidden', !hasDiscount);
+        discountContainer.classList.toggle('hidden', totalDiscount === 0);
     }
 
-    // Envío
+    // --- Envío ---
     if (shippingTextElement) {
-        const text = subtotal >= 50000 
-            ? 'Gratis en Cali'
-            : `$8.000`;
-        const color = subtotal >= 50000 ? 'text-green-600' : 'text-gray-700';
-        shippingTextElement.textContent = text;
-        shippingTextElement.className = `font-medium ${color}`;
+        if (isFreeShipping) {
+            shippingTextElement.textContent = 'Gratis en Cali';
+            shippingTextElement.className = 'font-medium text-green-600';
+        } else {
+            shippingTextElement.textContent = 'Domicilio $8.000';
+            shippingTextElement.className = 'font-medium text-gray-700';
+        }
     }
 
-    // Total final
+    // --- Total final ---
     if (finalTotalElement) finalTotalElement.textContent = formatPriceCOP(finalTotal);
-    if (finalTotalLabel) finalTotalLabel.classList.toggle('hidden', subtotal < 50000);
 
-    const isEmpty = cart.length === 0;
-    if (emptyMessage) emptyMessage.classList.toggle('hidden', !isEmpty);
+    // --- Sección de acciones (checkout + seguir comprando) ---
+    const cartActionsEl = document.getElementById('cart-actions');
+    if (cartActionsEl) cartActionsEl.classList.toggle('hidden', isEmpty);
     if (checkoutWhatsappBtn) checkoutWhatsappBtn.classList.toggle('hidden', isEmpty);
 
-    if (!isEmpty) {
-        cart.forEach(item => {
-            const isDiscounted = item.originalPrice && item.originalPrice > item.price;
-            const priceClass = isDiscounted ? 'font-bold text-amber-600' : 'font-semibold text-gray-700';
-
-            const unitPriceHtml = `
-                <p class="text-sm mt-0.5">
-                    ${isDiscounted ? `<span class="text-gray-400 line-through mr-2 font-normal text-xs">${formatPriceCOP(item.originalPrice)} c/u</span>` : ''}
-                    <span class="${priceClass} text-sm">${formatPriceCOP(item.price)} c/u</span>
-                </p>
-            `;
-
-            let variationDetailsHtml = '';
-            const v = item.variation || {};
-            const variations = [];
-            if (v.colorCera && v.colorCera.toLowerCase() !== 'n/a') variations.push(`<strong>Cera</strong>: ${v.colorCera}`);
-            if (v.colorCemento && v.colorCemento.toLowerCase() !== 'n/a') variations.push(`<strong>Cemento</strong>: ${v.colorCemento}`);
-            if (v.aroma && v.aroma.toLowerCase() !== 'n/a') variations.push(`<strong>Aroma</strong>: ${v.aroma}`);
-            if (variations.length > 0) {
-                variationDetailsHtml = `<p class="text-xs text-gray-500 mt-0.5">${variations.join('<br>')}</p>`;
-            }
-
-            const itemElement = document.createElement('div');
-            itemElement.className = 'flex items-start justify-between p-3 bg-gray-50 rounded-lg shadow-sm mb-3';
-            itemElement.innerHTML = `
-                <div class="flex items-start space-x-3 flex-grow min-w-0">
-                    <img src="${item.image || 'https://placehold.co/64x64/fbf3e0/2e2e2e?text=V'}" 
-                         alt="${item.name}" 
-                         class="w-16 h-16 object-cover rounded-md flex-shrink-0"
-                         onerror="this.src='https://placehold.co/64x64/fbf3e0/2e2e2e?text=V';">
-                    <div class="flex-grow min-w-0">
-                        <p class="text-sm font-semibold text-gray-800 truncate">${item.name}</p>
-                        ${variationDetailsHtml}
-                        ${unitPriceHtml}
-                    </div>
-                </div>
-                <div class="flex items-center space-x-3 ml-4 flex-shrink-0">
-                    <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
-                        <button class="quantity-btn w-6 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-200 text-base font-bold transition-colors duration-150" data-id="${item.id}" data-action="decrease">-</button>
-                        <span class="font-bold text-gray-700 w-6 text-center text-sm">${item.quantity}</span>
-                        <button class="quantity-btn w-6 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-200 text-base font-bold transition-colors duration-150" data-id="${item.id}" data-action="increase">+</button>
-                    </div>
-                    <button class="remove-btn text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors duration-150" data-id="${item.id}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
-                </div>
-            `;
-            cartItemsContainer.appendChild(itemElement);
-        });
-
-        // Listeners dinámicos
-        cartItemsContainer.querySelectorAll('.quantity-btn').forEach(btn => {
-            btn.addEventListener('click', e => {
-                const id = e.currentTarget.dataset.id;
-                const action = e.currentTarget.dataset.action;
-                const item = cart.find(i => i.id.toString() === id);
-                if (item) {
-                    const newQty = action === 'increase' ? item.quantity + 1 : item.quantity - 1;
-                    updateCartQuantity(id, newQty);
-                }
-            });
-        });
-
-        cartItemsContainer.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', e => {
-                removeItemById(e.currentTarget.dataset.id);
-            });
+    // --- Botón vaciar carrito ---
+    const clearRow = document.getElementById('cart-clear-row');
+    const clearBtn = document.getElementById('clear-cart-btn');
+    if (clearRow) clearRow.classList.toggle('hidden', isEmpty);
+    if (clearBtn && !clearBtn._listenerAdded) {
+        clearBtn._listenerAdded = true;
+        clearBtn.addEventListener('click', () => {
+            if (confirm('¿Vaciar el carrito?')) clearCart();
         });
     }
+
+    // --- Estado vacío o items ---
+    if (isEmpty) {
+        cartItemsContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full text-center gap-5 py-12">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center"
+                     style="background: var(--color-fondo);">
+                    <i class="fas fa-shopping-bag text-3xl" style="color: var(--color-cinna); opacity: 0.4;"></i>
+                </div>
+                <div>
+                    <p class="text-gray-700 font-semibold mb-1">Tu carrito está vacío</p>
+                    <p class="text-gray-400 text-sm">Agrega una vela y transforma tu espacio.</p>
+                </div>
+                <button id="cart-go-catalog" class="px-6 py-2.5 rounded-xl font-bold text-sm text-white transition-all hover:opacity-90 hover:scale-105"
+                        style="background: var(--color-cinna);">
+                    Ver Catálogo
+                </button>
+            </div>`;
+        document.getElementById('cart-go-catalog')?.addEventListener('click', () => {
+            toggleCart(false);
+            if (typeof window['navigate'] === 'function') window['navigate']('/catalogo');
+        });
+        return;
+    }
+
+    // --- Renderizar items ---
+    cart.forEach(item => {
+        const isDiscounted = item.originalPrice && item.originalPrice > item.price;
+        const lineTotal = item.price * item.quantity;
+
+        // Chips de variaciones
+        const v = item.variation || {};
+        const chips = [];
+        if (v.aroma && v.aroma !== 'N/A') chips.push(v.aroma);
+        if (v.diseño) chips.push(v.diseño);
+        if (v.cera && v.cera !== 'N/A') chips.push(v.cera);
+        if (v.cemento && v.cemento !== 'N/A') chips.push(v.cemento);
+        const chipsHtml = chips.length > 0
+            ? `<div class="flex flex-wrap gap-1 mt-1">
+                 ${chips.map(c => `<span class="text-xs px-2 py-0.5 rounded-full" style="background: var(--color-fondo); color: var(--color-cinna);">${c}</span>`).join('')}
+               </div>`
+            : '';
+
+        const pricingHtml = isDiscounted
+            ? `<span class="text-xs text-gray-400 line-through">${formatPriceCOP(item.originalPrice)}</span>
+               <span class="text-xs font-semibold ml-1" style="color: var(--color-cinna);">${formatPriceCOP(item.price)}</span>`
+            : `<span class="text-xs font-semibold text-gray-500">${formatPriceCOP(item.price)}</span>`;
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'flex gap-3 py-3 border-b border-gray-100 last:border-0';
+        itemEl.innerHTML = `
+            <img src="${item.image || 'https://placehold.co/64x64/fbf3e0/2e2e2e?text=V'}"
+                 alt="${item.name}"
+                 class="w-16 h-16 object-contain rounded-xl flex-shrink-0 border border-gray-100"
+                 style="background: var(--color-fondo);"
+                 onerror="this.src='https://placehold.co/64x64/fbf3e0/2e2e2e?text=V'">
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-gray-800 text-sm leading-snug truncate">${item.name}</p>
+                ${chipsHtml}
+                <div class="mt-1">${pricingHtml}</div>
+                <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                        <button class="quantity-btn w-7 h-7 text-gray-500 hover:bg-gray-100 text-sm font-bold flex items-center justify-center"
+                                data-id="${item.id}" data-action="decrease">−</button>
+                        <span class="w-8 text-center text-sm font-semibold select-none">${item.quantity}</span>
+                        <button class="quantity-btn w-7 h-7 text-gray-500 hover:bg-gray-100 text-sm font-bold flex items-center justify-center"
+                                data-id="${item.id}" data-action="increase">+</button>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold" style="color: var(--color-cinna);">${formatPriceCOP(lineTotal)}</p>
+                        <button class="remove-btn text-xs text-gray-400 hover:text-red-500 transition-colors mt-0.5"
+                                data-id="${item.id}">Eliminar</button>
+                    </div>
+                </div>
+            </div>`;
+        cartItemsContainer.appendChild(itemEl);
+    });
+
+    // --- Listeners de cantidad y eliminar ---
+    cartItemsContainer.querySelectorAll('.quantity-btn').forEach(btn => {
+        btn.onclick = e => {
+            const id = e.currentTarget.dataset.id;
+            const action = e.currentTarget.dataset.action;
+            const item = cart.find(i => i.id.toString() === id.toString());
+            if (item) updateCartQuantity(id, action === 'increase' ? item.quantity + 1 : item.quantity - 1);
+        };
+    });
+
+    cartItemsContainer.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.onclick = e => removeItemById(e.currentTarget.dataset.id);
+    });
 }
 
-// -------------------------------------------------------------
-// INTERNAS
-// -------------------------------------------------------------
+// WhatsApp con texto correcto
+export function handleWhatsappCheckout() {
+    // Capturar nombre + email
+    const nameInput = document.getElementById('checkout-name');
+    const emailInput = document.getElementById('checkout-email');
+    const customerName = nameInput?.value?.trim() || '';
+    const customerEmail = emailInput?.value?.trim() || '';
+
+    // Validar que nombre + email estén completos
+    if (!customerName || !customerEmail) {
+        alertUser('⚠️ Por favor completa tu nombre y email');
+        return;
+    }
+
+    const phoneNumber = '573017748623';
+    const MAX_LENGTH = 1500;
+
+    let subtotal = 0;
+    const itemsLines = [];
+
+    cart.forEach(item => {
+        const itemSubtotal = item.price * item.quantity;
+        subtotal += itemSubtotal;
+
+        let variation = '';
+        const v = item.variation || {};
+        if (v.aroma && v.aroma !== 'N/A') variation += `Aroma: ${v.aroma} | `;
+        if (v.cera && v.cera !== 'N/A') variation += `Cera: ${v.cera} | `;
+        if (v.cemento && v.cemento !== 'N/A') variation += `Cemento: ${v.cemento} | `;
+        if (v.diseño) variation += `Diseño: ${v.diseño} | `;
+        if (variation) variation = variation.slice(0, -3);
+
+        const line = `• *${item.name}* ${variation ? `(${variation})` : ''} × ${item.quantity} = ${formatPriceCOP(itemSubtotal)}`;
+        itemsLines.push(line);
+    });
+
+    const isFreeShipping = subtotal >= SHIPPING_THRESHOLD;
+    const shippingCost = isFreeShipping ? 0 : SHIPPING_COST;
+    const finalTotal = subtotal + shippingCost;
+    const shippingText = isFreeShipping ? '✨ Gratis en Cali' : '🚚 Domicilio $8.000 (Envío a Cali)';
+
+    const header = `*✨ ¡Hola ${customerName.split(' ')[0]}! ✨*%0A%0A🛍️ *Confirmando mi pedido de velas Glowie*%0AEmail: ${customerEmail}%0A%0A`;
+    const footer = `%0A💰 *Subtotal:* ${formatPriceCOP(subtotal)}%0A${shippingText}%0A💳 *Total a pagar:* ${formatPriceCOP(finalTotal)}%0A%0A⏱️ *Entrega:* 1-3 días hábiles en Cali%0A%0A🎁 *Hechas a mano, 100% soja natural*%0A%0A¡Gracias por elegir Glowie! 🕯️`;
+
+    const chunks = [];
+    let currentChunk = header;
+
+    itemsLines.forEach(line => {
+        const test = currentChunk + line + '%0A';
+        if (test.length > MAX_LENGTH) {
+            chunks.push(currentChunk);
+            currentChunk = '';
+        }
+        currentChunk += line + '%0A';
+    });
+    currentChunk += footer;
+    chunks.push(currentChunk);
+
+    chunks.forEach((chunk, index) => {
+        setTimeout(() => {
+            const text = index === 0
+                ? chunk
+                : `*📋 Continuación del pedido (${index + 1}/${chunks.length}):*%0A%0A` + chunk.replace(header, '').replace(footer, '');
+            const finalText = index === chunks.length - 1 ? text + footer : text;
+            const url = `https://wa.me/${phoneNumber}?text=${finalText}`;
+            window.open(url, '_blank');
+        }, index * 700);
+    });
+
+    cart = [];
+    saveCart();
+    updateCartUI();
+    nameInput.value = '';
+    emailInput.value = '';
+    alertUser(`✅ ¡Perfecto ${customerName.split(' ')[0]}! Abriendo WhatsApp...`);
+    toggleCart(false);
+}
+
+export function alertUser(message) {
+    const alertBox = document.createElement('div');
+    alertBox.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 p-4 bg-green-600 text-white text-center font-bold rounded-xl shadow-2xl z-[9999] transition-all';
+    alertBox.textContent = message;
+    document.body.appendChild(alertBox);
+    setTimeout(() => alertBox.remove(), 3500);
+}
 
 function saveCart() {
     window.localStorage.setItem('candleCart', JSON.stringify(cart));
@@ -329,40 +418,16 @@ function setupStaticListeners() {
     if (closeCartBtn) closeCartBtn.addEventListener('click', () => toggleCart(false));
     if (cartOverlay) cartOverlay.addEventListener('click', () => toggleCart(false));
     
-    // TRACKING DE WHATSAPP (GA4)
     if (checkoutWhatsappBtn) {
         checkoutWhatsappBtn.addEventListener('click', () => {
-            // 1. Enviar evento a GA4
             if (typeof gtag === 'function') {
-                gtag('event', 'whatsapp_click', {
-                    event_category: 'conversion',
-                    event_label: 'checkout_whatsapp',
-                    value: 1,
-                    currency: 'COP'
-                });
-                console.log('GA4: Click en WhatsApp (checkout) trackeado');
+                gtag('event', 'whatsapp_click', { event_category: 'conversion', event_label: 'checkout_whatsapp', value: 1 });
             }
-
-            // 2. Abrir WhatsApp
             handleWhatsappCheckout();
         });
     }
 }
 
-// -------------------------------------------------------------
-// INICIALIZACIÓN
-// -------------------------------------------------------------
-
-window.Cart = {
-    addToCart,
-    updateCartQuantity,
-    removeItemById,
-    toggleCart,
-    handleWhatsappCheckout,
-    formatPriceCOP,
-    alertUser,
-    updateCartUI,
-};
-
+window.Cart = { addToCart, updateCartQuantity, removeItemById, toggleCart, handleWhatsappCheckout, formatPriceCOP, alertUser, updateCartUI };
 setupStaticListeners();
 updateCartUI();

@@ -1,99 +1,34 @@
 [
   {
-    "id": "vela-anis",
-    "name": "Vela Anís",
-    "description": "El envase Anís eleva tu experiencia olfativa. Su diseño moderno y particular garantiza una excelente difusión del aroma, fusionando la elegancia del cemento con la calidez de la cera de soya.",
-    "price": 35000,
-    "images": [
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141308/anis_amarillo_ftb5xv.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141269/anis_rojo_iekufj.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762714066/anis_blanco_vlnxmr.webp"
-    ],
-    "category": "Cemento",
-    "aroma": ["Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "rojo-rojo",
-        "label": "Cemento Rojo y cera Rojo",
-        "cemento": "Rojo",
-        "cera": "Rojo",
-        "image": "anis_rojo_iekufj.webp"
-      },
-      {
-        "id": "blanco-blanco",
-        "label": "Cemento Blanco y cera Blanco",
-        "cemento": "Blanco",
-        "cera": "Blanco",
-        "image": "anis_blanco_vlnxmr.webp"
-      },
-      {
-        "id": "natural-azul",
-        "label": "Cemento Natural y cera Azul",
-        "cemento": "Natural",
-        "cera": "Azul",
-        "image": "anis_amarillo_ftb5xv.webp"
-      }
-    ],
-    "stock_variations": {
-      "rojo-rojo-Cafe Mocka": 2,
-      "blanco-blanco-Durazno": 2,
-      "natural-azul-Bambú": 1
-    },
-    "stock": 5,
-    "on_sale": false,
-    "on_sale_price": 32000,
-    "cantidad_cera": 125
-  },
-  {
     "id": "Vela Flama",
     "name": "Vela Flama",
     "description": "Flama te invita a la calidez. Su estética de cemento única y dinámica contrasta con la suavidad de la soya, creando el ambiente perfecto para disfrutar de fragancias intensas y reconfortantes.",
     "price": 35000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141079/flama_amarillo_tiioli.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141079/flama_amarillo02_clxttw.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141079/flama_rojo_wyi6v7.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141079/flama_blanco_nrnymc.webp"
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141079/flama_blanco_nrnymc.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600725/AOB_8859_okv7mv.jpg",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600704/AOB_8860_vo6fvt.jpg"
     ],
     "category": "Cemento",
-    "aroma": ["Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "amarillo-naranja",
-        "label": "Cemento Amarillo y cera Naranja",
-        "cemento": "Amarillo",
-        "cera": "Naranja",
-        "image": "flama_amarillo_tiioli.webp"
-      },
-      {
-        "id": "blanco-azul",
-        "label": "Cemento Blanco y cera Azul",
-        "cemento": "Blanco",
-        "cera": "Azul",
-        "image": "flama_blanco_nrnymc.webp"
-      },
-      {
-        "id": "natural-blanco",
-        "label": "Cemento Natural y cera Blanco",
-        "cemento": "Natural",
-        "cera": "Blanco",
-        "image": "flama_amarillo02_clxttw.webp"
-      },
-      {
-        "id": "rojo-blanco",
-        "label": "Cemento Rojo y cera Blanco",
-        "cemento": "Rojo",
-        "cera": "Blanco",
-        "image": "flama_rojo_wyi6v7.webp"
-      }
-    ],
-    "stock_variations": {
-      "amarillo-naranja-Cafe Mocka": 1,
-      "blanco-azul-Bambú": 4,
-      "natural-blanco-Durazno": 1,
-      "rojo-blanco-Durazno": 2
+    "aroma": ["Bambú", "Cafe Mocka", "Durazno"],
+    "barcodes": {
+      "Flama_Amarillo_Naranja_Cafe": "amarillo-naranja-Cafe Mocka",
+      "Flama_Blanco_Azul_Bambu": "blanco-azul-Bambú",
+      "Flama_Rojo_Blanco_Durazno": "rojo-blanco-Durazno",
+      "Flama_Amarillo_Rojo_Durazno": "amarillo-rojo-Durazno"
     },
-    "stock": 8,
+    "combinaciones": [
+      { "id": "amarillo-naranja", "label": "Cemento amarillo y cera naranja", "cemento": "Amarillo", "cera": "Naranja", "image": "flama_amarillo_tiioli.webp" },
+      { "id": "blanco-azul", "label": "Cemento blanco y cera azul", "cemento": "Blanco", "cera": "Azul", "image": "flama_blanco_nrnymc.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanca", "cemento": "Rojo", "cera": "Blanco", "image": "flama_rojo_wyi6v7.webp" },
+      { "id": "amarillo-blanco", "label": "Cemento amarillo y cera blanco", "cemento": "Amarillo", "cera": "Blanco", "image": "flama_amarillo_tiioli.webp" }
+    ],
+    "stock_variations": { "amarillo-naranja-Cafe Mocka": 1, "blanco-azul-Bambú": 2, "rojo-blanco-Durazno": 2, "amarillo-rojo-Durazno": 1 },
+    "stock": 6,
     "on_sale": false,
     "on_sale_price": 31000,
     "cantidad_cera": 110
@@ -103,51 +38,32 @@
     "name": "Vela Jarrón",
     "description": "La base Jarrón es la máxima expresión de simplicidad sofisticada en cemento. Un diseño atemporal que permite que el aroma de la soya sea el protagonista absoluto en tu ambiente.",
     "price": 36000,
+    "is_new": false,
     "images": [
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141054/jarron_vacio_dsoypn.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600701/AOB_8864_thha0i.jpg",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141054/jarron_amarillo_yhrivt.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141054/jarron_blanco_pk2s4k.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141054/jarron_rojo_ub39ca.webp"
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600702/AOB_8866_iq6pa2.jpg"
     ],
     "category": "Cemento",
-    "aroma": ["Berries", "Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "blanco-verde",
-        "label": "Cemento Blanco y cera Verde",
-        "cemento": "Blanco",
-        "cera": "Verde",
-        "image": "jarron_blanco_pk2s4k.webp"
-      },
-      {
-        "id": "rojo-rojo",
-        "label": "Cemento Rojo y cera Rojo",
-        "cemento": "Rojo",
-        "cera": "Rojo",
-        "image": "jarron_rojo_ub39ca.webp"
-      },
-      {
-        "id": "natural-rojo",
-        "label": "Cemento Natural y cera Rojo",
-        "cemento": "Natural",
-        "cera": "Rojo",
-        "image": "jarron_amarillo_yhrivt.webp"
-      },
-      {
-        "id": "amarillo-rojo",
-        "label": "Cemento Amarillo y cera Rojo",
-        "cemento": "Amarillo",
-        "cera": "Rojo",
-        "image": "jarron_amarillo_yhrivt.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-verde-Coco & Vainilla": 2,
-      "rojo-rojo-Bambú": 2,
-      "natural-rojo-Cafe Mocka": 1,
-      "amarillo-rojo-Durazno": 1
+    "aroma": ["Coco & Vainilla","Cafe Mocka", "Durazno"],
+    "barcodes": {
+      "Jarron_Blanco_Verde_Coco": "blanco-verde-Coco & Vainilla",
+      "Jarron_Natural_Blanco_Durazno": "natural-blanco-Durazno",
+      "Jarron_Rojo_Blanco_Durazno": "rojo-blanco-Durazno",
+      "Jarron_Amarillo_Rojo_Durazno": "amarillo-rojo-Durazno",
+      "Jarron_Amarillo_Blanco_Durazno": "amarillo-blanco-Durazno"
     },
-    "stock": 6,
+    "combinaciones": [
+      { "id": "blanco-verde", "label": "Cemento blanco y cera verde", "cemento": "Blanco", "cera": "Verde", "image": "jarron_blanco_pk2s4k.webp" },
+      { "id": "natural-blanco", "label": "Cemento natural y cera blanco", "cemento": "Natural", "cera": "Blanco", "image": "jarron_blanco_pk2s4k.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanca", "cemento": "Rojo", "cera": "Blanco", "image": "jarron_rojo_ub39ca.webp" },
+      { "id": "natural-naranja", "label": "Cemento natural y cera rojo", "cemento": "Natural", "cera": "Naranja", "image": "jarron_amarillo_yhrivt.webp" },
+      { "id": "amarillo-rojo", "label": "Cemento amarillo y cera rojo", "cemento": "Amarillo", "cera": "Rojo", "image": "jarron_amarillo_yhrivt.webp" },
+      { "id": "amarillo-blanco", "label": "Cemento amarillo y cera blanco", "cemento": "Amarillo", "cera": "Blanco", "image": "jarron_amarillo_yhrivt.webp" }
+    ],
+    "stock_variations": { "blanco-verde-Coco & Vainilla": 1, "natural-blanco-Durazno": 1, "rojo-blanco-Durazno": 1, "amarillo-rojo-Durazno": 1, "amarillo-blanco-Durazno": 1 },
+    "stock": 5,
     "on_sale": false,
     "on_sale_price": 33000,
     "cantidad_cera": 108
@@ -155,44 +71,30 @@
   {
     "id": "vela-nudo",
     "name": "Vela Nudo",
-    "description": "El lazo indisoluble entre la estética artesanal del cemento y el viaje olfativo que ofrece nuestra soya. Una pieza única diseñada para anudar los mejores aromas a tu espacio.",
+    "description": "El lazo indisoluble entre la estética artesanal del cemento y el viaje olfativo que ofrece nuestra soya.",
     "price": 15000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140988/nudo_amarillo_xrwtdx.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140988/nudo_blanco_pugjmm.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140988/nudo_rojo_nukzp7.webp"
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140988/nudo_rojo_nukzp7.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600661/AOB_8872_q8ocws.jpg",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600660/AOB_8871_v02bnk.jpg"
     ],
     "category": "Cemento",
-    "aroma": ["Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "blanco-verde",
-        "label": "Cemento Blanco y cera Verde",
-        "cemento": "Blanco",
-        "cera": "Verde",
-        "image": "nudo_blanco_pugjmm.webp"
-      },
-      {
-        "id": "natural-rojo",
-        "label": "Cemento Natural y cera Rojo",
-        "cemento": "Natural",
-        "cera": "Rojo",
-        "image": "nudo_amarillo_xrwtdx.webp"
-      },
-      {
-        "id": "rojo-blanco",
-        "label": "Cemento Rojo y cera Blanco",
-        "cemento": "Rojo",
-        "cera": "Blanco",
-        "image": "nudo_rojo_nukzp7.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-verde-Coco & Vainilla": 6,
-      "natural-rojo-Durazno": 2,
-      "rojo-blanco-Bambú": 4
+    "aroma": ["Coco & Vainilla","Durazno"],
+    "barcodes": {
+      "Nudo_Blanco_Verde_Coco": "blanco-verde-Coco & Vainilla",
+      "Nudo_Blanco_Natural_Durazno": "blanco-Natural-Durazno"
     },
-    "stock": 12,
+    "combinaciones": [
+      { "id": "blanco-verde", "label": "Cemento blanco y cera verde", "cemento": "Blanco", "cera": "Verde", "image": "nudo_blanco_pugjmm.webp" },
+      { "id": "natural-rojo", "label": "Cemento natural y cera rojo", "cemento": "Natural", "cera": "Rojo", "image": "nudo_amarillo_xrwtdx.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanco", "cemento": "Rojo", "cera": "Blanco", "image": "nudo_rojo_nukzp7.webp" },
+      { "id": "natural-blanco", "label": "Cemento natural y cera blanco", "cemento": "Natural", "cera": "Blanco", "image": "nudo_blanco_xrwtdx.webp" }
+    ],
+    "stock_variations": { "blanco-verde-Coco & Vainilla": 4, "blanco-Natural-Durazno": 6 },
+    "stock": 10,
     "on_sale": false,
     "on_sale_price": 12000,
     "cantidad_cera": 18
@@ -200,44 +102,27 @@
   {
     "id": "vela-lazo",
     "name": "Vela Lazo",
-    "description": "Desata la fragancia con Lazo. Su base de cemento, que evoca una forma suavemente abrazada, asegura una dispersión de aroma pura y constante. Un diseño que cautiva y un perfume que calma.",
+    "description": "Desata la fragancia con Lazo. Su base de cemento asegura una dispersión de aroma pura y constante.",
     "price": 31000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141017/lazo1_xpirji.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141017/lazo_blanco_wazmrv.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141017/lazo_rojo_e5rzr1.webp"
     ],
     "category": "Cemento",
-    "aroma": ["Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "blanco-verde",
-        "label": "Cemento Blanco y cera Verde",
-        "cemento": "Blanco",
-        "cera": "Verde",
-        "image": "lazo_blanco_wazmrv.webp"
-      },
-      {
-        "id": "natural-rojo",
-        "label": "Cemento Natural y cera Rojo",
-        "cemento": "Natural",
-        "cera": "Rojo",
-        "image": "lazo1_xpirji.webp"
-      },
-      {
-        "id": "rojo-rojo",
-        "label": "Cemento Rojo y cera Rojo",
-        "cemento": "Rojo",
-        "cera": "Rojo",
-        "image": "lazo_rojo_e5rzr1.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-verde-Coco & Vainilla": 4,
-      "natural-rojo-Durazno": 1,
-      "rojo-rojo-Bambú": 2
+    "aroma": ["Coco & Vainilla", "Durazno"],
+    "barcodes": {
+      "Lazo_Blanco_Verde_Coco": "blanco-verde-Coco & Vainilla",
+      "Lazo_Rojo_Blanco_Durazno": "rojo-blaco-Durazno"
     },
-    "stock": 7,
+    "combinaciones": [
+      { "id": "blanco-verde", "label": "Cemento blanco y cera verde", "cemento": "Blanco", "cera": "Verde", "image": "lazo_blanco_wazmrv.webp" },
+      { "id": "natural-rojo", "label": "Cemento natural y cera rojo", "cemento": "Natural", "cera": "Rojo", "image": "lazo1_xpirji.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanca", "cemento": "Rojo", "cera": "Blanco", "image": "lazo_rojo_e5rzr1.webp" }
+    ],
+    "stock_variations": { "blanco-verde-Coco & Vainilla": 2, "rojo-blaco-Durazno": 1 },
+    "stock": 3,
     "on_sale": false,
     "on_sale_price": 28000,
     "cantidad_cera": 68
@@ -245,143 +130,84 @@
   {
     "id": "vela-estrella",
     "name": "Vela Estrella",
-    "description": "Estrella: El punto focal de tu decoración. Esta base geométrica de cemento exalta el aroma y convierte el encendido en un ritual único, brillando con la pureza de la soya y fragancias estelares.",
+    "description": "Estrella: El punto focal de tu decoración. Esta base geométrica de cemento exalta el aroma.",
     "price": 37000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141103/estrella_amarillo_msypwk.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141103/estrella_blanco_kjmdyh.webp"
     ],
-    "category": "Vidrio",
-    "aroma": ["Durazno", "Bambú"],
-    "combinaciones": [
-      {
-        "id": "blanco-rojo",
-        "label": "Cemento Blanco y cera Rojo",
-        "cemento": "Blanco",
-        "cera": "Rojo",
-        "image": "estrella_amarillo_msypwk.webp"
-      },
-      {
-        "id": "rojo-blanco",
-        "label": "Cemento Rojo y cera Blanco",
-        "cemento": "Rojo",
-        "cera": "Blanco",
-        "image": "estrella_blanco_kjmdyh.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-rojo-Durazno": 3,
-      "rojo-blanco-Bambú": 2
+    "category": "Cemento",
+    "aroma": ["Durazno"],
+    "barcodes": {
+      "Estrella_Blanco_Rojo_Durazno": "blanco-rojo-Durazno",
+      "Estrella_Rojo_Blanco_Durazno": "rojo-blanco-Durazno",
+      "Estrella_Natural_Blanco_Durazno": "natural-blanco-Durazno"
     },
-    "stock": 5,
+    "combinaciones": [
+      { "id": "blanco-rojo", "label": "Cemento blanco y cera rojo", "cemento": "Blanco", "cera": "Rojo", "image": "estrella_amarillo_msypwk.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanco", "cemento": "Rojo", "cera": "Blanco", "image": "estrella_blanco_kjmdyh.webp" },
+      { "id": "natural-blanco", "label": "Cemento natural y cera blanco", "cemento": "Natural", "cera": "Blanco", "image": "estrella_blanco_kjmdyh.webp" }
+    ],
+    "stock_variations": { "blanco-rojo-Durazno": 0, "rojo-blanco-Durazno": 0, "natural-blanco-Durazno": 1 },
+    "stock": 1,
     "on_sale": false,
     "on_sale_price": 34000,
     "cantidad_cera": 145
   },
   {
-    "id": "vidrio-recto",
-    "name": "Vela Vidrio Recto",
-    "description": "Su diseño minimalista y elegante permite apreciar la pureza de la cera mientras se integra con facilidad en cualquier espacio, aportando un toque moderno y sofisticado.",
-    "price": 39000,
-    "images": [
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140847/recto_verde_wpikzx.webp"
-    ],
-    "category": "Vidrio",
-    "aroma": ["Cafe Mocka"],
-    "combinaciones": [
-      {
-        "id": "na-verde",
-        "label": "Cera Verde",
-        "cemento": "N/A",
-        "cera": "Verde",
-        "image": "recto_verde_wpikzx.webp"
-      }
-    ],
-    "stock_variations": {
-      "na-verde-Cafe Mocka": 1
-    },
-    "stock": 1,
-    "on_sale": true,
-    "on_sale_price": 36000,
-    "cantidad_cera": 105
-  },
-  {
     "id": "vela-tapa-corcho",
     "name": "Vela Corcho",
-    "description": "El contraste entre el vidrio y la tapa de corcho ofrece un estilo natural y acogedor, ideal para quienes buscan un detalle decorativo con carácter artesanal y funcional.",
+    "description": "El contraste entre el vidrio y la tapa de corcho ofrece un estilo natural y acogedor.",
     "price": 30000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141123/corcho_verde_vdoerc.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141163/corcho_lila_qpduso.webp"
     ],
     "category": "Vidrio",
     "aroma": ["Cafe Mocka", "Coco"],
-    "combinaciones": [
-      {
-        "id": "na-verde",
-        "label": "Cera Verde",
-        "cemento": "N/A",
-        "cera": "Verde",
-        "image": "corcho_verde_vdoerc.webp"
-      },
-      {
-        "id": "na-lila",
-        "label": "Cera Lila",
-        "cemento": "N/A",
-        "cera": "Lila",
-        "image": "corcho_lila_qpduso.webp"
-      }
-    ],
-    "stock_variations": {
-      "na-verde-Cafe Mocka": 1,
-      "na-lila-Coco": 1
+    "barcodes": {
+        "Corcho_Verde_Cafe": "na-verde-Cafe Mocka",
+        "Corcho_Lila_Coco": "na-lila-Coco"
     },
+    "combinaciones": [
+      { "id": "na-verde", "label": "Cera verde", "cemento": "N/A", "cera": "Verde", "image": "corcho_verde_vdoerc.webp" },
+      { "id": "na-lila", "label": "Cera lila", "cemento": "N/A", "cera": "Lila", "image": "corcho_lila_qpduso.webp" }
+    ],
+    "stock_variations": { "na-verde-Cafe Mocka": 1, "na-lila-Coco": 1 },
     "stock": 2,
-    "on_sale": false,
+    "on_sale": true,
     "on_sale_price": 28000,
     "cantidad_cera": 80
   },
   {
     "id": "vela-rombo",
     "name": "Vela Rombo",
-    "description": "Rombo: Una joya de cemento para tu espacio. El diseño angular y moderno resalta la pureza y el rendimiento aromático superior de nuestra vela de soya. Belleza única en cada faceta.",
+    "description": "Rombo: Una joya de cemento para tu espacio. El diseño angular resalta la pureza de la soya.",
     "price": 30000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140828/rombo_blanco02_pyayqq.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140828/rombo_rojo_czu0gs.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140828/rombo_blanco_upbxmp.webp"
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140828/rombo_blanco_upbxmp.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600727/AOB_8854_biln5p.jpg",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600730/AOB_8851_gybpjc.jpg"
     ],
     "category": "Cemento",
-    "aroma": ["Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "blanco-azul",
-        "label": "Cemento Blanco y cera Azul",
-        "cemento": "Blanco",
-        "cera": "Azul",
-        "image": "rombo_blanco02_pyayqq.webp"
-      },
-      {
-        "id": "natural-verde",
-        "label": "Cemento Natural y cera Verde",
-        "cemento": "Natural",
-        "cera": "Verde",
-        "image": "rombo_blanco_upbxmp.webp"
-      },
-      {
-        "id": "rojo-rojo",
-        "label": "Cemento Rojo y cera Rojo",
-        "cemento": "Rojo",
-        "cera": "Rojo",
-        "image": "rombo_rojo_czu0gs.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-azul-Bambú": 5,
-      "natural-verde-Coco & Vainilla": 2,
-      "rojo-rojo-Durazno": 4
+    "aroma": ["Coco & Vainilla", "Bambú", "Durazno"],
+    "barcodes": {
+        "Rombo_Blanco_Azul_Bambu": "blanco-azul-Bambú",
+        "Rombo_Natural_Verde_Coco": "natural-verde-Coco & Vainilla",
+        "Rombo_Rojo_Blanco_Durazno": "rojo-blanco-Durazno"
     },
-    "stock": 11,
+    "combinaciones": [
+      { "id": "blanco-azul", "label": "Cemento blanco y cera azul", "cemento": "Blanco", "cera": "Azul", "image": "rombo_blanco02_pyayqq.webp" },
+      { "id": "natural-verde", "label": "Cemento natural y cera verde", "cemento": "Natural", "cera": "Verde", "image": "rombo_blanco_upbxmp.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanco", "cemento": "Rojo", "cera": "Blanco", "image": "rombo_rojo_czu0gs.webp" }
+    ],
+    "stock_variations": { "blanco-azul-Bambú": 5, "natural-verde-Coco & Vainilla": 1, "rojo-blanco-Durazno": 3 },
+    "stock": 9,
     "on_sale": false,
     "on_sale_price": 28000,
     "cantidad_cera": 53
@@ -389,44 +215,31 @@
   {
     "id": "vela-circo",
     "name": "Vela Circo",
-    "description": "Déjate llevar por Circo. Una forma de cemento singular y divertida que contiene la promesa de nuestra cera de soya: aromas vibrantes y una quemadura limpia. Tu centro de atención olfativo.",
+    "description": "Déjate llevar por Circo. Una forma de cemento singular y divertida.",
     "price": 31000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141206/circo_blanco02_honpes.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141206/circo_blanco2_yy0pzl.webp",
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141206/circo_rojo_ykycjl.webp"
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141206/circo_rojo_ykycjl.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600704/AOB_8862_k6enpp.jpg",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600703/AOB_8863_et0b9t.jpg"
     ],
     "category": "Cemento",
-    "aroma": ["Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "blanco-azul",
-        "label": "Cemento Blanco y cera Azul",
-        "cemento": "Blanco",
-        "cera": "Azul",
-        "image": "circo_blanco02_honpes.webp"
-      },
-      {
-        "id": "natural-verde",
-        "label": "Cemento Natural y cera Verde",
-        "cemento": "Natural",
-        "cera": "Verde",
-        "image": "circo_blanco2_yy0pzl.webp"
-      },
-      {
-        "id": "rojo-rojo",
-        "label": "Cemento Rojo y cera Rojo",
-        "cemento": "Rojo",
-        "cera": "Rojo",
-        "image": "circo_rojo_ykycjl.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-azul-Bambú": 8,
-      "natural-verde-Coco & Vainilla": 2,
-      "rojo-rojo-Durazno": 4
+    "aroma": ["Coco & Vainilla", "Bambú", "Durazno"],
+    "barcodes": {
+        "Circo_Blanco_Azul_Bambu": "blanco-azul-Bambú",
+        "Circo_Natural_Azul_Bambu": "natural-azul-Bambú",
+        "Circo_Natural_Verde_Coco": "natural-verde-Coco & Vainilla",
+        "Circo_Rojo_Blanco_Durazno": "rojo-blanco-Durazno"
     },
-    "stock": 14,
+    "combinaciones": [
+      { "id": "blanco-azul", "label": "Cemento blanco y cera azul", "cemento": "Blanco", "cera": "Azul", "image": "circo_blanco02_honpes.webp" },
+      { "id": "natural-azul", "label": "Cemento natural y cera azul", "cemento": "Natural", "cera": "Azul", "image": "circo_blanco02_honpes.webp" },
+      { "id": "natural-verde", "label": "Cemento natural y cera verde", "cemento": "Natural", "cera": "Verde", "image": "circo_blanco2_yy0pzl.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanco", "cemento": "Rojo", "cera": "Blanco", "image": "circo_rojo_ykycjl.webp" }
+    ],
+    "stock_variations": { "blanco-azul-Bambú": 1, "natural-azul-Bambú": 3, "natural-verde-Coco & Vainilla": 2, "rojo-blanco-Durazno": 3 },
+    "stock": 9,
     "on_sale": false,
     "on_sale_price": 29000,
     "cantidad_cera": 85
@@ -434,44 +247,30 @@
   {
     "id": "vela-parlante",
     "name": "Vela parlante",
-    "description": "Sube el volumen a tu relajación con Parlante. Su estética de cemento inspirada en la acústica no solo decora, sino que ayuda a proyectar y amplificar el aroma exquisito de nuestra soya.",
+    "description": "Sube el volumen a tu relajación con Parlante.",
     "price": 32000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140881/parlante_blanco02_cizfvr.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140881/parlante_rojo_pyj7oi.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140881/parlante_vacio_uf1lli.webp"
     ],
     "category": "Cemento",
-    "aroma": ["Coco & Vainilla", "Bambú", "Cafe Mocka", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "blanco-blanco",
-        "label": "Cemento Blanco y cera Blanco",
-        "cemento": "Blanco",
-        "cera": "Blanco",
-        "image": "parlante_blanco02_cizfvr.webp"
-      },
-      {
-        "id": "natural-verde",
-        "label": "Cemento Natural y cera Verde",
-        "cemento": "Natural",
-        "cera": "Verde",
-        "image": "parlante_vacio_uf1lli.webp"
-      },
-      {
-        "id": "rojo-rojo",
-        "label": "Cemento Rojo y cera Rojo",
-        "cemento": "Rojo",
-        "cera": "Rojo",
-        "image": "parlante_rojo_pyj7oi.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-blanco-Durazno": 3,
-      "natural-verde-Coco & Vainilla": 1,
-      "rojo-rojo-Bambú": 2
+    "aroma": ["Coco & Vainilla", "Durazno"],
+    "barcodes": {
+        "Parlante_Blanco_Rojo_Durazno": "blanco-rojo-Durazno",
+        "Parlante_Natural_Verde_Coco": "natural-verde-Coco & Vainilla",
+        "Parlante_Rojo_Blanco_Durazno": "rojo-blanco-Durazno",
+        "Parlante_Amarillo_Blanco_Durazno": "amarillo-blanco-Durazno"
     },
-    "stock": 6,
+    "combinaciones": [
+      { "id": "blanco-rojo", "label": "Cemento blanco y cera roja", "cemento": "Blanco", "cera": "Roja", "image": "parlante_blanco02_cizfvr.webp" },
+      { "id": "natural-verde", "label": "Cemento natural y cera verde", "cemento": "Natural", "cera": "Verde", "image": "parlante_vacio_uf1lli.webp" },
+      { "id": "rojo-blanco", "label": "Cemento rojo y cera blanca", "cemento": "Rojo", "cera": "Blanco", "image": "parlante_rojo_pyj7oi.webp" },
+      { "id": "amarillo-blanco", "label": "Cemento amarillo y cera blanco", "cemento": "Amarillo", "cera": "Blanco", "image": "parlante_blanco02_cizfvr.webp" }
+    ],
+    "stock_variations": { "natural-verde-Coco & Vainilla": 1, "rojo-blanco-Durazno": 2, "amarillo-blanco-Durazno": 1 },
+    "stock": 4,
     "on_sale": false,
     "on_sale_price": 29000,
     "cantidad_cera": 75
@@ -479,43 +278,21 @@
   {
     "id": "vela-tina",
     "name": "Vela Tina",
-    "description": "Sumérgete en el aroma profundo que emana de Tina. Esta base amplia y de líneas suaves de cemento permite que la cera de soya libere su fragancia con intensidad y una quemadura extensa.",
+    "description": "Sumérgete en el aroma profundo que emana de Tina.",
     "price": 22000,
+    "is_new": false,
     "images": [
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140812/tina_rojo_bdfynp.webp",
       "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762140812/tina_amarillo_ptfgtw.webp"
     ],
     "category": "Cemento",
-    "aroma": ["Bambú", "Durazno"],
-    "combinaciones": [
-      {
-        "id": "blanco-blanco",
-        "label": "Cemento Blanco y cera Blanco",
-        "cemento": "Blanco",
-        "cera": "Blanco",
-        "image": "tina_amarillo_ptfgtw.webp"
-      },
-      {
-        "id": "rojo-blanco",
-        "label": "Cemento Rojo y cera Blanco",
-        "cemento": "Rojo",
-        "cera": "Blanco",
-        "image": "tina_rojo_bdfynp.webp"
-      },
-      {
-        "id": "natural-blanco",
-        "label": "Cemento Natural y cera Blanco",
-        "cemento": "Natural",
-        "cera": "Blanco",
-        "image": "tina_amarillo_ptfgtw.webp"
-      }
-    ],
-    "stock_variations": {
-      "blanco-blanco-Bambú": 2,
-      "rojo-blanco-Durazno": 22,
-      "natural-blanco-Arena": 1
+    "aroma": ["Bambú", "Durazno", "Arena"],
+    "barcodes": {
+        "Tina_Rojo_Blanco_Durazno": "rojo-blanco-Durazno"
     },
-    "stock": 5,
+    "combinaciones": [ { "id": "rojo-blanco", "label": "Cemento rojo y cera blanca", "cemento": "Rojo", "cera": "Blanco", "image": "tina_amarillo_ptfgtw.webp" } ],
+    "stock_variations": { "rojo-blanco-Durazno": 1 },
+    "stock": 1,
     "on_sale": false,
     "on_sale_price": 19000,
     "cantidad_cera": 125
@@ -525,107 +302,287 @@
     "name": "Base Hexagonal",
     "description": "Tu vela en el pedestal ideal: nuestras bases de cemento exaltan su belleza con diseño.",
     "price": 15000,
-    "images": [
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141250/base_hexagonal2_wi2kxh.webp"
+    "is_new": false,
+    "images": [ 
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141250/base_hexagonal2_wi2kxh.webp", 
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1775600661/AOB_8875_fjitu3.jpg" 
     ],
     "category": "Cemento",
     "aroma": [],
-    "combinaciones": [
-      {
-        "id": "amarillo",
-        "label": "Cemento Amarillo",
-        "cemento": "Amarillo",
-        "cera": "N/A",
-        "image": "base_hexagonal2_wi2kxh.webp"
-      },
-      {
-        "id": "rojo",
-        "label": "Cemento Rojo",
-        "cemento": "Rojo",
-        "cera": "N/A",
-        "image": "base_hexagonal2_wi2kxh.webp"
-      },
-      {
-        "id": "blanco",
-        "label": "Cemento Blanco",
-        "cemento": "Blanco",
-        "cera": "N/A",
-        "image": "base_hexagonal2_wi2kxh.webp"
-      },
-      {
-        "id": "natural",
-        "label": "Cemento Natural",
-        "cemento": "Natural",
-        "cera": "N/A",
-        "image": "base_hexagonal2_wi2kxh.webp"
-      },
-      {
-        "id": "marrón",
-        "label": "Cemento Marrón",
-        "cemento": "Marrón",
-        "cera": "N/A",
-        "image": "base_hexagonal2_wi2kxh.webp"
-      }
-    ],
-    "stock_variations": {
-      "amarillo": 1,
-      "rojo": 2,
-      "blanco": 3,
-      "natural": 1,
-      "marrón": 1
+    "barcodes": {
+        "Base_Hex_Amarillo": "amarillo",
+        "Base_Hex_Rojo": "rojo",
+        "Base_Hex_Blanco": "blanco",
+        "Base_Hex_Natural": "natural",
+        "Base_Hex_Marron": "marrón"
     },
+    "combinaciones": [
+      { "id": "amarillo", "label": "Cemento amarillo", "cemento": "Amarillo", "cera": "N/A", "image": "base_hexagonal2_wi2kxh.webp" },
+      { "id": "rojo", "label": "Cemento rojo", "cemento": "Rojo", "cera": "N/A", "image": "base_hexagonal2_wi2kxh.webp" },
+      { "id": "blanco", "label": "Cemento blanco", "cemento": "Blanco", "cera": "N/A", "image": "base_hexagonal2_wi2kxh.webp" },
+      { "id": "natural", "label": "Cemento natural", "cemento": "Natural", "cera": "N/A", "image": "base_hexagonal2_wi2kxh.webp" },
+      { "id": "marrón", "label": "Cemento marrón", "cemento": "Marrón", "cera": "N/A", "image": "base_hexagonal2_wi2kxh.webp" }
+    ],
+    "stock_variations": { "amarillo": 0, "rojo": 1, "blanco": 1, "natural": 3, "marrón": 0 },
     "stock": 8,
-    "on_sale": false,
-    "on_sale_price": 12000
+    "on_sale": true,
+    "on_sale_price": 10000
   },
   {
     "id": "base-ovalo",
     "name": "Base Ovalo",
-    "description": "Tu vela en el pedestal ideal: nuestras bases de cemento exaltan su belleza con diseño.",
+    "description": "Tu vela en el pedestal ideal.",
     "price": 15000,
+    "is_new": false,
+    "images": [ "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141230/base_ovalo_d73i82.webp" ],
+    "category": "Cemento",
+    "aroma": [],
+    "barcodes": {
+        "Base_Ovalo_Amarillo": "amarillo",
+        "Base_Ovalo_Rojo": "rojo",
+        "Base_Ovalo_Blanco": "blanco",
+        "Base_Ovalo_Natural": "natural"
+    },
+    "combinaciones": [
+      { "id": "amarillo", "label": "Cemento amarillo", "cemento": "Amarillo", "cera": "N/A", "image": "base_ovalo_d73i82.webp" },
+      { "id": "rojo", "label": "Cemento rojo", "cemento": "Rojo", "cera": "N/A", "image": "base_ovalo_d73i82.webp" },
+      { "id": "blanco", "label": "Cemento blanco", "cemento": "Blanco", "cera": "N/A", "image": "base_ovalo_d73i82.webp" },
+      { "id": "natural", "label": "Cemento natural", "cemento": "Natural", "cera": "N/A", "image": "base_ovalo_d73i82.webp" }
+    ],
+    "stock_variations": { "amarillo": 1, "rojo": 3, "blanco": 1, "natural": 4 },
+    "stock": 10,
+    "on_sale": true,
+    "on_sale_price": 10000
+  },
+  {
+    "id": "base-ondulada",
+    "name": "Base Ondulada",
+    "description": "Suavidad y movimiento.",
+    "price": 15000,
+    "is_new": false,
+    "images": [ "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365436/bandeja_ondulada_cr2ndu.webp" ],
+    "category": "Cemento",
+    "aroma": [],
+    "barcodes": {
+        "Bandeja_Ondu_Natural": "natural"
+    },
+    "combinaciones": [
+      { "id": "rojo", "label": "Cemento rojo", "cemento": "Rojo", "cera": "N/A", "image": "bandeja_ondulada_cr2ndu.webp" },
+      { "id": "blanco", "label": "Cemento blanco", "cemento": "Blanco", "cera": "N/A", "image": "bandeja_ondulada_cr2ndu.webp" },
+      { "id": "natural", "label": "Cemento natural", "cemento": "Natural", "cera": "N/A", "image": "bandeja_ondulada_cr2ndu.webp" }
+    ],
+    "stock_variations": { "rojo": 0, "blanco": 0, "natural": 3, "Amarilla": 3 },
+    "stock": 6,
+    "on_sale": true,
+    "on_sale_price": 10000
+  },
+  {
+    "id": "base-arcoiris",
+    "name": "Base Arcoiris",
+    "description": "Formas curvas y colores vibrantes.",
+    "price": 15000,
+    "is_new": false,
+    "images": [ "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365436/bandeja_arcoiris_isvgxc.webp" ],
+    "category": "Cemento",
+    "aroma": [],
+    "barcodes": {
+        "Base_Arcoiris_Amarillo": "amarillo",
+        "Base_Arcoiris_Natural": "natural"
+    },
+    "combinaciones": [
+      { "id": "rojo", "label": "Cemento rojo", "cemento": "Rojo", "cera": "N/A", "image": "bandeja_arcoiris_isvgxc.webp" },
+      { "id": "blanco", "label": "Cemento blanco", "cemento": "Blanco", "cera": "N/A", "image": "bandeja_arcoiris_isvgxc.webp" },
+      { "id": "natural", "label": "Cemento natural", "cemento": "Natural", "cera": "N/A", "image": "bandeja_arcoiris_isvgxc.webp" },
+      { "id": "amarillo", "label": "Cemento amarillo", "cemento": "Amarillo", "cera": "N/A", "image": "bandeja_arcoiris_isvgxc.webp" }
+    ],
+    "stock_variations": { "rojo": 0, "blanco": 0, "amarillo": 1, "natural": 1 },
+    "stock": 2,
+    "on_sale": true,
+    "on_sale_price": 10000
+  },
+  {
+    "id": "florero",
+    "name": "Florero",
+    "description": "El pedestal perfecto para la belleza eterna.",
+    "price": 30000,
+    "is_new": false,
     "images": [
-      "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto/v1762141230/base_ovalo_d73i82.webp"
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/florero_varios_kdd8hx.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/florero_amarillo_ycla7o.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/florero_blanco_cpesrl.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/florero_rojo_ac0sev.webp"
     ],
     "category": "Cemento",
     "aroma": [],
-    "combinaciones": [
-      {
-        "id": "amarillo",
-        "label": "Cemento Amarillo",
-        "cemento": "Amarillo",
-        "cera": "N/A",
-        "image": "base_ovalo_d73i82.webp"
-      },
-      {
-        "id": "rojo",
-        "label": "Cemento Rojo",
-        "cemento": "Rojo",
-        "cera": "N/A",
-        "image": "base_ovalo_d73i82.webp"
-      },
-      {
-        "id": "blanco",
-        "label": "Cemento Blanco",
-        "cemento": "Blanco",
-        "cera": "N/A",
-        "image": "base_ovalo_d73i82.webp"
-      },
-      {
-        "id": "natural",
-        "label": "Cemento Natural",
-        "cemento": "Natural",
-        "cera": "N/A",
-        "image": "base_ovalo_d73i82.webp"
-      }
-    ],
-    "stock_variations": {
-      "amarillo": 1,
-      "rojo": 3,
-      "blanco": 4,
-      "natural": 1
+    "barcodes": {
+        "Florero_Amarillo": "amarillo",
+        "Florero_Rojo": "rojo",
+        "Florero_Blanco": "blanco"
     },
-    "stock": 9,
+    "combinaciones": [
+      { "id": "amarillo", "label": "Cemento amarillo", "cemento": "Amarillo", "cera": "N/A", "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/florero_amarillo_ycla7o.webp" },
+      { "id": "rojo", "label": "Cemento rojo", "cemento": "Rojo", "cera": "N/A", "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/florero_rojo_ac0sev.webp" },
+      { "id": "blanco", "label": "Cemento blanco", "cemento": "Blanco", "cera": "N/A", "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/florero_blanco_cpesrl.webp" }
+    ],
+    "stock_variations": { "amarillo": 0, "rojo": 0, "blanco": 0 },
+    "stock": 0,
     "on_sale": false,
-    "on_sale_price": 12000
-  }
+    "on_sale_price": 27000
+  },
+  {
+    "id": "Combo-Trinidad",
+    "name": "Combo Trinidad",
+    "description": "El trío de decoración esencial.",
+    "price": 60000,
+    "is_new": false,
+    "images": [
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/combo1_amarillo_vdplls.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/combo1_blanco_pgvyql.webp",
+      "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/combo1_rojo_qgy2pb.webp"
+    ],
+    "category": "Cemento",
+    "aroma": [],
+    "barcodes": {
+        "Combo_Amarillo": "amarillo",
+        "Combo_Rojo": "rojo",
+        "Combo_Blanco": "blanco"
+    },
+    "combinaciones": [
+      { "id": "amarillo", "label": "Cemento amarillo", "cemento": "Amarillo", "cera": "N/A", "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/combo1_amarillo_vdplls.webp" },
+      { "id": "rojo", "label": "Cemento rojo", "cemento": "Rojo", "cera": "N/A", "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/combo1_rojo_qgy2pb.webp" },
+      { "id": "blanco", "label": "Cemento blanco", "cemento": "Blanco", "cera": "N/A", "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1764365435/combo1_blanco_pgvyql.webp" }
+    ],
+    "stock_variations": { "amarillo": 0, "rojo": 0, "blanco": 0 },
+    "stock": 0,
+    "on_sale": false,
+    "on_sale_price": 50000
+  },
+ {
+  "id": "Kit-Waxmelts",
+  "name": "Kit Waxmelts",
+  "description": "Kit (pebetero en ceramica, 3 velas, 150gr de waxmelts + cajita) Rodea tus espacios de calidez con un excelente aroma. Pebetero de cerámica artesanal en colores blanco y rosado (amarillo disponible en futuro). Ideal para waxmelts de durazno o bambú.",
+  "price": 60000,
+  "is_new": true,
+  "images": [
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843200/P_trio_qpnezq.jpg",
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843189/P_winnie_xogkck.jpg",
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843190/P_casa_was_tfoflw.jpg",
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843190/P_amor_p0yees.jpg",
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773846045/P_winnie_rosado_gmnown.jpg"
+  ],
+  "category": "Pebetero",
+  "aroma": ["Durazno", "Bambú", "Mixto"],
+  "barcodes": {
+    "Pebetero_Blanco1_Durazno": "pebetero1-Durazno",
+    "Pebetero_Blanco2_Durazno": "pebetero2-Durazno",
+    "Pebetero_Rosado3_Durazno": "pebetero3-Durazno",
+    "Pebetero_Rosado4_Durazno": "pebetero4-Durazno",
+    "Pebetero_Blanco1_Bambu": "pebetero1-Bambú",
+    "Pebetero_Blanco2_Bambu": "pebetero2-Bambú",
+    "Pebetero_Rosado3_Bambu": "pebetero3-Bambú",
+    "Pebetero_Rosado4_Bambu": "pebetero4-Bambú"
+  },
+  "combinaciones": [
+    {
+      "id": "P_winnie",
+      "label": "Winnie",
+      "cemento": "N/A",
+      "cera": "Blanco",
+      "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843189/P_winnie_xogkck.jpg"
+    },
+    {
+      "id": "P_colmena",
+      "label": "Colmena",
+      "cemento": "N/A",
+      "cera": "Blanco",
+      "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843200/P_trio_qpnezq.jpg"
+    },
+    {
+      "id": "P_amor",
+      "label": "Amor",
+      "cemento": "N/A",
+      "cera": "Rosado",
+      "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843190/P_amor_p0yees.jpg"
+    },
+    {
+      "id": "P_hogar",
+      "label": "Hogar",
+      "cemento": "N/A",
+      "cera": "Rosado",
+      "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1773843190/P_casa_was_tfoflw.jpg"
+    }
+  ],
+  "stock_variations": {
+    "P_winnie-Durazno": 0,
+    "P_colmena-Durazno": 2,
+    "P_amor-Durazno": 1,
+    "P_hogar-Durazno": 2,
+    "P_winnie-Bambú": 0,
+    "P_colmena-Bambú": 2,
+    "P_amor-Bambú": 1,
+    "P_hogar-Bambú": 2,
+    "P_winnie-Mixto": 0,
+    "P_colmena-Mixto": 2,
+    "P_amor-Mixto": 1,
+    "P_hogar-Mixto": 2
+  },
+  "stock": 7,
+  "on_sale": false,
+  "on_sale_price": 55000,
+  "cantidad_cera": 150
+},
+{
+  "id": "refill-waxmelts",
+  "name": "Refill Waxmelts",
+  "description": "Recarga de 150gr de waxmelts de soya para tu pebetero. Disponible en colores azul, blanco y amarillo con aromas de durazno y bambú.",
+  "price": 25000,
+  "is_new": true,
+  "images": [
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1775417392/AOB_8829_xwplhr.jpg",
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1775417393/AOB_8830_sqbn3d.jpg",
+    "https://res.cloudinary.com/du3kkvkmy/image/upload/v1775417429/AOB_8827_crgsya.jpg"
+  ],
+  "category": "Cera",
+  "aroma": ["Durazno", "Bambú"],
+  "barcodes": {
+    "Waxmelt_Blanco_Durazno": "blanco-Durazno",
+    "Waxmelt_Amarillo_Bambu": "amarillo-Bambú",
+    "Waxmelt_Azul_Bambu": "azul-Bambú"
+  },
+  "combinaciones": [
+    {
+      "id": "blanco",
+      "label": "Blanco",
+      "cemento": "N/A",
+      "cera": "Blanco",
+      "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1775417392/AOB_8829_xwplhr.jpg"
+    },
+    {
+      "id": "amarillo",
+      "label": "Amarillo",
+      "cemento": "N/A",
+      "cera": "Amarillo",
+      "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1775417393/AOB_8830_sqbn3d.jpg"
+    },
+    {
+      "id": "azul",
+      "label": "Azul",
+      "cemento": "N/A",
+      "cera": "Azul",
+      "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/v1775417429/AOB_8827_crgsya.jpg"
+    }
+  ],
+  "stock_variations": {
+    "blanco-Durazno": 1,
+    "amarillo-Durazno": 0,
+    "azul-Durazno": 0,
+    "blanco-Bambú": 0,
+    "amarillo-Bambú": 1,
+    "azul-Bambú": 1
+  },
+  "stock": 3,
+  "on_sale": false,
+  "on_sale_price": 22000,
+  "cantidad_cera": 150
+}
 ]

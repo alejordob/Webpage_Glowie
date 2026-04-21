@@ -62,7 +62,7 @@
     ],
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+57 315 6265846",
+      "telephone": "+57 301 7748623",
       "contactType": "customer service",
       "availableLanguage": "Spanish"
     }
@@ -80,7 +80,7 @@
     "description": "Velas artesanales de cera de soja natural, hechas a mano en Cali, Colombia",
     "image": "https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto,w_1200/v1762141308/anis_amarillo_ftb5xv.webp",
     "logo": "https://velasglowie.com/img/logo_glowie.png",
-    "telephone": "+57 315 6265846",
+    "telephone": "+57 301 7748623",
     "priceRange": "$$",
     "parentOrganization": {"@id": "https://velasglowie.com/#organization"},
     "address": {
@@ -97,7 +97,7 @@
     "areaServed": { "@type": "City", "name": "Cali" },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+57 315 6265846",
+      "telephone": "+57 301 7748623",
       "contactType": "sales",
       "availableLanguage": "Spanish"
     },
@@ -163,7 +163,7 @@
         "name": "¿Dónde comprar velas artesanales en Cali?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Puedes comprar velas artesanales de Glowie directamente en velasglowie.com. Hacemos entregas gratis en Cali desde $60.000 y enviamos a todo Colombia. También puedes contactarnos por WhatsApp al +57 315 6265846 para consultar sobre pedidos personalizados, velas para eventos o regalos corporativos."
+          "text": "Puedes comprar velas artesanales de Glowie directamente en velasglowie.com. Hacemos entregas gratis en Cali desde $60.000 y enviamos a todo Colombia. También puedes contactarnos por WhatsApp al +57 301 774 8623 para consultar sobre pedidos personalizados, velas para eventos o regalos corporativos."
         }
       },
       {
@@ -442,9 +442,10 @@
         <div>
           <h3 class="font-semibold text-gray-700 mb-4 text-sm uppercase tracking-wider">Contáctanos</h3>
           <p class="text-gray-500 text-sm mb-1">Cali, Valle del Cauca, Colombia</p>
-          <a href="https://wa.me/573156265846" class="text-green-600 hover:text-green-700 text-sm font-medium transition-colors">+57 315 626 5846</a>
+          <a href="https://wa.me/573017748623?text=%C2%A1Hola%2C%20Glowie%21%20Encontr%C3%A9%20su%20contacto%20en%20la%20p%C3%A1gina%20web%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20productos." class="text-green-600 hover:text-green-700 text-sm font-medium transition-colors">+57 301 774 8623</a>
+          <a href="https://www.google.com/maps/place/?q=place_id:ChIJlT6eVoXMRIwRNEaMsVnP1LA" target="_blank" class="block text-amber-600 hover:text-amber-700 text-sm font-medium transition-colors mt-2">Ver en Google Maps</a>
           <div class="flex space-x-4 mt-4">
-            <a href="https://wa.me/573156265846" target="_blank" aria-label="WhatsApp" class="text-gray-400 hover:text-green-500 transition-colors"><i class="fab fa-whatsapp text-xl"></i></a>
+            <a href="https://wa.me/573017748623" target="_blank" aria-label="WhatsApp" class="text-gray-400 hover:text-green-500 transition-colors"><i class="fab fa-whatsapp text-xl"></i></a>
             <a href="https://www.instagram.com/glowie.velas" target="_blank" aria-label="Instagram" class="text-gray-400 hover:text-pink-600 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
             <a href="https://www.facebook.com/profile.php?id=61583394446413" target="_blank" aria-label="Facebook" class="text-gray-400 hover:text-blue-600 transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
           </div>
@@ -458,7 +459,7 @@
   </footer>
 
   <!-- BOTÓN WHATSAPP FLOTANTE -->
-  <a id="whatsapp-float-btn" href="https://wa.me/573156265846?text=Hola! Estoy interesado en sus velas artesanales."
+  <a id="whatsapp-float-btn" href="https://wa.me/573017748623?text=¡Hola, Glowie! Vi su catálogo web y me gustaría consultar la disponibilidad y precios de unas velas. ¿Me podrías asesorar?"
      target="_blank" onclick="trackWhatsappFloatClick()"
      class="fixed bottom-6 right-6 bg-green-500 text-white w-16 h-16 flex items-center justify-center rounded-full shadow-xl hover:bg-green-600 transition-all duration-300 z-50 transform hover:scale-110">
     <i class="fab fa-whatsapp text-3xl"></i>
@@ -515,11 +516,16 @@
           <span id="final-total" style="color: var(--color-cinna);"></span>
         </div>
         <div id="cart-actions" class="hidden">
+          <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p class="text-xs font-semibold text-gray-700 mb-2">Completa tus datos para confirmar:</p>
+            <input type="text" id="checkout-name" placeholder="Tu nombre" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg mb-2 focus:outline-none focus:border-amber-600 transition-colors">
+            <input type="email" id="checkout-email" placeholder="Tu email" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-amber-600 transition-colors">
+          </div>
           <button id="checkout-whatsapp-btn" onclick="trackCheckoutWhatsapp()"
                   class="w-full mt-4 text-white font-bold py-3.5 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all hover:opacity-90 hover:scale-[1.01]"
                   style="background: #25D366;">
-            <i class="fab fa-whatsapp text-xl"></i>
-            <span>Enviar pedido por WhatsApp</span>
+            <i class="fas fa-check text-lg"></i>
+            <span>Confirmar pedido por WhatsApp</span>
           </button>
           <button onclick="window.Cart?.toggleCart(false)"
                   class="w-full mt-2 py-2 text-xs font-medium text-center text-gray-400 hover:text-gray-600 transition-colors">
@@ -576,7 +582,7 @@
 
   <!-- NAVEGACIÓN Y RUTAS -->
   <script>
-    const routes = { '/catalogo': 'catalog', '/ofertas': 'offers', '/tips': 'tips', '/aromas': 'aromas', '/nosotros': 'nosotros', '/': 'catalog', '': 'catalog' };
+    const routes = { '/catalogo': 'catalog', '/ofertas': 'offers', '/tips': 'tips', '/aromas': 'aromas', '/nosotros': 'nosotros', '/politica-privacidad': 'privacy', '/politica-cambios': 'changes', '/': 'catalog', '': 'catalog' };
     const BREADCRUMBS = {
       '/catalogo': [
         { position: 1, name: 'Inicio', item: 'https://velasglowie.com' },
@@ -619,6 +625,14 @@
       '/nosotros': {
         title: 'Nuestra Historia — Velas Glowie | Artesanal en Cali',
         description: 'Conoce la historia detrás de Glowie. Velas artesanales de cera de soja hechas a mano en Cali, Colombia. Fragancias naturales, proceso artesanal y amor por el detalle.'
+      },
+      '/politica-privacidad': {
+        title: 'Política de Privacidad | Glowie',
+        description: 'Política de privacidad de Glowie. Cómo protegemos tus datos y usamos Google Analytics y Meta Pixel.'
+      },
+      '/politica-cambios': {
+        title: 'Política de Cambios | Glowie',
+        description: 'Política de cambios de Glowie. Plazo, condiciones y cómo solicitar un cambio en tu vela artesanal.'
       }
     };
     function getPageNameFromPath(path) {

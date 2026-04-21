@@ -1,36 +1,83 @@
 /* Variables CSS de la Marca Glowie */
 :root {
-      /* Añadí estas variables para que los estilos en línea funcionen */
-      --color-fondo: #EFDFBB;
-      --color-gris-crema: #92ADA4;
-      --color-chai: #000000;
-      --color-casi-blanco: #FFFBF0;
-      --color-cinna: #53161D;
-    }
+  --color-fondo: #EFDFBB;
+  --color-gris-crema: #92ADA4;
+  --color-chai: #000000;
+  --color-casi-blanco: #FFFBF0;
+  --color-cinna: #53161D;
+}
 
-/* * Aquí puedes añadir cualquier CSS personalizado que no puedas lograr con Tailwind.
- * Por ahora, lo mantenemos simple y delegamos casi todo a Tailwind CSS.
- */
-
-/* Ejemplo: animación sutil para enlaces de navegación */
+/* Nav links — underline animado con color de marca */
 .nav-link {
-    position: relative;
-    padding-bottom: 2px;
+  position: relative;
+  padding-bottom: 2px;
 }
 .nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    display: block;
-    margin-top: 5px;
-    right: 0;
-    /* Usamos la variable de color Chai/Amarillo */
-    background: var(--color-chai);
-    transition: width 0.3s ease;
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 5px;
+  right: 0;
+  background: var(--color-cinna);
+  transition: width 0.25s ease;
 }
-.nav-link:hover::after, .nav-link.active::after {
-    left: 0;
-    right: auto;
-    width: 100%;
+.nav-link:hover::after,
+.nav-link.active::after {
+  left: 0;
+  right: auto;
+  width: 100%;
 }
+.nav-link.active {
+  color: var(--color-cinna) !important;
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+/* Tarjetas de producto — borde cálido en hover */
+.catalog-card-clickable:hover,
+.offer-card-clickable:hover {
+  border-color: var(--color-fondo) !important;
+}
+
+/* Imagen de tarjeta — zoom sutil en hover */
+.catalog-card-clickable img,
+.offer-card-clickable img {
+  transition: transform 0.4s ease, opacity 0.3s ease;
+}
+.catalog-card-clickable:hover img,
+.offer-card-clickable:hover img {
+  transform: scale(1.04);
+}
+
+/* ===========================
+   3D TILT + GLOW EN TARJETAS
+   =========================== */
+.catalog-card-clickable {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 0.3s ease;
+}
+/* La transición de scale de Tailwind se reemplaza por el JS del tilt */
+.catalog-card-clickable .card-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 4;
+}
+
+/* Transición de imagen en página de producto */
+#pd-main-image {
+  transition: opacity 0.15s ease;
+}
+
+/* ===========================
+   SCROLL ANIMATIONS (GSAP targets)
+   =========================== */
+.trust-item { /* estado inicial fijado por gsap.set() en JS */ }
+.catalog-section-title { /* ídem */ }
+.catalog-product-card { /* ídem */ }

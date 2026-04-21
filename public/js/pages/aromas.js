@@ -1,7 +1,8 @@
 /**
  * js/pages/aromas.js
  * Guía de Aromas Glowie — SEO + UX + conversión
- * Rankea para: "aroma velas cali", "vela bambú", "vela lavanda cali",
+ * Rankea para: "velas en cali", "velas artesanales cali", "vela aromática cali",
+ *              "pebetero en cali", "pebetero cerámico cali", "vela artesanal",
  *              "qué aroma elegir", "velas aromáticas coco vainilla", etc.
  */
 
@@ -10,7 +11,7 @@
 // ─────────────────────────────────────────────
 const aromas = [
   {
-    id: 'bambu',
+    id: 'bambú',
     name: 'Bambú',
     emoji: '🌿',
     color: '#4a7c59',
@@ -24,10 +25,10 @@ const aromas = [
     intensidad: 3,
     ambientes: ['Oficina', 'Estudio', 'Sala'],
     duracion: '50–60 hrs',
-    slug: 'bambu',
+    slug: 'bambú',
   },
   {
-    id: 'coco-vainilla',
+    id: 'Coco & Vainilla',
     name: 'Coco & Vainilla',
     emoji: '🥥',
     color: '#c87941',
@@ -41,7 +42,7 @@ const aromas = [
     intensidad: 4,
     ambientes: ['Dormitorio', 'Baño', 'Sala'],
     duracion: '45–55 hrs',
-    slug: 'coco-vainilla',
+    slug: 'Coco & Vainilla',
   },
   {
     id: 'durazno',
@@ -55,7 +56,7 @@ const aromas = [
     headline: 'Fruta madura, energía positiva',
     description: 'Jugoso y vibrante, el durazno trae alegría y vitalidad a cualquier espacio. Su nota frutal y ligeramente floral eleva el ánimo sin ser invasiva. Perfecta para espacios sociales.',
     notas: ['Frutal · Fresco · Luminoso'],
-    intensidad: 3,
+    intensidad: 4,
     ambientes: ['Sala', 'Comedor', 'Recibidor'],
     duracion: '45–55 hrs',
     slug: 'durazno',
@@ -94,23 +95,6 @@ const aromas = [
     duracion: '45–55 hrs',
     slug: 'coco',
   },
-  {
-    id: 'arena',
-    name: 'Arena',
-    emoji: '🏖️',
-    color: '#b8956a',
-    colorLight: '#faf3e8',
-    badge: 'Exclusivo',
-    badgeColor: '#b8956a',
-    moods: ['relajar', 'romantico'],
-    headline: 'La calma del mar en casa',
-    description: 'Arena marina, sal y brisa. Una fragancia suave, serena y casi mineral que evoca atardeceres en la playa. Para quienes buscan paz y quietud en su espacio.',
-    notas: ['Marino · Suave · Mineral'],
-    intensidad: 2,
-    ambientes: ['Dormitorio', 'Sala', 'Meditación'],
-    duracion: '50–60 hrs',
-    slug: 'arena',
-  },
 ];
 
 // ─────────────────────────────────────────────
@@ -141,21 +125,21 @@ function renderAromaCard(aroma) {
              data-id="${aroma.id}">
 
       <!-- Header con color del aroma -->
-      <div class="relative h-36 flex items-center justify-center overflow-hidden"
-           style="background: linear-gradient(135deg, ${aroma.colorLight} 0%, white 100%);">
+      <div class="relative flex flex-col items-center justify-center pt-8 pb-5 px-4"
+           style="background: linear-gradient(135deg, ${aroma.colorLight} 0%, white 100%); min-height: 160px;">
         <!-- Círculo decorativo de fondo -->
-        <div class="absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-20"
+        <div class="absolute -right-6 -top-6 w-32 h-32 rounded-full opacity-20 pointer-events-none"
              style="background: ${aroma.color};"></div>
-        <div class="absolute -left-4 -bottom-4 w-20 h-20 rounded-full opacity-10"
+        <div class="absolute -left-4 -bottom-4 w-20 h-20 rounded-full opacity-10 pointer-events-none"
              style="background: ${aroma.color};"></div>
-        <!-- Emoji grande -->
-        <span class="relative z-10 text-6xl select-none" style="filter: drop-shadow(0 4px 12px ${aroma.color}40);">
-          ${aroma.emoji}
-        </span>
-        <!-- Badge -->
-        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold"
-              style="background: ${aroma.colorLight}; color: ${aroma.badgeColor}; border: 1px solid ${aroma.color}30;">
+        <!-- Badge — encima del emoji, sin cortar -->
+        <span class="relative z-20 px-3 py-1 rounded-full text-xs font-bold mb-3 inline-block"
+              style="background: ${aroma.colorLight}; color: ${aroma.badgeColor}; border: 1px solid ${aroma.color}40;">
           ${aroma.badge}
+        </span>
+        <!-- Emoji grande -->
+        <span class="relative z-10 text-5xl select-none leading-none" style="filter: drop-shadow(0 4px 12px ${aroma.color}40);">
+          ${aroma.emoji}
         </span>
       </div>
 
@@ -173,16 +157,10 @@ function renderAromaCard(aroma) {
           `).join('')}
         </div>
 
-        <!-- Detalles -->
-        <div class="grid grid-cols-2 gap-2 mb-4 text-xs text-gray-500">
-          <div class="flex items-center gap-1.5">
-            <i class="fas fa-clock" style="color: ${aroma.color};"></i>
-            <span>${aroma.duracion}</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <i class="fas fa-home" style="color: ${aroma.color};"></i>
-            <span>${aroma.ambientes[0]}</span>
-          </div>
+        <!-- Ambiente ideal -->
+        <div class="flex items-center gap-1.5 mb-4 text-xs text-gray-500">
+          <i class="fas fa-home" style="color: ${aroma.color};"></i>
+          <span>${aroma.ambientes.join(' · ')}</span>
         </div>
 
         <!-- Intensidad -->
@@ -299,49 +277,70 @@ export function renderAromasPage() {
   return `
 
     <!-- HERO -->
-    <section class="relative py-20 md:py-28 overflow-hidden rounded-2xl mb-10"
-             style="background: linear-gradient(135deg, var(--color-cinna) 0%, #2a0b0e 100%);">
-      <!-- Decoraciones de fondo -->
-      <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-white opacity-[0.03] pointer-events-none"></div>
-      <div class="absolute -bottom-16 -left-16 w-64 h-64 rounded-full bg-white opacity-[0.03] pointer-events-none"></div>
-      <!-- Emojis decorativos flotantes -->
-      <div class="absolute top-8 left-8 text-5xl opacity-10 select-none hidden lg:block">🌿</div>
-      <div class="absolute top-12 right-24 text-4xl opacity-10 select-none hidden lg:block">☕</div>
-      <div class="absolute bottom-10 right-12 text-5xl opacity-10 select-none hidden lg:block">🥥</div>
-      <div class="absolute bottom-8 left-32 text-3xl opacity-10 select-none hidden lg:block">🍑</div>
+    <section class="relative overflow-hidden rounded-2xl mb-10"
+             style="background: linear-gradient(135deg, #1a0609 0%, var(--color-cinna) 55%, #3d1014 100%);">
 
-      <div class="relative z-10 max-w-3xl mx-auto px-6 text-center">
-        <!-- Eyebrow badge -->
-        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6"
-              style="background: rgba(239,223,187,0.15); color: var(--color-fondo); border: 1px solid rgba(239,223,187,0.3);">
-          <i class="fas fa-wind text-xs"></i>
-          Guía de Aromas Glowie
-        </span>
+      <!-- Textura sutil diagonal -->
+      <div class="absolute inset-0 pointer-events-none"
+           style="opacity:0.04; background: repeating-linear-gradient(-45deg, white, white 1px, transparent 1px, transparent 60px);"></div>
 
-        <h1 class="aromas-hero-title text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-          Encuentra el aroma<br class="hidden sm:block">
-          <span style="color: var(--color-fondo);">perfecto para ti</span>
+      <!-- Glow suave a la izquierda -->
+      <div class="absolute inset-0 pointer-events-none"
+           style="background: radial-gradient(ellipse 55% 80% at 20% 50%, rgba(239,223,187,0.07) 0%, transparent 65%);"></div>
+
+      <div class="relative" style="z-index:10; padding: 3rem 3.5rem 2.5rem;">
+
+        <!-- Badge -->
+        <div style="margin-bottom: 1.75rem;">
+          <span style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.35rem 0.9rem; border-radius:9999px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.16em; background:rgba(239,223,187,0.1); color:var(--color-fondo); border:1px solid rgba(239,223,187,0.2);">
+            <i class="fas fa-wind" style="font-size:0.6rem;"></i>
+            Guía de Aromas · Glowie
+          </span>
+        </div>
+
+        <!-- Título + copy + CTAs — full width -->
+        <h1 class="aromas-hero-title"
+            style="font-weight:900; color:white; line-height:1.05; margin-bottom:1.1rem;
+                   font-size:clamp(2.4rem, 5vw, 3.6rem); text-shadow:0 4px 24px rgba(0,0,0,0.3); max-width:680px;">
+          El aroma<br>
+          <span style="color:var(--color-fondo);">cambia todo</span>
         </h1>
 
-        <p class="aromas-hero-sub text-base md:text-xl mb-10 max-w-2xl mx-auto"
-           style="color: rgba(239,223,187,0.8);">
-          Cada fragancia crea un ambiente diferente. Descubre cuál habla tu idioma
-          y transforma cualquier espacio en una experiencia sensorial única.
+        <p class="aromas-hero-sub"
+           style="color:rgba(239,223,187,0.68); font-size:0.95rem; line-height:1.75; margin-bottom:2rem; max-width:48ch;">
+          Cada vela artesanal Glowie transforma el estado de tu espacio.
+          Encuentra la fragancia que es tuya.
         </p>
 
-        <!-- Stats -->
-        <div class="flex flex-wrap justify-center gap-6">
-          ${[
-            { num: '6', label: 'Aromas únicos' },
-            { num: '50+', label: 'Horas de aroma' },
-            { num: '100%', label: 'Cera de soja' },
-          ].map(s => `
-            <div class="text-center">
-              <div class="text-3xl font-black" style="color: var(--color-fondo);">${s.num}</div>
-              <div class="text-xs uppercase tracking-wider" style="color: rgba(239,223,187,0.6);">${s.label}</div>
-            </div>
+        <div style="display:flex; gap:0.65rem; flex-wrap:wrap; margin-bottom:2.25rem;">
+          <a href="/catalogo" class="link-route"
+             style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.6rem 1.4rem; border-radius:9999px; font-weight:700; font-size:0.82rem; background:var(--color-fondo); color:var(--color-cinna); white-space:nowrap; text-decoration:none; transition:opacity 0.2s;">
+            <i class="fas fa-th-large" style="font-size:0.7rem;"></i>
+            Ver catálogo
+          </a>
+          <button onclick="document.getElementById('aromas-grid').scrollIntoView({behavior:'smooth'})"
+                  style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.6rem 1.4rem; border-radius:9999px; font-weight:700; font-size:0.82rem; border:1.5px solid rgba(239,223,187,0.32); color:rgba(239,223,187,0.88); background:transparent; cursor:pointer; white-space:nowrap; transition:opacity 0.2s;">
+            <i class="fas fa-arrow-down" style="font-size:0.7rem;"></i>
+            Ver aromas
+          </button>
+        </div>
+
+        <!-- Separador + pills decorativas -->
+        <div style="padding-top:1.5rem; border-top:1px solid rgba(239,223,187,0.12);
+                    display:flex; align-items:center; gap:0.6rem; overflow-x:auto; scrollbar-width:none; padding-bottom:2px;">
+          <span style="font-size:0.68rem; font-weight:600; color:rgba(239,223,187,0.38); white-space:nowrap; flex-shrink:0; text-transform:uppercase; letter-spacing:0.1em;">
+            Nuestros aromas:
+          </span>
+          ${aromas.map(a => `
+            <span style="display:inline-flex; align-items:center; gap:0.4rem; padding:0.35rem 0.9rem; border-radius:9999px;
+                         font-size:0.75rem; font-weight:600; white-space:nowrap; flex-shrink:0;
+                         background:rgba(239,223,187,0.07); border:1px solid rgba(239,223,187,0.15);
+                         color:rgba(239,223,187,0.78);">
+              ${a.emoji} ${a.name}
+            </span>
           `).join('')}
         </div>
+
       </div>
     </section>
 
@@ -398,7 +397,7 @@ export function renderAromasPage() {
           {
             icon: 'fa-clock', color: '#c87941',
             title: '2. Considera el momento del día',
-            text: 'Mañana y tarde: aromas energizantes como café o durazno. Noche: aromas relajantes como bambú, coco & vainilla o arena para dormir mejor.',
+            text: 'Mañana y tarde: aromas energizantes como café mocka o durazno. Noche: aromas relajantes como bambú o coco & vainilla para descansar mejor.',
           },
           {
             icon: 'fa-volume-up', color: 'var(--color-cinna)',
@@ -408,7 +407,7 @@ export function renderAromasPage() {
           {
             icon: 'fa-heart', color: '#b8956a',
             title: '4. Empieza por lo familiar',
-            text: 'Tu primer aroma debería evocar algo que ya te gusta. ¿Te encanta el café? Empieza por ahí. ¿Te relaja la playa? Arena o coco son tu punto de partida.',
+            text: 'Tu primer aroma debería evocar algo que ya te gusta. ¿Te encanta el café? Empieza por ahí. ¿Te relaja la playa? Coco es tu punto de partida.',
           },
         ].map(step => `
           <div class="guia-step flex gap-4 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm
@@ -464,6 +463,39 @@ export function renderAromasPage() {
       </div>
     </section>
 
+    <!-- SEO: contexto de marca y keywords locales -->
+    <section class="max-w-5xl mx-auto px-4 mb-16">
+      <div class="rounded-3xl p-8 md:p-10" style="background: var(--color-fondo);">
+        <h2 class="text-2xl font-extrabold mb-4" style="color: var(--color-cinna);">
+          Velas artesanales y pebeteros en Cali
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600 leading-relaxed">
+          <div>
+            <p class="mb-3">
+              En <strong>Glowie</strong> hacemos <strong>velas artesanales en Cali</strong> con cera de soja 100% natural.
+              Cada <strong>vela aromática</strong> está elaborada a mano, sin parafinas ni aditivos artificiales,
+              para que el aroma sea limpio, duradero y seguro en tu hogar.
+            </p>
+            <p>
+              Si buscas <strong>velas en Cali</strong> con fragancias premium —bambú, coco & vainilla, durazno o café mocka—
+              encontrarás en nuestro catálogo diseños únicos en cemento: floreros, rombos, hexagonales y más.
+            </p>
+          </div>
+          <div>
+            <p class="mb-3">
+              También trabajamos con <strong>pebeteros cerámicos en Cali</strong> y waxmelts:
+              una forma de disfrutar el aroma de nuestras fragancias sin llama, usando calor suave para
+              fundir la cera y liberar la fragancia de forma continua y segura.
+            </p>
+            <p>
+              Todas nuestras velas artesanales y <strong>pebeteros en Cali</strong> están disponibles para entrega
+              a domicilio en Cali y todo el Valle del Cauca. También hacemos envíos nacionales.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA FINAL -->
     <section class="relative rounded-3xl overflow-hidden mb-8 max-w-5xl mx-auto px-4">
       <div class="relative py-16 px-8 text-center rounded-3xl overflow-hidden"
@@ -487,7 +519,7 @@ export function renderAromasPage() {
               <i class="fas fa-th-large text-sm"></i>
               Ver catálogo completo
             </a>
-            <a href="https://wa.me/3156265846?text=Hola,%20quiero%20saber%20cuál%20aroma%20me%20recomiendas."
+            <a href="https://wa.me/573017748623?text=%C2%A1Hola%2C%20Glowie%21%20Estoy%20viendo%20la%20secci%C3%B3n%20de%20aromas%20en%20la%20web%20y%20me%20gustar%C3%ADa%20que%20me%20ayudaran%20a%20elegir%20uno%20seg%C3%BAn%20mis%20gustos."
                target="_blank"
                class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-sm border-2"
                style="color: var(--color-cinna); border-color: var(--color-cinna); background: white;">

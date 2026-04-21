@@ -218,7 +218,7 @@ function renderProductDetail(product) {
         <p id="pd-success" class="text-center text-green-600 font-bold mt-3 hidden text-sm">¡Añadido al carrito!</p>
 
         <!-- WhatsApp directo -->
-        <a href="https://wa.me/573156265846?text=Hola!%20Me%20interesa%20${encodeURIComponent(pageProduct.name)}"
+        <a href="https://wa.me/573017748623?text=Hola!%20Me%20interesa%20${encodeURIComponent(pageProduct.name)}"
            target="_blank"
            class="mt-3 w-full py-3 rounded-2xl font-bold text-center flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90 text-sm"
            style="background: #25D366; color: white;">

@@ -68,16 +68,16 @@ function getOptimizedImageUrl(url, width = 400) {
 // COLOR GLOW POR PRODUCTO
 // ============================================================
 const CEMENTO_COLOR_MAP = {
-  'amarillo':  'rgba(230,170,20,0.38)',
-  'rojo':      'rgba(180,35,35,0.38)',
-  'blanco':    'rgba(220,215,200,0.32)',
-  'natural':   'rgba(195,165,110,0.35)',
-  'azul':      'rgba(40,90,200,0.32)',
-  'verde':     'rgba(40,140,75,0.32)',
-  'negro':     'rgba(20,20,20,0.45)',
-  'gris':      'rgba(110,110,110,0.32)',
-  'naranja':   'rgba(215,95,25,0.38)',
-  'morado':    'rgba(100,30,150,0.35)',
+  'amarillo': 'rgba(230,170,20,0.38)',
+  'rojo': 'rgba(180,35,35,0.38)',
+  'blanco': 'rgba(220,215,200,0.32)',
+  'natural': 'rgba(195,165,110,0.35)',
+  'azul': 'rgba(40,90,200,0.32)',
+  'verde': 'rgba(40,140,75,0.32)',
+  'negro': 'rgba(20,20,20,0.45)',
+  'gris': 'rgba(110,110,110,0.32)',
+  'naranja': 'rgba(215,95,25,0.38)',
+  'morado': 'rgba(100,30,150,0.35)',
 };
 
 function getGlowColor(product) {
@@ -338,7 +338,7 @@ export function setAllProducts(products) {
  */
 function debounce(func, delay) {
   let timeoutId;
-  return function(...args) {
+  return function (...args) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
   };
@@ -434,20 +434,20 @@ function renderProducts(products) {
   container.innerHTML = '';
 
   products.forEach(product => {
-    const isOnSale     = product.on_sale === true && product.on_sale_price < product.price;
-    const isNew        = product.is_new === true;
-    const stock        = product.stock || 0;
+    const isOnSale = product.on_sale === true && product.on_sale_price < product.price;
+    const isNew = product.is_new === true;
+    const stock = product.stock || 0;
     const isOutOfStock = stock === 0;
 
-    const originalPrice   = formatPriceCOP(product.price);
-    const salePrice       = formatPriceCOP(product.on_sale_price || product.price);
+    const originalPrice = formatPriceCOP(product.price);
+    const salePrice = formatPriceCOP(product.on_sale_price || product.price);
     const discountPercent = isOnSale ? Math.round(((product.price - product.on_sale_price) / product.price) * 100) : 0;
 
-    const images    = Array.isArray(product.imageUrls) ? product.imageUrls : product.images || [];
+    const images = Array.isArray(product.imageUrls) ? product.imageUrls : product.images || [];
     const mainImage = images[0] || 'https://placehold.co/400x300/fbf3e0/2e2e2e?text=Vela';
-    const imgSm     = getOptimizedImageUrl(mainImage, 250);
-    const imgMd     = getOptimizedImageUrl(mainImage, 400);
-    const imgLg     = getOptimizedImageUrl(mainImage, 600);
+    const imgSm = getOptimizedImageUrl(mainImage, 250);
+    const imgMd = getOptimizedImageUrl(mainImage, 400);
+    const imgLg = getOptimizedImageUrl(mainImage, 600);
     const glowColor = getGlowColor(product);
 
     // Etiquetas
@@ -498,9 +498,9 @@ function renderProducts(products) {
         <p class="text-white text-sm mb-2 line-clamp-2 relative z-10">${product.description || ''}</p>
         <div class="mb-4 relative z-10">
           ${isOnSale
-            ? `<span class="text-sm text-white line-through mr-2">${originalPrice}</span>
+        ? `<span class="text-sm text-white line-through mr-2">${originalPrice}</span>
                <span class="font-extrabold text-2xl" style="color: var(--color-fondo);">${salePrice}</span>`
-            : `<p class="text-2xl font-extrabold text-white">${originalPrice}</p>`}
+        : `<p class="text-2xl font-extrabold text-white">${originalPrice}</p>`}
         </div>
         <div class="relative z-20">${buttonHtml}</div>
       </div>
@@ -547,7 +547,7 @@ async function loadProducts(retryCount = 0) {
 
   try {
     const app = getApp();
-    const db  = getFirestore(app);
+    const db = getFirestore(app);
     const snapshot = await withTimeout(getDocs(collection(db, 'products')));
     const products = snapshot.docs.map(doc => ({
       id: doc.id,
@@ -608,11 +608,11 @@ export const renderCatalogPage = () => `
   <div id="trust-strip" class="py-10 px-4">
     <div class="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
       ${[
-        { icon: 'fa-seedling', title: 'Cera de Soja 100% Natural',  sub: 'Sin parafina ni ingredientes tóxicos' },
-        { icon: 'fa-hands',    title: 'Hechas a Mano en Cali',       sub: 'Producción artesanal con cariño local' },
-        { icon: 'fa-wind',     title: 'Aromas Premium',              sub: 'Fragancias exclusivas y duraderas' },
-        { icon: 'fa-truck',    title: 'Envío Gratis en Cali',        sub: 'En compras desde $60.000' },
-      ].map(item => `
+    { icon: 'fa-seedling', title: 'Cera de Soja 100% Natural', sub: 'Sin parafina ni ingredientes tóxicos' },
+    { icon: 'fa-hands', title: 'Hechas a Mano en Cali', sub: 'Producción artesanal con cariño local' },
+    { icon: 'fa-wind', title: 'Aromas Premium', sub: 'Fragancias exclusivas y duraderas' },
+    { icon: 'fa-truck', title: 'Envío Gratis en Cali', sub: 'En compras desde $60.000' },
+  ].map(item => `
         <div class="trust-item flex flex-col items-center text-center gap-2 p-5 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
           <div class="w-12 h-12 rounded-full flex items-center justify-center mb-1 flex-shrink-0" style="background-color: var(--color-fondo);">
             <i class="fas ${item.icon} text-lg" style="color: var(--color-cinna);"></i>
@@ -660,8 +660,7 @@ export const renderCatalogPage = () => `
       </div>
       <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">¿Velas personalizadas o para eventos?</h2>
       <p class="text-lg text-white/80 mb-8 max-w-xl mx-auto">Dale un toque único a tus celebraciones y regalos. Estamos listos para hacer tu idea realidad.</p>
-      <a href="https://wa.me/3156265846?text=Hola,%20me%20gustaría%20información%20sobre%20velas%20personalizadas."
-         target="_blank"
+        <a href="https://wa.me/573017748623?text=%C2%A1Hola%21%20Vi%20la%20secci%C3%B3n%20de%20velas%20para%20eventos%20y%20me%20encantar%C3%ADa%20personalizar%20unas%20piezas%20para%20una%20fecha%20especial.%20%C2%BFQu%C3%A9%20opciones%20de%20dise%C3%B1o%20manejan%3F" target="_blank"         target="_blank"
          class="inline-flex items-center gap-3 px-10 py-4 text-lg font-bold rounded-full shadow-2xl transition-all duration-300 transform hover:scale-105"
          style="background-color: var(--color-fondo); color: var(--color-cinna);">
         <i class="fab fa-whatsapp text-xl"></i>

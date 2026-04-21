@@ -14,6 +14,7 @@ import { renderTipsPage, initializeTipsListeners } from './pages/tips.js';
 import { renderNosotrosPage, initializeNosotrosListeners } from './pages/nosotros.js';
 import { renderAromasPage, initializeAromasListeners } from './pages/aromas.js';
 import { renderProductPage, initializeProductListeners } from './pages/product.js';
+import { renderPrivacyPolicy, renderChangePolicy, initializePoliciesListeners } from './pages/policies.js';
 
 // Asignar window.Cart al inicio para que esté disponible globalmente
 window.Cart = CartModule;
@@ -59,6 +60,8 @@ const pageRoutes = {
   'aromas': { render: renderAromasPage, init: initializeAromasListeners },
   'nosotros': { render: renderNosotrosPage, init: initializeNosotrosListeners },
   'product': { render: renderProductPage, init: initializeProductListeners },
+  'privacy': { render: renderPrivacyPolicy, init: initializePoliciesListeners },
+  'changes': { render: renderChangePolicy, init: initializePoliciesListeners },
 };
 
 // -----------------------------------------
@@ -182,6 +185,16 @@ const PAGE_META = {
     description: 'Vela artesanal de cera de soja natural, hecha a mano en Cali. Aromas premium y diseños únicos.',
     canonical: 'https://velasglowie.com/catalogo',
   },
+  privacy: {
+    title: 'Política de Privacidad | Glowie',
+    description: 'Política de privacidad de Glowie. Cómo protegemos tus datos y usamos Google Analytics y Meta Pixel.',
+    canonical: 'https://velasglowie.com/politica-privacidad',
+  },
+  changes: {
+    title: 'Política de Cambios | Glowie',
+    description: 'Política de cambios de Glowie. Plazo, condiciones y cómo solicitar un cambio en tu vela artesanal.',
+    canonical: 'https://velasglowie.com/politica-cambios',
+  },
 };
 
 function updateActiveLink(currentPageName) {
@@ -192,6 +205,8 @@ function updateActiveLink(currentPageName) {
     'aromas': '/aromas',
     'nosotros': '/nosotros',
     'product': '/catalogo',
+    'privacy': '/politica-privacidad',
+    'changes': '/politica-cambios',
   };
 
   const currentPath = urlMap[currentPageName];

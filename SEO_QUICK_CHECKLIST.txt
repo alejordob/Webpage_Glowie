@@ -1,0 +1,302 @@
+================================================================================
+GOOGLE SEO AUDIT - velasglowie.com
+QUICK START CHECKLIST
+================================================================================
+
+AUDIT COMPLETED: April 3, 2026
+OVERALL SCORE: 8/10
+STATUS: GOOD (with clear improvement opportunities)
+
+================================================================================
+CRITICAL ITEMS (Do This Week)
+================================================================================
+
+INDEXATION VERIFICATION
+[ ] 1. Open Google Search Console
+    URL: https://search.google.com/search-console
+    Action: Select velasglowie.com > Coverage
+    Expected: Homepage + 16 product pages indexed
+    
+[ ] 2. Check Core Web Vitals Report
+    URL: Search Console > Core Web Vitals (left sidebar)
+    Check: Mobile and Desktop status
+    Note: Compare LCP, INP, CLS scores
+    
+[ ] 3. Review Search Performance
+    URL: Search Console > Performance tab
+    Action: Set date range to Last 28 days
+    Find: Top 10 queries, average position, CTR
+    
+[ ] 4. Check GA4 Organic Traffic
+    URL: https://analytics.google.com/
+    Property: 508841543
+    Check: Organic Search sessions/users
+
+================================================================================
+HIGH PRIORITY (Complete Next 30 Days)
+================================================================================
+
+SCHEMA MARKUP - PRODUCT PAGES
+[ ] 5. Add Product schema to top 3 products
+    Files to Edit: public/js/pages/product.js
+    Time: 1-2 hours
+    Impact: +15-25% CTR on product pages
+    Test: Use https://search.google.com/test/rich-results
+    
+[ ] 6. Add Product schema to ALL 16 products
+    Files to Edit: product.js (batch implementation)
+    Time: 1-2 hours
+    Impact: Consistent rich snippets across catalog
+
+IMAGE OPTIMIZATION
+[ ] 7. Add width/height to product images
+    Files to Edit: catalog.js or product templates
+    Time: 30-45 minutes
+    Impact: Prevents layout shift, improves CLS score
+    
+[ ] 8. Add loading="lazy" attribute
+    Files to Edit: All image elements in catalog
+    Time: 30 minutes
+    Impact: 20-30% faster load time for catalog
+
+ANALYTICS
+[ ] 9. Add Google Ads conversion tracking (if running ads)
+    Files to Edit: public/index.html
+    Time: 30 minutes
+    Impact: Accurate campaign ROI measurement
+    
+[ ] 10. Set up GA4 Goals/Events
+     Files to Edit: cart.js
+     Time: 1-2 hours
+     Impact: Better conversion attribution
+
+================================================================================
+MEDIUM PRIORITY (Next 60 Days)
+================================================================================
+
+CONTENT & SEO
+[ ] 11. Add FAQ schema to Tips page
+      Files to Edit: public/js/pages/tips.js
+      Time: 1 hour
+      Impact: Featured snippet opportunities
+      
+[ ] 12. Create blog content for target keywords
+      Keywords: velas cuidado, aromas naturales, tips cera soja
+      Time: 5-10 hours
+      Impact: +30-50% organic traffic in 3 months
+      
+[ ] 13. Build local backlinks
+      Actions: Get listed on Colombian directories
+      Time: 2-3 hours per week
+      Impact: +20-30% local visibility
+
+ADVANCED
+[ ] 14. Implement breadcrumb schema
+      Files: Product pages templates
+      Impact: Better crawlability + CTR
+      
+[ ] 15. Add Review/Rating schema
+      Requirement: Customer review system needed first
+      Impact: Social proof in search results
+
+================================================================================
+VERIFICATION TOOLS (Use These)
+================================================================================
+
+Primary Tools (Required)
+✓ Google Search Console: https://search.google.com/search-console
+✓ Google Analytics 4: https://analytics.google.com/
+✓ PageSpeed Insights: https://pagespeed.web.dev/
+✓ Rich Results Test: https://search.google.com/test/rich-results
+
+Secondary Tools (Recommended)
+✓ Mobile-Friendly Test: https://search.google.com/mobile-friendly
+✓ Chrome DevTools Lighthouse: Built into Chrome browser
+✓ Google Ads Conversion Helper: https://ads.google.com/tag-helper
+✓ Meta Pixel Helper: Browser extension for checking Meta Pixel
+
+================================================================================
+FILES TO MODIFY
+================================================================================
+
+Schema Implementation
+→ public/js/pages/product.js          (Add Product schema)
+→ public/js/pages/tips.js              (Add FAQ schema)
+→ public/index.html                    (Add Organization schema, Ads pixel)
+
+Image Optimization
+→ public/js/pages/catalog.js           (Add width/height, lazy-load)
+→ public/js/pages/modal.js             (Product modal images)
+
+Analytics & Tracking
+→ public/js/cart.js                    (Add e-commerce events)
+→ public/index.html                    (Add Ads conversion ID)
+
+================================================================================
+CURRENT IMPLEMENTATION STATUS
+================================================================================
+
+✅ ALREADY IMPLEMENTED (Good!)
+────────────────────────────────────
+✅ Google Analytics 4 (G-5R324L2LPN)
+✅ Meta Pixel (777665668567325)
+✅ LocalBusiness schema markup
+✅ Responsive mobile design
+✅ Proper meta tags (title, description)
+✅ Open Graph for social sharing
+✅ robots.txt file
+✅ sitemap.xml with 21 URLs
+✅ Favicon properly linked
+✅ Canonical tags
+✅ DNS prefetching optimization
+✅ Preconnect to CDN (Cloudinary)
+
+❌ MISSING / NEEDS WORK
+────────────────────────────────────
+❌ Product schema (CRITICAL - add this first)
+❌ Image width/height attributes (CLS prevention)
+❌ Lazy loading on images
+❌ Google Ads conversion pixel
+❌ FAQ schema
+❌ Review/Rating schema
+❌ Breadcrumb schema
+❌ GA4 e-commerce events
+❌ Blog content for keywords
+
+================================================================================
+EXPECTED RESULTS TIMELINE
+================================================================================
+
+Week 1-2: Schema Implementation
+└─ Deploy Product schema
+└─ Google starts reading data
+└─ Rich snippets appear
+└─ Estimated impact: +5-10% CTR
+
+Week 3-4: Performance Improvements
+└─ Image optimization takes effect
+└─ Core Web Vitals improve
+└─ Estimated impact: +5-15 PageSpeed score
+
+Month 2-3: Full Results
+└─ Organic traffic increase: +10-20%
+└─ Ranking improvements for target keywords
+└─ Conversion rate improvement from better traffic
+└─ Estimated impact: +50-100% organic sessions
+
+================================================================================
+IMPLEMENTATION EFFORT BREAKDOWN
+================================================================================
+
+Quick Wins (Do First) - 4-5 hours total
+├─ Product schema for top 5 products: 1-2 hours
+├─ Image optimization basics: 1 hour
+├─ Lazy loading: 30 minutes
+└─ GA4 basics: 1 hour
+
+Standard Work - 6-8 hours total
+├─ Full Product schema (all 16): 1-2 hours
+├─ Complete image optimization: 2 hours
+├─ Analytics events setup: 2-3 hours
+└─ FAQ schema: 1 hour
+
+Advanced Work - 10+ hours total
+├─ Blog content creation: 5-10 hours
+├─ Backlink building: 2-3 hours/week
+└─ Review system + schema: 5-10 hours
+
+TOTAL RECOMMENDED: Start with Quick Wins (4-5 hours)
+Then move to Standard Work (6-8 hours)
+
+================================================================================
+SUCCESS METRICS
+================================================================================
+
+Track These in Google Search Console:
+[ ] Total clicks (baseline, then week 2, week 4, month 2)
+[ ] Impressions (new schema should increase visibility)
+[ ] Average position (target: improve by 1-2 positions)
+[ ] CTR (target: improve by 15-25% with rich snippets)
+
+Track These in Google Analytics:
+[ ] Organic sessions (target: +20% by end of month 1)
+[ ] Organic users (target: +15% by end of month 1)
+[ ] Bounce rate (target: reduce by 5-10%)
+[ ] Conversion rate (target: improve by 10-15%)
+
+Track These with PageSpeed:
+[ ] LCP (target: < 2.5 seconds)
+[ ] INP (target: < 200 milliseconds)
+[ ] CLS (target: < 0.1)
+[ ] Overall Performance score (target: > 80)
+
+================================================================================
+RED FLAGS TO AVOID
+================================================================================
+
+❌ DO NOT
+├─ Block product pages in robots.txt
+├─ Add noindex to product pages
+├─ Duplicate product schema on same page
+├─ Ignore Core Web Vitals errors
+├─ Use exact-match keyword stuffing
+├─ Buy backlinks or use link schemes
+├─ Cloak content for Google vs users
+└─ Ignore mobile usability issues
+
+✅ DO
+├─ Keep schema valid and updated
+├─ Optimize for user experience first
+├─ Monitor GSC for errors weekly
+├─ Test all changes before deploying
+├─ Track metrics in Google Analytics
+├─ Create quality content for users
+├─ Build genuine backlinks naturally
+└─ Keep mobile experience excellent
+
+================================================================================
+SUPPORT & NEXT STEPS
+================================================================================
+
+Need Help?
+├─ Schema validation: https://schema.org/docs/
+├─ Google support: https://support.google.com/
+├─ SEO best practices: https://developers.google.com/search/docs
+└─ This project's audit reports:
+    ├─ GOOGLE_SEO_AUDIT_velasglowie.md (detailed)
+    ├─ SEO_AUDIT_SUMMARY.md (overview)
+    └─ SEO_IMPLEMENTATION_GUIDE.md (code examples)
+
+Schedule Next Audit: May 3, 2026 (30 days)
+├─ Verify all implementations are live
+├─ Check GSC metrics for improvements
+├─ Review GA4 for traffic changes
+└─ Plan next phase of improvements
+
+================================================================================
+CRITICAL DATES
+================================================================================
+
+Audit Date: April 3, 2026
+Deadline for Quick Wins: April 10, 2026 (1 week)
+Deadline for Standard Work: May 1, 2026 (4 weeks)
+Follow-up Audit: May 3, 2026 (1 month)
+
+================================================================================
+FINAL NOTES
+================================================================================
+
+✓ Website is LIVE and accessible (HTTP 200)
+✓ All 21 URLs in sitemap
+✓ Good technical foundation
+✓ Clear improvement opportunities (8/10 → 9/10 achievable)
+
+Next step: Start with Product schema implementation
+Estimated time to +20% organic growth: 6-8 weeks
+Long-term potential: 2-3x organic traffic within 6 months
+
+Good luck! 🚀
+
+================================================================================
+Report Generated: April 3, 2026 | Audit by Claude Code SEO Agent
+================================================================================

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editor de Stock - Todos los Productos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f9fafb; }
+    textarea { font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.5; }
+    #json-input, #json-output { resize: vertical; }
+    select { 
+      appearance: none; 
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
+      background-position: right 0.5rem center; 
+      background-repeat: no-repeat; 
+      background-size: 1.5em; 
+      padding-right: 2.5rem; 
+    }
+  </style>
+</head>
+<body class="p-6 max-w-7xl mx-auto">
+
+  <h1 class="text-3xl font-bold text-amber-700 mb-6">Editor de Stock - Todos los Productos</h1>
+
+  <div class="bg-white p-6 rounded-xl shadow-lg space-y-8">
+
+    <!-- 1. PEGAR TODO EL JSON -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-700 mb-3">Pega TODO tu JSON aquí (con todos los productos):</label>
+      <textarea 
+        id="json-input" 
+        class="w-full h-96 p-4 border-2 border-gray-300 rounded-lg focus:border-amber-600 focus:outline-none transition"
+        placeholder='[ { "id": "flama", ... }, { "id": "rombo", ... } ]'></textarea>
+      <button id="load-all" class="mt-3 px-6 py-2.5 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 transition">
+        Cargar Todos los Productos
+      </button>
+    </div>
+
+    <!-- 2. SELECCIONAR PRODUCTO -->
+    <div id="product-selector" class="hidden">
+      <label class="block text-sm font-semibold text-gray-700 mb-3">Selecciona un producto para editar:</label>
+      <select id="product-select" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-amber-600 focus:outline-none transition text-lg font-medium">
+        <option value="">-- Elige un producto --</option>
+      </select>
+    </div>
+
+    <!-- 3. TABLA DE STOCK -->
+    <div id="stock-table-container" class="hidden">
+      <h2 id="product-name" class="text-2xl font-bold text-gray-800 mb-5"></h2>
+      <p class="text-sm text-gray-600 mb-4">ID: <span id="product-id" class="font-mono"></span></p>
+      <div class="overflow-x-auto rounded-lg border">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-amber-50 border-b">
+              <th class="p-4 text-left text-sm font-bold text-gray-700">Diseño</th>
+              <th class="p-4 text-left text-sm font-bold text-gray-700">Aroma</th>
+              <th class="p-4 text-center text-sm font-bold text-gray-700">Stock</th>
+            </tr>
+          </thead>
+          <tbody id="stock-rows" class="bg-white"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4. BOTONES -->
+    <div id="actions" class="hidden flex gap-4 mt-8">
+      <button id="copy-json" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition shadow-md">
+        Copiar JSON del Producto
+      </button>
+      <button id="reset-all" class="px-8 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition shadow-md">
+        Poner Todo en 0
+      </button>
+    </div>
+
+    <!-- 5. JSON RESULTADO -->
+    <div id="output-section" class="hidden mt-8">
+      <label class="block text-sm font-semibold text-gray-700 mb-3">JSON Actualizado (solo este producto):</label>
+      <textarea 
+        id="json-output" 
+        class="w-full h-96 p-4 border-2 border-gray-300 rounded-lg bg-gray-50 focus:border-green-600 focus:outline-none transition"
+        readonly></textarea>
+    </div>
+
+  </div>
+
+  <script>
+    const jsonInput = document.getElementById('json-input');
+    const loadAllBtn = document.getElementById('load-all');
+    const productSelector = document.getElementById('product-selector');
+    const productSelect = document.getElementById('product-select');
+    const tableContainer = document.getElementById('stock-table-container');
+    const stockRows = document.getElementById('stock-rows');
+    const productNameEl = document.getElementById('product-name');
+    const productIdEl = document.getElementById('product-id');
+    const actions = document.getElementById('actions');
+    const outputSection = document.getElementById('output-section');
+    const copyBtn = document.getElementById('copy-json');
+    const resetBtn = document.getElementById('reset-all');
+    const jsonOutput = document.getElementById('json-output');
+
+    let allProducts = [];
+    let currentProduct = null;
+
+    loadAllBtn.onclick = () => {
+      let raw = jsonInput.value.trim();
+      raw = raw.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']').replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '').replace(/\.{3}/g, '');
+
+      try {
+        allProducts = JSON.parse(raw);
+        if (!Array.isArray(allProducts)) throw new Error("El JSON debe ser un array de productos");
+
+        // Limpiar selector
+        productSelect.innerHTML = '<option value="">-- Elige un producto --</option>';
+        allProducts.forEach((prod, index) => {
+          const opt = document.createElement('option');
+          opt.value = index;
+          opt.textContent = `${prod.name || 'Sin nombre'} (ID: ${prod.id || 'sin id'})`;
+          productSelect.appendChild(opt);
+        });
+
+        productSelector.classList.remove('hidden');
+        tableContainer.classList.add('hidden');
+        actions.classList.add('hidden');
+        outputSection.classList.add('hidden');
+      } catch (e) {
+        alert('Error: ' + e.message + '\nAsegúrate de que sea un array: [ { ... }, { ... } ]');
+      }
+    };
+
+    productSelect.onchange = () => {
+      const index = productSelect.value;
+      if (index === '') {
+        tableContainer.classList.add('hidden');
+        return;
+      }
+      currentProduct = JSON.parse(JSON.stringify(allProducts[index])); // copia
+      renderTable();
+      tableContainer.classList.remove('hidden');
+      actions.classList.remove('hidden');
+      outputSection.classList.remove('hidden');
+      updateOutput();
+    };
+
+    function renderTable() {
+      productNameEl.textContent = currentProduct.name || 'Sin nombre';
+      productIdEl.textContent = currentProduct.id || 'sin id';
+      stockRows.innerHTML = '';
+
+      (currentProduct.combinaciones || []).forEach(comb => {
+        (currentProduct.aroma || []).forEach(aroma => {
+          const key = `${comb.id}-${aroma}`;
+          const stock = currentProduct.stock_variations?.[key] ?? 0;
+
+          const row = document.createElement('tr');
+          row.className = 'border-b hover:bg-amber-50';
+          row.innerHTML = `
+            <td class="p-4 text-sm font-medium">${comb.label || comb.id}</td>
+            <td class="p-4 text-sm text-gray-600">${aroma}</td>
+            <td class="p-4 text-center">
+              <div class="flex items-center justify-center gap-3">
+                <button class="w-10 h-10 rounded-full bg-red-100 text-red-700 hover:bg-red-200 text-xl font-bold" data-key="${key}" data-delta="-1">−</button>
+                <span class="w-20 text-center text-lg font-bold text-amber-700" data-key="${key}">${stock}</span>
+                <button class="w-10 h-10 rounded-full bg-green-100 text-green-700 hover:bg-green-200 text-xl font-bold" data-key="${key}" data-delta="1">+</button>
+              </div>
+            </td>
+          `;
+          stockRows.appendChild(row);
+        });
+      });
+
+      document.querySelectorAll('button[data-delta]').forEach(btn => {
+        btn.onclick = () => {
+          const key = btn.dataset.key;
+          const delta = parseInt(btn.dataset.delta);
+          currentProduct.stock_variations = currentProduct.stock_variations || {};
+          currentProduct.stock_variations[key] = Math.max(0, (currentProduct.stock_variations[key] || 0) + delta);
+          updateRow(key);
+          updateOutput();
+        };
+      });
+    }
+
+    function updateRow(key) {
+      const span = document.querySelector(`span[data-key="${key}"]`);
+      if (span) span.textContent = currentProduct.stock_variations[key];
+    }
+
+    function updateOutput() {
+      currentProduct.stock = Object.values(currentProduct.stock_variations || {}).reduce((a, b) => a + b, 0);
+      jsonOutput.value = JSON.stringify(currentProduct, null, 2);
+    }
+
+    copyBtn.onclick = () => {
+      jsonOutput.select();
+      document.execCommand('copy');
+      copyBtn.textContent = '¡Copiado!';
+      setTimeout(() => copyBtn.textContent = 'Copiar JSON del Producto', 2000);
+    };
+
+    resetBtn.onclick = () => {
+      if (confirm('¿Poner todo en 0?')) {
+        currentProduct.stock_variations = {};
+        renderTable();
+        updateOutput();
+      }
+    };
+  </script>
+
+</body>
+</html>
