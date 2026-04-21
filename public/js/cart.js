@@ -325,18 +325,6 @@ export function updateCartUI() {
 
 // WhatsApp con texto correcto
 export function handleWhatsappCheckout() {
-    // Capturar nombre + email
-    const nameInput = document.getElementById('checkout-name');
-    const emailInput = document.getElementById('checkout-email');
-    const customerName = nameInput?.value?.trim() || '';
-    const customerEmail = emailInput?.value?.trim() || '';
-
-    // Validar que nombre + email estén completos
-    if (!customerName || !customerEmail) {
-        alertUser('⚠️ Por favor completa tu nombre y email');
-        return;
-    }
-
     const phoneNumber = '573017748623';
     const MAX_LENGTH = 1500;
 
@@ -362,10 +350,10 @@ export function handleWhatsappCheckout() {
     const isFreeShipping = subtotal >= SHIPPING_THRESHOLD;
     const shippingCost = isFreeShipping ? 0 : SHIPPING_COST;
     const finalTotal = subtotal + shippingCost;
-    const shippingText = isFreeShipping ? '✨ Gratis en Cali' : '🚚 Domicilio $8.000 (Envío a Cali)';
+    const shippingText = isFreeShipping ? 'GRATIS EN CALI' : 'Domicilio $8.000';
 
-    const header = `*✨ ¡Hola ${customerName.split(' ')[0]}! ✨*%0A%0A🛍️ *Confirmando mi pedido de velas Glowie*%0AEmail: ${customerEmail}%0A%0A`;
-    const footer = `%0A💰 *Subtotal:* ${formatPriceCOP(subtotal)}%0A${shippingText}%0A💳 *Total a pagar:* ${formatPriceCOP(finalTotal)}%0A%0A⏱️ *Entrega:* 1-3 días hábiles en Cali%0A%0A🎁 *Hechas a mano, 100% soja natural*%0A%0A¡Gracias por elegir Glowie! 🕯️`;
+    const header = `*Hola Glowie,*%0A%0AConfirmando mi pedido:%0A%0A`;
+    const footer = `%0A*Subtotal:* ${formatPriceCOP(subtotal)}%0A*Envio:* ${shippingText}%0A*Total a pagar:* ${formatPriceCOP(finalTotal)}%0A%0AEntrega: *1-3 dias habiles* en Cali%0AVelas 100% soja natural, hechas a mano.%0A%0aGracias!`;
 
     const chunks = [];
     let currentChunk = header;
@@ -385,7 +373,7 @@ export function handleWhatsappCheckout() {
         setTimeout(() => {
             const text = index === 0
                 ? chunk
-                : `*📋 Continuación del pedido (${index + 1}/${chunks.length}):*%0A%0A` + chunk.replace(header, '').replace(footer, '');
+                : `Continuacion del pedido (${index + 1}/${chunks.length}):%0A%0A` + chunk.replace(header, '').replace(footer, '');
             const finalText = index === chunks.length - 1 ? text + footer : text;
             const url = `https://wa.me/${phoneNumber}?text=${finalText}`;
             window.open(url, '_blank');
@@ -395,9 +383,7 @@ export function handleWhatsappCheckout() {
     cart = [];
     saveCart();
     updateCartUI();
-    nameInput.value = '';
-    emailInput.value = '';
-    alertUser(`✅ ¡Perfecto ${customerName.split(' ')[0]}! Abriendo WhatsApp...`);
+    alertUser('Pedido enviado a WhatsApp! Te contactaremos pronto');
     toggleCart(false);
 }
 
