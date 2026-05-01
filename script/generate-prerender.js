@@ -39,7 +39,13 @@ function buildProductHead(product, slug, baseHtml) {
   const canonical   = `https://velasglowie.com/catalogo/${slug}`;
   const image       = (product.images && product.images[0]) || 'https://res.cloudinary.com/du3kkvkmy/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1762141308/anis_amarillo_ftb5xv.webp';
   const price       = product.on_sale && product.on_sale_price ? product.on_sale_price : (product.price || 0);
-  const availability = (product.stock > 0) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
+  // Check stock_variations (actual data model) — fall back to product.stock
+  const hasStock    = product.stock_variations
+    ? Object.values(product.stock_variations).some(v => (v?.stock ?? v ?? 0) > 0)
+    : (product.stock || 0) > 0;
+  const availability = hasStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
+  // priceValidUntil: 1 year from today (required for Google price rich results)
+  const priceValidUntil = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const productSchema = JSON.stringify({
     '@context': 'https://schema.org',
@@ -53,7 +59,9 @@ function buildProductHead(product, slug, baseHtml) {
       'price': String(price),
       'priceCurrency': 'COP',
       'availability': availability,
+      'priceValidUntil': priceValidUntil,
       'url': canonical,
+      'seller': { '@type': 'Organization', 'name': 'Glowie' },
     },
   }, null, 2);
 

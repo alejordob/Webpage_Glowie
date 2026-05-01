@@ -1,23 +1,23 @@
-// Importar todo el módulo cart.js para asegurar que window.Cart se inicialice
+// Solo los módulos críticos cargan al inicio
 import * as CartModule from './cart.js';
-// CORRECCIÓN CLAVE: Usamos isFirebaseReady y db de firebase.js
-import { isFirebaseReady, db, getPublicCollectionPath } from './firebase.js'; 
-// Importar las funciones necesarias de Firestore
+import { isFirebaseReady, db, getPublicCollectionPath } from './firebase.js';
 import { getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// Importar render/listeners del catálogo
-import { renderCatalogPage, initializeCatalogListeners, applyFiltersFromUrl } from './pages/catalog.js';
-
-// Importaciones de otras páginas
-import { renderOffersPage, initializeOffersListeners } from './pages/offers.js';
-import { renderTipsPage, initializeTipsListeners } from './pages/tips.js';
-import { renderNosotrosPage, initializeNosotrosListeners } from './pages/nosotros.js';
-import { renderAromasPage, initializeAromasListeners } from './pages/aromas.js';
-import { renderProductPage, initializeProductListeners } from './pages/product.js';
-import { renderPrivacyPolicy, renderChangePolicy, initializePoliciesListeners } from './pages/policies.js';
-
-// Asignar window.Cart al inicio para que esté disponible globalmente
 window.Cart = CartModule;
+window._glowieNavCount = 0;
+
+// Cada página se carga dinámicamente solo cuando se navega a ella
+const pageRoutes = {
+  'home':     () => import('./pages/home.js'),
+  'catalog':  () => import('./pages/catalog.js'),
+  'offers':   () => import('./pages/offers.js'),
+  'tips':     () => import('./pages/tips.js'),
+  'aromas':   () => import('./pages/aromas.js'),
+  'nosotros': () => import('./pages/nosotros.js'),
+  'product':  () => import('./pages/product.js'),
+  'privacy':  () => import('./pages/policies.js'),
+  'changes':  () => import('./pages/policies.js'),
+};
 
 // -----------------------------------------
 // QUERY PARAMS UTILITIES
@@ -51,18 +51,6 @@ function pushFilterParams(filters) {
   window.history.pushState({ filters }, '', newUrl);
 }
 
-// --- CONFIGURACIÓN DE RUTAS ---
-// Las claves son ahora los NOMBRES DE PÁGINA (ej: 'catalog'), no los fragmentos.
-const pageRoutes = {
-  'catalog': { render: renderCatalogPage, init: initializeCatalogListeners },
-  'offers': { render: renderOffersPage, init: initializeOffersListeners },
-  'tips': { render: renderTipsPage, init: initializeTipsListeners },
-  'aromas': { render: renderAromasPage, init: initializeAromasListeners },
-  'nosotros': { render: renderNosotrosPage, init: initializeNosotrosListeners },
-  'product': { render: renderProductPage, init: initializeProductListeners },
-  'privacy': { render: renderPrivacyPolicy, init: initializePoliciesListeners },
-  'changes': { render: renderChangePolicy, init: initializePoliciesListeners },
-};
 
 // -----------------------------------------
 // ENRUTADOR PRINCIPAL (Expuesto al ámbito global)
@@ -75,7 +63,7 @@ const pageRoutes = {
  */
 window.loadAppContent = async function(pageName) {
   const appContent = document.getElementById('app-content');
-  const route = pageRoutes[pageName];
+  const routeLoader = pageRoutes[pageName];
 
   if (!appContent) {
     console.error("⚠️ No se encontró el contenedor #app-content en el HTML.");
@@ -85,6 +73,13 @@ window.loadAppContent = async function(pageName) {
   // Ocultar todos los fallbacks estáticos cuando JS carga
   document.getElementById('aromas-fallback')?.classList.add('hidden');
   document.getElementById('tips-fallback')?.classList.add('hidden');
+
+  // Limpiar efectos de la home si se navega a otra página
+  if (pageName !== 'home') {
+    window._homeHeaderCleanup?.();
+    window._homeHeaderCleanup = null;
+    document.getElementById('home-styles')?.remove();
+  }
 
   updateActiveLink(pageName);
 
@@ -97,22 +92,29 @@ window.loadAppContent = async function(pageName) {
     appContent.classList.remove('page-leaving');
   }
 
-  if (route) {
+  if (routeLoader) {
     try {
-      console.log("Página detectada:", pageName);
+      // Cargar el módulo de la página dinámicamente (solo cuando se necesita)
+      const mod = await routeLoader();
 
-      // Renderizar el contenido HTML inmediatamente (sin esperar Firebase)
-      appContent.innerHTML = route.render();
+      // Elegir render/init según la página (policies tiene dos renders)
+      const renderFn = pageName === 'changes' ? mod.renderChangePolicy : (mod.renderHomePage || mod.renderCatalogPage || mod.renderOffersPage || mod.renderTipsPage || mod.renderAromasPage || mod.renderNosotrosPage || mod.renderProductPage || mod.renderPrivacyPolicy);
+      const initFn   = mod.initializeHomeListeners || mod.initializeCatalogListeners || mod.initializeOffersListeners || mod.initializeTipsListeners || mod.initializeAromasListeners || mod.initializeNosotrosListeners || mod.initializeProductListeners || mod.initializePoliciesListeners;
+
+      appContent.innerHTML = renderFn();
       appContent.style.animation = 'none';
-      appContent.offsetHeight; // force reflow
-      appContent.style.animation = 'glowiePageIn 0.35s ease-out';
 
-      // Inicializar los listeners y la lógica de la página (ej: cargar productos)
-      if (route.init) await route.init();
+      if (window._glowieNavCount > 1) {
+        appContent.offsetHeight;
+        appContent.style.animation = 'glowiePageIn 0.25s ease-out';
+      }
+      appContent.classList.add('glowie-ready');
+      window._glowieNavCount = (window._glowieNavCount || 0) + 1;
 
-      // Forzar la actualización del carrito al cargar ciertas páginas
+      if (initFn) await initFn();
+
       if (pageName === 'catalog') {
-        window.Cart.updateCartUI(); 
+        window.Cart.updateCartUI();
       }
 
     } catch (error) {
@@ -155,6 +157,11 @@ window.loadAppContent = async function(pageName) {
  * @param {string} currentPageName - El nombre de la página activa ('catalog', 'offers', 'tips').
  */
 const PAGE_META = {
+  home: {
+    title: 'Glowie — Velas Artesanales en Cali | Cera de Soja Natural',
+    description: 'Velas artesanales de cera de soja 100% natural, hechas a mano en Cali. Aromas premium y diseños únicos de cemento. Envío gratis desde $60.000.',
+    canonical: 'https://velasglowie.com/',
+  },
   catalog: {
     title: 'Catálogo de Velas Artesanales | Glowie',
     description: 'Velas artesanales de cera de soja 100% natural. Aromas premium: coco, vainilla, bambú, café y más. Diseños únicos, hechas a mano en Cali. Envío gratis desde $60.000.',
@@ -199,6 +206,7 @@ const PAGE_META = {
 
 function updateActiveLink(currentPageName) {
   const urlMap = {
+    'home':    '/',
     'catalog': '/catalogo',
     'offers': '/ofertas',
     'tips': '/tips',
@@ -223,7 +231,13 @@ function updateActiveLink(currentPageName) {
   if (descTag) descTag.setAttribute('content', meta.description);
 
   let canonicalTag = document.querySelector('link[rel="canonical"]');
-  if (canonicalTag) canonicalTag.setAttribute('href', meta.canonical);
+  if (canonicalTag) {
+    // Para páginas de producto usar la URL real, no el canonical genérico de /catalogo
+    const canonical = currentPageName === 'product'
+      ? 'https://velasglowie.com' + window.location.pathname
+      : meta.canonical;
+    canonicalTag.setAttribute('href', canonical);
+  }
 }
 
 // -----------------------------------------
@@ -276,7 +290,7 @@ async function init() {
     window.addEventListener('popstate', (event) => {
       if (event.state?.filters) {
         const { aroma, categoria } = event.state.filters;
-        applyFiltersFromUrl({ aroma, categoria });
+        import('./pages/catalog.js').then(mod => mod.applyFiltersFromUrl({ aroma, categoria }));
       }
     });
 

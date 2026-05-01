@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Glowie</title>
+  <!-- Anti-flash: apply theme before paint -->
+  <script>
+    const _s = localStorage.getItem('glowie-theme');
+    if (_s === 'dark' || (!_s && window.matchMedia('(prefers-color-scheme: dark)').matches))
+      document.documentElement.classList.add('dark');
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <style>
+    /* Mobile: one panel at a time */
+    #view-list  { display: block; }
+    #view-editor { display: none; }
+    [data-view="editor"] #view-list  { display: none; }
+    [data-view="editor"] #view-editor { display: block; }
+
+    /* Desktop: always both side by side */
+    @media (min-width: 1024px) {
+      #view-list, #view-editor { display: block !important; }
+    }
+
+    .product-btn.active {
+      background: #fef3c7; border-color: #d97706; color: #92400e;
+    }
+    html.dark .product-btn.active {
+      background: #78350f; border-color: #d97706; color: #fef3c7;
+    }
+
+    /* Smooth scroll on editor */
+    #view-editor { -webkit-overflow-scrolling: touch; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 min-h-screen">
+
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-5">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 text-center w-full max-w-sm border border-gray-100 dark:border-gray-800">
+    <img src="/img/logo_glowie.png" alt="Glowie" class="h-12 mx-auto mb-5 object-contain dark:invert" />
+    <h1 class="text-lg font-black text-amber-700 mb-1">Panel de administración</h1>
+    <p class="text-gray-400 text-sm mb-7">Acceso restringido al equipo Glowie</p>
+    <button id="google-login-btn"
+      class="w-full flex items-center justify-center gap-3 px-5 py-4 border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 transition font-medium text-gray-700 text-sm">
+      <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Continuar con Google
+    </button>
+    <p id="login-error" class="text-red-500 text-xs mt-4 hidden"></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ADMIN SCREEN
+══════════════════════════════════════ -->
+<div id="admin-screen" class="hidden flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-20 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+      <img src="/img/logo_glowie.png" alt="Glowie" class="h-7 object-contain dark:invert" />
+      <div class="flex items-center gap-2">
+        <span id="user-email" class="text-xs text-gray-400 dark:text-gray-500 hidden md:block mr-1"></span>
+        <!-- Theme toggle -->
+        <button id="theme-toggle"
+          class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-gray-500 dark:text-gray-400">
+          <svg id="icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg id="icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button id="logout-btn"
+          class="h-10 px-3 text-xs text-gray-400 dark:text-gray-500 hover:text-red-500 transition border border-gray-200 dark:border-gray-700 rounded-xl">
+          Salir
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main layout wrapper (controls mobile view) ── -->
+  <div id="main-wrapper" class="flex-1 flex lg:gap-5 max-w-7xl mx-auto w-full lg:px-4 lg:py-6">
+
+    <!-- ── VIEW: PRODUCT LIST ── -->
+    <aside id="view-list" class="w-full lg:w-56 lg:shrink-0">
+      <div class="px-4 pt-5 pb-2 lg:px-0 lg:pt-0">
+        <p class="text-xs font-bold text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-3">Productos</p>
+      </div>
+      <div id="products-list" class="px-4 pb-6 space-y-2 lg:px-0">
+        <div class="flex items-center gap-2 text-gray-400 text-sm py-4">
+          <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+          </svg>
+          Cargando...
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── VIEW: EDITOR ── -->
+    <main id="view-editor" class="flex-1 min-w-0 flex flex-col">
+
+      <!-- Mobile: back button bar -->
+      <div class="lg:hidden flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+        <button id="back-btn"
+          class="flex items-center gap-1.5 text-amber-600 font-semibold text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+          Productos
+        </button>
+        <span id="editor-product-name" class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate"></span>
+      </div>
+
+      <!-- Editor content -->
+      <div id="editor-panel" class="flex-1 px-4 py-4 lg:px-0 lg:py-0 overflow-y-auto">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-10 text-center text-gray-400 hidden lg:block">
+          <p class="text-4xl mb-3">👈</p>
+          <p class="text-sm">Selecciona un producto para editar</p>
+        </div>
+      </div>
+
+      <!-- Sticky save bar (mobile) / inline (desktop) -->
+      <div id="save-bar" class="hidden sticky bottom-0 z-10 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 px-4 py-3 lg:static lg:bg-transparent lg:border-0 lg:px-0 lg:py-0 lg:mt-4">
+        <div class="flex items-center gap-3">
+          <button id="save-btn"
+            class="flex-1 lg:flex-none lg:px-7 py-3 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 active:scale-95 transition text-sm">
+            Guardar cambios
+          </button>
+          <span id="save-status" class="text-sm text-gray-400 font-medium"></span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import {
+  getFirestore, collection, getDocs, doc, setDoc
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// ── CONFIG ───────────────────────────────────────────────
+const ALLOWED = ['alejandroob001@gmail.com','nataliahv1998@gmail.com','candles.glowie@gmail.com'];
+let COLLECTION = '';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyAbMPf5vC9NUvSxdFxF4kKc5m2Stkr9z54",
+  authDomain:        "glowie-d4d12.firebaseapp.com",
+  projectId:         "glowie-d4d12",
+  storageBucket:     "glowie-d4d12.firebasestorage.app",
+  messagingSenderId: "13333722495",
+  appId:             "1:13333722495:web:dcb6d3aa0cc96df4b9964a"
+};
+
+const app      = initializeApp(firebaseConfig);
+const auth     = getAuth(app);
+const db       = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+let products   = [];
+let selectedId = null;
+
+// ── THEME ────────────────────────────────────────────────
+function syncThemeIcons() {
+  const dark = document.documentElement.classList.contains('dark');
+  document.getElementById('icon-sun').classList.toggle('hidden', !dark);
+  document.getElementById('icon-moon').classList.toggle('hidden', dark);
+}
+syncThemeIcons();
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const dark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('glowie-theme', dark ? 'dark' : 'light');
+  syncThemeIcons();
+});
+
+// ── MOBILE VIEW MANAGER ──────────────────────────────────
+const wrapper = document.getElementById('main-wrapper');
+function showListView() {
+  wrapper.removeAttribute('data-view');
+  window.scrollTo(0, 0);
+}
+function showEditorView(name) {
+  wrapper.setAttribute('data-view', 'editor');
+  document.getElementById('editor-product-name').textContent = name || '';
+  document.getElementById('save-bar').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+document.getElementById('back-btn').addEventListener('click', showListView);
+
+// ── AUTH ─────────────────────────────────────────────────
+getRedirectResult(auth).catch(e => {
+  if (e.code && e.code !== 'auth/no-current-user')
+    showError('Error al iniciar sesión: ' + e.message);
+});
+
+onAuthStateChanged(auth, user => {
+  if (user && ALLOWED.includes(user.email)) {
+    showAdmin(user);
+  } else if (user) {
+    signOut(auth);
+    showError('Este email no tiene acceso.');
+  } else {
+    showLogin();
+  }
+});
+
+document.getElementById('google-login-btn').addEventListener('click', async () => {
+  try { await signInWithRedirect(auth, provider); }
+  catch(e) { showError('Error: ' + e.message); }
+});
+document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+function showLogin() {
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('admin-screen').classList.add('hidden');
+}
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+async function showAdmin(user) {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('admin-screen').classList.remove('hidden');
+  document.getElementById('user-email').textContent = user.email;
+  await loadProducts();
+}
+
+// ── DATA ─────────────────────────────────────────────────
+async function loadProducts() {
+  const candidates = [
+    'artifacts/default-app-id/public/data/products',
+    'products',
+    'artifacts/glowie-d4d12/public/data/products',
+    `artifacts/${firebaseConfig.appId}/public/data/products`,
+  ];
+  let found = false;
+  for (const path of candidates) {
+    try {
+      const snap = await getDocs(collection(db, path));
+      if (snap.docs.length > 0) {
+        COLLECTION = path;
+        products = snap.docs.map(d => ({ _docId: d.id, ...d.data() }));
+        products.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        console.log('✅ Path:', path, '→', snap.docs.length, 'productos');
+        found = true;
+        break;
+      }
+    } catch(e) {
+      console.log('❌', path, e.code);
+    }
+  }
+  if (!found) {
+    document.getElementById('products-list').innerHTML =
+      `<p class="text-sm text-red-400 py-4">No se encontraron productos.</p>`;
+    return;
+  }
+  renderList();
+}
+
+// ── PRODUCT LIST ─────────────────────────────────────────
+function renderList() {
+  const list = document.getElementById('products-list');
+  list.innerHTML = products.map(p => {
+    const total = Object.values(p.stock_variations || {}).reduce((s,v) => s + (Number(v)||0), 0);
+    const low   = total <= 3;
+    return `
+      <button data-id="${p._docId}"
+        class="product-btn w-full text-left px-4 py-4 rounded-2xl border border-gray-100 dark:border-gray-800
+               bg-white dark:bg-gray-900 hover:border-amber-300 dark:hover:border-amber-700
+               transition active:scale-[.98]">
+        <div class="font-semibold text-gray-800 dark:text-gray-100 text-base">${p.name || p._docId}</div>
+        <div class="text-sm mt-0.5 ${low ? 'text-red-400 font-medium' : 'text-gray-400 dark:text-gray-600'}">
+          ${low ? '⚠️ ' : ''}Stock: ${total}
+        </div>
+      </button>`;
+  }).join('');
+  list.querySelectorAll('.product-btn').forEach(btn =>
+    btn.addEventListener('click', () => selectProduct(btn.dataset.id))
+  );
+}
+
+// ── EDITOR ───────────────────────────────────────────────
+function selectProduct(docId) {
+  selectedId = docId;
+  document.querySelectorAll('.product-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.id === docId)
+  );
+  const p = products.find(x => x._docId === docId);
+  showEditorView(p?.name || docId);
+  renderEditor(p);
+}
+
+function renderEditor(p) {
+  if (!p) return;
+
+  const stockRows = Object.entries(p.stock_variations || {}).map(([key, val]) => {
+    const v = Number(val) || 0;
+    return `
+      <div class="stock-row flex items-center justify-between py-3.5 border-b border-gray-50 dark:border-gray-800 last:border-0"
+           data-stock-key="${key}" data-val="${v}">
+        <span class="text-sm text-gray-600 dark:text-gray-300 font-mono leading-snug flex-1 pr-4 break-words">${key}</span>
+        <div class="flex items-center gap-3 shrink-0">
+          <button type="button" data-action="minus" data-key="${key}"
+            class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300
+                   text-3xl font-bold flex items-center justify-center
+                   hover:bg-gray-200 dark:hover:bg-gray-700 active:scale-90 transition select-none">−</button>
+          <span class="stock-num w-10 text-center text-2xl font-black text-gray-800 dark:text-white">${v}</span>
+          <button type="button" data-action="plus" data-key="${key}"
+            class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300
+                   text-3xl font-bold flex items-center justify-center
+                   hover:bg-amber-200 dark:hover:bg-amber-800 active:scale-90 transition select-none">+</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  const combinacionesHtml = (p.combinaciones || []).map(c => `
+    <div class="py-3 border-b border-gray-50 dark:border-gray-800 last:border-0">
+      <div class="text-xs font-mono text-gray-400 mb-0.5">${c.id}</div>
+      <div class="text-sm text-gray-700 dark:text-gray-300">${c.label}</div>
+    </div>`).join('');
+
+  const inp = (id, val, type='text', extra='') =>
+    `<input id="${id}" type="${type}" value="${val}" ${extra}
+      class="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800
+             text-gray-800 dark:text-gray-100 rounded-xl px-4 py-3 text-base
+             focus:border-amber-500 focus:outline-none transition" />`;
+
+  const lbl = t =>
+    `<label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">${t}</label>`;
+
+  const section = (content, noSpace = false) =>
+    `<div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 ${noSpace ? '' : 'space-y-4'}">${content}</div>`;
+
+  const sTitle = t =>
+    `<p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">${t}</p>`;
+
+  document.getElementById('editor-panel').innerHTML = `
+    <div class="space-y-3 lg:space-y-4 pb-6 lg:pb-0">
+
+      ${section(`
+        <h2 class="font-black text-gray-800 dark:text-white text-xl mb-4">${p.name || p._docId}</h2>
+        <div>${lbl('Nombre')}<br/>${inp('f-name', esc(p.name))}</div>
+        <div>${lbl('Categoría')}<br/>${inp('f-category', esc(p.category||''))}</div>
+        <div>
+          ${lbl('Descripción')}
+          <textarea id="f-description" rows="3"
+            class="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800
+                   text-gray-800 dark:text-gray-100 rounded-xl px-4 py-3 text-base
+                   focus:border-amber-500 focus:outline-none transition resize-none">${esc(p.description||'')}</textarea>
+        </div>
+        <div>${lbl('Aromas (separados por coma)')}<br/>${inp('f-aromas', esc((p.aroma||[]).join(', ')))}</div>
+      `)}
+
+      ${section(`
+        ${sTitle('Precio y estado')}
+        <div>${lbl('Precio normal (COP)')}<br/>${inp('f-price', p.price||0, 'number', 'min="0" step="1000"')}</div>
+        <div>${lbl('Precio con descuento (COP)')}<br/>${inp('f-sale-price', p.on_sale_price||0, 'number', 'min="0" step="1000"')}</div>
+        <div>${lbl('Cantidad de cera (g)')}<br/>${inp('f-cera', p.cantidad_cera||0, 'number', 'min="0"')}</div>
+        <div class="flex flex-col gap-3 pt-1">
+          <label class="flex items-center gap-3 cursor-pointer select-none">
+            <input id="f-on-sale" type="checkbox" ${p.on_sale?'checked':''} class="w-6 h-6 accent-amber-600 rounded-lg shrink-0" />
+            <span class="text-base font-medium text-gray-700 dark:text-gray-300">En descuento</span>
+          </label>
+          <label class="flex items-center gap-3 cursor-pointer select-none">
+            <input id="f-is-new" type="checkbox" ${(p.is_new||p.isNew)?'checked':''} class="w-6 h-6 accent-amber-600 rounded-lg shrink-0" />
+            <span class="text-base font-medium text-gray-700 dark:text-gray-300">Novedad</span>
+          </label>
+        </div>
+      `)}
+
+      <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+        ${sTitle('Stock por variación')}
+        ${stockRows
+          ? `<div id="stock-container">${stockRows}</div>
+             <p class="text-xs text-gray-400 dark:text-gray-600 mt-4">El total se recalcula al guardar.</p>`
+          : '<p class="text-sm text-gray-400">Sin variaciones definidas.</p>'}
+      </div>
+
+      ${combinacionesHtml ? `
+      <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5">
+        ${sTitle('Combinaciones — solo lectura')}
+        ${combinacionesHtml}
+      </div>` : ''}
+
+    </div>
+  `;
+
+  // Stock +/- buttons
+  const stockContainer = document.getElementById('stock-container');
+  if (stockContainer) {
+    stockContainer.addEventListener('click', e => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const row = stockContainer.querySelector(`.stock-row[data-stock-key="${btn.dataset.key}"]`);
+      let val = parseInt(row.dataset.val) || 0;
+      val = btn.dataset.action === 'plus' ? val + 1 : Math.max(0, val - 1);
+      row.dataset.val = val;
+      row.querySelector('.stock-num').textContent = val;
+    });
+  }
+
+  // Wire save button (already in DOM from save-bar)
+  document.getElementById('save-btn').onclick = saveProduct;
+}
+
+// ── SAVE ─────────────────────────────────────────────────
+async function saveProduct() {
+  const btn    = document.getElementById('save-btn');
+  const status = document.getElementById('save-status');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+  status.textContent = '';
+
+  const newStock = {};
+  let totalStock = 0;
+  document.querySelectorAll('.stock-row[data-stock-key]').forEach(row => {
+    const val = parseInt(row.dataset.val) || 0;
+    newStock[row.dataset.stockKey] = val;
+    totalStock += val;
+  });
+
+  const aromas = (document.getElementById('f-aromas').value || '')
+    .split(',').map(s => s.trim()).filter(Boolean);
+
+  const updates = {
+    name:             document.getElementById('f-name').value.trim(),
+    category:         document.getElementById('f-category').value.trim(),
+    description:      document.getElementById('f-description').value.trim(),
+    aroma:            aromas,
+    price:            parseInt(document.getElementById('f-price').value)      || 0,
+    on_sale_price:    parseInt(document.getElementById('f-sale-price').value) || 0,
+    cantidad_cera:    parseInt(document.getElementById('f-cera').value)        || 0,
+    on_sale:          document.getElementById('f-on-sale').checked,
+    is_new:           document.getElementById('f-is-new').checked,
+    isNew:            document.getElementById('f-is-new').checked,
+    stock_variations: newStock,
+    stock:            totalStock,
+  };
+
+  try {
+    await setDoc(doc(db, COLLECTION, selectedId), updates, { merge: true });
+    const idx = products.findIndex(p => p._docId === selectedId);
+    products[idx] = { ...products[idx], ...updates };
+    renderList();
+    document.querySelectorAll('.product-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.id === selectedId)
+    );
+    status.textContent = '✓ Guardado';
+    status.className = 'text-sm text-green-600 font-semibold';
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    status.className = 'text-sm text-red-500';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Guardar cambios';
+  setTimeout(() => { status.textContent = ''; }, 4000);
+}
+
+// ── UTILS ────────────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+</script>
+</body>
+</html>

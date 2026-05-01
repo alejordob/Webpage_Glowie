@@ -94,6 +94,9 @@ export function addToCart(product) {
             items: [{ item_id: product.id, item_name: product.name, price: finalPrice, quantity: 1 }]
         });
     }
+    if (typeof fbq === 'function') {
+        fbq('track', 'AddToCart', { content_ids: [product.id], content_name: product.name, value: finalPrice, currency: 'COP' });
+    }
 
     saveCart();
     updateCartUI();
@@ -179,6 +182,13 @@ export function updateCartUI() {
     // --- Contador del header ---
     if (cartCountElement) cartCountElement.textContent = totalItems;
 
+    // --- Contador del bottom nav (mobile) ---
+    const bottomCount = document.getElementById('bottom-cart-count');
+    if (bottomCount) {
+      bottomCount.textContent = totalItems;
+      bottomCount.classList.toggle('hidden', totalItems === 0);
+    }
+
     // --- Badge de cuenta en sidebar header ---
     const cartBadge = document.getElementById('cart-count-badge');
     if (cartBadge) {
@@ -259,12 +269,12 @@ export function updateCartUI() {
         cartItemsContainer.innerHTML = `
             <div class="flex flex-col items-center justify-center h-full text-center gap-5 py-12">
                 <div class="w-20 h-20 rounded-full flex items-center justify-center"
-                     style="background: var(--color-fondo);">
-                    <i class="fas fa-shopping-bag text-3xl" style="color: var(--color-cinna); opacity: 0.4;"></i>
+                     style="background:rgba(251,243,224,0.04);border:1px solid rgba(251,243,224,0.08);">
+                    <i class="fas fa-shopping-bag text-3xl" style="color:rgba(232,168,124,0.4);"></i>
                 </div>
                 <div>
-                    <p class="text-gray-700 font-semibold mb-1">Tu carrito está vacío</p>
-                    <p class="text-gray-400 text-sm">Agrega una vela y transforma tu espacio.</p>
+                    <p class="font-semibold mb-1" style="color:#fbf3e0;">Tu carrito está vacío</p>
+                    <p class="text-sm" style="color:rgba(251,243,224,0.38);">Agrega una vela y transforma tu espacio.</p>
                 </div>
                 <button id="cart-go-catalog" class="px-6 py-2.5 rounded-xl font-bold text-sm text-white transition-all hover:opacity-90 hover:scale-105"
                         style="background: var(--color-cinna);">
@@ -292,38 +302,47 @@ export function updateCartUI() {
         if (v.cemento && v.cemento !== 'N/A') chips.push(v.cemento);
         const chipsHtml = chips.length > 0
             ? `<div class="flex flex-wrap gap-1 mt-1">
-                 ${chips.map(c => `<span class="text-xs px-2 py-0.5 rounded-full" style="background: var(--color-fondo); color: var(--color-cinna);">${c}</span>`).join('')}
+                 ${chips.map(c => `<span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(232,168,124,0.1);border:1px solid rgba(232,168,124,0.2);color:rgba(232,168,124,0.85);">${c}</span>`).join('')}
                </div>`
             : '';
 
         const pricingHtml = isDiscounted
-            ? `<span class="text-xs text-gray-400 line-through">${formatPriceCOP(item.originalPrice)}</span>
-               <span class="text-xs font-semibold ml-1" style="color: var(--color-cinna);">${formatPriceCOP(item.price)}</span>`
-            : `<span class="text-xs font-semibold text-gray-500">${formatPriceCOP(item.price)}</span>`;
+            ? `<span class="text-xs line-through" style="color:rgba(251,243,224,0.3);">${formatPriceCOP(item.originalPrice)}</span>
+               <span class="text-xs font-semibold ml-1" style="color:#e8a87c;">${formatPriceCOP(item.price)}</span>`
+            : `<span class="text-xs font-semibold" style="color:rgba(251,243,224,0.5);">${formatPriceCOP(item.price)}</span>`;
 
         const itemEl = document.createElement('div');
-        itemEl.className = 'flex gap-3 py-3 border-b border-gray-100 last:border-0';
+        itemEl.className = 'flex gap-3 py-3';
+        itemEl.style.borderBottom = '1px solid rgba(251,243,224,0.07)';
         itemEl.innerHTML = `
-            <img src="${item.image || 'https://placehold.co/64x64/fbf3e0/2e2e2e?text=V'}"
+            <img src="${item.image || 'https://placehold.co/64x64/1a0608/fbf3e0?text=V'}"
                  alt="${item.name}"
-                 class="w-16 h-16 object-contain rounded-xl flex-shrink-0 border border-gray-100"
-                 style="background: var(--color-fondo);"
-                 onerror="this.src='https://placehold.co/64x64/fbf3e0/2e2e2e?text=V'">
+                 class="w-16 h-16 object-contain rounded-xl flex-shrink-0"
+                 style="background:rgba(251,243,224,0.05);border:1px solid rgba(251,243,224,0.1);"
+                 onerror="this.src='https://placehold.co/64x64/1a0608/fbf3e0?text=V'">
             <div class="flex-1 min-w-0">
-                <p class="font-semibold text-gray-800 text-sm leading-snug truncate">${item.name}</p>
+                <p class="font-semibold text-sm leading-snug truncate" style="color:#fbf3e0;">${item.name}</p>
                 ${chipsHtml}
                 <div class="mt-1">${pricingHtml}</div>
                 <div class="flex items-center justify-between mt-2">
-                    <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden">
-                        <button class="quantity-btn w-7 h-7 text-gray-500 hover:bg-gray-100 text-sm font-bold flex items-center justify-center"
+                    <div class="flex items-center rounded-lg overflow-hidden" style="border:1px solid rgba(251,243,224,0.15);">
+                        <button class="quantity-btn w-8 h-8 text-sm font-bold flex items-center justify-center transition-colors"
+                                style="color:rgba(251,243,224,0.6);background:transparent;"
+                                onmouseover="this.style.background='rgba(251,243,224,0.08)';this.style.color='#fbf3e0'"
+                                onmouseout="this.style.background='transparent';this.style.color='rgba(251,243,224,0.6)'"
                                 data-id="${item.id}" data-action="decrease">−</button>
-                        <span class="w-8 text-center text-sm font-semibold select-none">${item.quantity}</span>
-                        <button class="quantity-btn w-7 h-7 text-gray-500 hover:bg-gray-100 text-sm font-bold flex items-center justify-center"
+                        <span class="w-8 text-center text-sm font-semibold select-none" style="color:#fbf3e0;">${item.quantity}</span>
+                        <button class="quantity-btn w-8 h-8 text-sm font-bold flex items-center justify-center transition-colors"
+                                style="color:rgba(251,243,224,0.6);background:transparent;"
+                                onmouseover="this.style.background='rgba(251,243,224,0.08)';this.style.color='#fbf3e0'"
+                                onmouseout="this.style.background='transparent';this.style.color='rgba(251,243,224,0.6)'"
                                 data-id="${item.id}" data-action="increase">+</button>
                     </div>
                     <div class="text-right">
-                        <p class="text-sm font-bold" style="color: var(--color-cinna);">${formatPriceCOP(lineTotal)}</p>
-                        <button class="remove-btn text-xs text-gray-400 hover:text-red-500 transition-colors mt-0.5"
+                        <p class="text-sm font-bold" style="color:#e8a87c;">${formatPriceCOP(lineTotal)}</p>
+                        <button class="remove-btn text-xs transition-colors mt-0.5"
+                                style="color:rgba(251,243,224,0.28);"
+                                onmouseover="this.style.color='rgba(239,68,68,0.7)'" onmouseout="this.style.color='rgba(251,243,224,0.28)'"
                                 data-id="${item.id}">Eliminar</button>
                     </div>
                 </div>
@@ -427,13 +446,11 @@ function setupStaticListeners() {
     if (closeCartBtn) closeCartBtn.addEventListener('click', () => toggleCart(false));
     if (cartOverlay) cartOverlay.addEventListener('click', () => toggleCart(false));
     
+    // El tracking de checkout (begin_checkout + purchase) lo maneja
+    // trackCheckoutWhatsapp() en el onclick del botón en index.html.
+    // Cart.js solo ejecuta la acción.
     if (checkoutWhatsappBtn) {
-        checkoutWhatsappBtn.addEventListener('click', () => {
-            if (typeof gtag === 'function') {
-                gtag('event', 'whatsapp_click', { event_category: 'conversion', event_label: 'checkout_whatsapp', value: 1 });
-            }
-            handleWhatsappCheckout();
-        });
+        checkoutWhatsappBtn.addEventListener('click', handleWhatsappCheckout);
     }
 }
 
