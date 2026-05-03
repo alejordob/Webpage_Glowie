@@ -421,6 +421,68 @@ export const renderHomePage = () => `
 </section>
 
 <!-- ════════════════════════════════════ -->
+<!--  TESTIMONIOS                         -->
+<!-- ════════════════════════════════════ -->
+<section id="home-testimonios" data-section style="background:#0a0203;padding:clamp(56px,8vw,96px) clamp(16px,5vw,56px);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="g-reveal" style="text-align:center;margin-bottom:clamp(40px,6vw,64px);">
+      <h2 style="font-size:clamp(28px,5vw,48px);font-family:'DM Serif Display',serif;font-weight:400;color:#fbf3e0;line-height:1.2;margin-bottom:12px;">Lo que dicen nuestros clientes</h2>
+      <p style="font-size:13px;color:rgba(251,243,224,0.5);letter-spacing:0.06em;text-transform:uppercase;">Historias reales de transformación</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;">
+      ${[
+        {
+          name: 'Catalina M.',
+          city: 'Cali',
+          stars: 5,
+          text: 'La vela Nudo llenó mi apartamento con el aroma a café. Volvería a comprar sin dudarlo. Calidad de verdad.',
+          initial: 'C'
+        },
+        {
+          name: 'Juan Felipe P.',
+          city: 'Medellín',
+          stars: 5,
+          text: 'Impresionante cómo el diseño en cemento cambió mi espacio. Las velas arden parejo y duran muchísimo.',
+          initial: 'J'
+        },
+        {
+          name: 'Sofía G.',
+          city: 'Cali',
+          stars: 5,
+          text: 'Regalé la base hexagonal con vela y mi mamá no para de hablar de ella. Producto premium, recomendadísimo.',
+          initial: 'S'
+        },
+      ].map((t,i) => `
+        <div class="g-reveal" style="transition-delay:${i*0.12}s;
+           background:#130508;border:1px solid rgba(251,243,224,0.07);border-radius:16px;padding:28px;
+           display:flex;flex-direction:column;gap:16px;transition:all 0.3s ease;">
+
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#e8a87c,#c9956a);
+                       display:flex;align-items:center;justify-content:center;color:#0a0203;font-weight:900;font-size:18px;">
+              ${t.initial}
+            </div>
+            <div>
+              <p style="font-size:14px;font-weight:700;color:#fbf3e0;margin:0;">${t.name}</p>
+              <p style="font-size:11px;color:rgba(251,243,224,0.4);margin:0;">${t.city}</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:2px;">
+            ${[...Array(t.stars)].map(() => '⭐').join('')}
+          </div>
+
+          <p style="font-size:13px;line-height:1.6;color:rgba(251,243,224,0.65);margin:0;font-style:italic;">
+            "${t.text}"
+          </p>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════ -->
 <!--  FRASE EDITORIAL                     -->
 <!-- ════════════════════════════════════ -->
 <section id="home-quote" data-section style="background:#0a0203;padding:clamp(70px,10vw,120px) clamp(16px,5vw,48px);text-align:center;position:relative;overflow:hidden;">
@@ -619,7 +681,7 @@ function fixAromasGrid() {
 
 // ── Hover zoom en cards de categorías ────────────────────────
 function initCatHover() {
-  document.querySelectorAll('#cat-grid a .cat-img, #cat-grid a').forEach(el => {
+  document.querySelectorAll('#cat-track a .cat-img, #cat-track a').forEach(el => {
     const card = el.closest('a');
     const img  = card?.querySelector('.cat-img');
     if (!card || !img) return;

@@ -142,6 +142,71 @@ function buildProductHead(product, slug, baseHtml) {
   return html;
 }
 
+function buildCatalogHead(products, baseHtml) {
+  const title = 'Catálogo de Velas Artesanales | Glowie';
+  const description = 'Descubre nuestras velas de cera de soja 100% natural. Diseños únicos, aromas premium, hecho a mano en Cali, Colombia.';
+  const canonical = 'https://velasglowie.com/catalogo';
+
+  const itemList = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': 'Catálogo de Velas Glowie',
+    'description': description,
+    'itemListElement': products
+      .filter(p => p.name)
+      .map((p, idx) => ({
+        '@type': 'ListItem',
+        'position': idx + 1,
+        'name': p.name,
+        'url': `https://velasglowie.com/catalogo/${slugify(p.name)}`,
+        'image': p.images?.[0] || '',
+        'description': p.description || '',
+      }))
+  };
+
+  const itemListSchema = JSON.stringify(itemList, null, 2);
+
+  let html = baseHtml;
+
+  // Title
+  html = html.replace(
+    /<title>[^<]*<\/title>/,
+    `<title>${title}</title>`
+  );
+
+  // Meta description
+  html = html.replace(
+    /<meta name="description" content="[^"]*">/,
+    `<meta name="description" content="${escapeHtml(description)}">`
+  );
+
+  // Canonical
+  html = html.replace(
+    /<link rel="canonical" href="[^"]*">/,
+    `<link rel="canonical" href="${canonical}">`
+  );
+
+  // OG tags
+  html = html.replace(
+    /<meta property="og:title" content="[^"]*">/,
+    `<meta property="og:title" content="${title}">`
+  );
+  html = html.replace(
+    /<meta property="og:description" content="[^"]*">/,
+    `<meta property="og:description" content="${escapeHtml(description)}">`
+  );
+  html = html.replace(
+    /<meta property="og:url" content="[^"]*">/,
+    `<meta property="og:url" content="${canonical}">`
+  );
+
+  // Inject ItemList schema
+  const schemaTag = `<script type="application/ld+json">${itemListSchema}</script>`;
+  html = html.replace('</head>', `${schemaTag}\n</head>`);
+
+  return html;
+}
+
 async function generatePrerender() {
   const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
   if (!fs.existsSync(serviceAccountPath)) {
@@ -181,8 +246,12 @@ async function generatePrerender() {
     generated++;
   }
 
-  console.log(`✅ Pre-render generado: ${generated} páginas de producto`);
+  // Generar catálogo pre-render con ItemList schema
+  const catalogHtml = buildCatalogHead(products, baseHtml);
+  fs.writeFileSync(path.join(outputBase, 'index.html'), catalogHtml, 'utf8');
+  console.log(`✅ Pre-render generado: ${generated} páginas de producto + catálogo`);
   console.log(`   → ${outputBase}/{slug}/index.html`);
+  console.log(`   → ${outputBase}/index.html (con ItemList schema)`);
   process.exit(0);
 }
 

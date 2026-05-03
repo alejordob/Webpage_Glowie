@@ -103,6 +103,30 @@ const styles = `
     #modal-desktop-info { display: block !important; }
     #modal-cta-desktop { display: block !important; }
   }
+
+  /* Zoom overlay */
+  #modal-zoom-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none;
+    z-index: 1100; align-items: center; justify-content: center; flex-direction: column;
+  }
+  #modal-zoom-overlay.active { display: flex; }
+  #modal-zoom-image {
+    max-width: 95vw; max-height: 85vh; width: auto; height: auto;
+    object-fit: contain; border-radius: 8px;
+  }
+  #modal-zoom-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-size: 20px; color: #fbf3e0; cursor: pointer; width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; z-index: 1101;
+  }
+  #modal-zoom-nav:hover { background: rgba(251,243,224,0.1); border-radius: 4px; }
+  #modal-zoom-prev { left: 16px; }
+  #modal-zoom-next { right: 16px; }
+  #modal-zoom-hint {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; color: rgba(251,243,224,0.5); white-space: nowrap;
+  }
 `;
 
 modal.innerHTML = `
@@ -216,6 +240,17 @@ modal.innerHTML = `
   </div>
 `;
 document.body.appendChild(modal);
+
+// Zoom overlay
+const zoomOverlay = document.createElement('div');
+zoomOverlay.id = 'modal-zoom-overlay';
+zoomOverlay.innerHTML = `
+  <img id="modal-zoom-image" src="" alt="Zoom" style="cursor: zoom-out;">
+  <div id="modal-zoom-prev" class="modal-zoom-nav">←</div>
+  <div id="modal-zoom-next" class="modal-zoom-nav">→</div>
+  <div id="modal-zoom-hint">Haz click para cerrar · Usa flechas para navegar</div>
+`;
+document.body.appendChild(zoomOverlay);
 
 // Lazy thumbnails
 function initLazyLoadThumbnails() {
@@ -453,7 +488,81 @@ export function openModal(product) {
       imgEl.style.transform = '';
       imgEl.style.opacity = '1';
     };
+
+    // Zoom on tap (double-tap or single tap depending on preference)
+    let tapCount = 0;
+    let lastTapTime = 0;
+    const DOUBLE_TAP_DELAY = 300;
+
+    const handleTapZoom = (e) => {
+      const now = Date.now();
+      if (now - lastTapTime < DOUBLE_TAP_DELAY) {
+        tapCount++;
+      } else {
+        tapCount = 1;
+      }
+      lastTapTime = now;
+
+      if (tapCount === 2) {
+        tapCount = 0;
+        const images = currentProduct?.images || [];
+        if (images.length > 0) {
+          const currentIdx = images.indexOf(imgEl.src) !== -1
+            ? images.indexOf(imgEl.src)
+            : images.findIndex(url => imgEl.src.endsWith(url.split('/').pop()));
+          openImageZoom(images, currentIdx);
+        }
+      }
+    };
+
+    imgEl.addEventListener('click', handleTapZoom);
+    modal._cleanupImgZoom = () => {
+      imgEl.removeEventListener('click', handleTapZoom);
+    };
   }
+
+  // Zoom functions
+  let zoomCurrentIdx = 0;
+  let zoomImages = [];
+
+  function openImageZoom(images, idx) {
+    zoomImages = images;
+    zoomCurrentIdx = idx;
+    const overlay = document.getElementById('modal-zoom-overlay');
+    const img = document.getElementById('modal-zoom-image');
+    img.src = images[idx];
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Keyboard navigation
+    const handleZoomKeyboard = (e) => {
+      if (e.key === 'ArrowLeft') nextZoomImage(-1);
+      else if (e.key === 'ArrowRight') nextZoomImage(1);
+      else if (e.key === 'Escape') closeImageZoom();
+    };
+    document.addEventListener('keydown', handleZoomKeyboard);
+    overlay._cleanupZoom = () => document.removeEventListener('keydown', handleZoomKeyboard);
+  }
+
+  function nextZoomImage(dir) {
+    zoomCurrentIdx = (zoomCurrentIdx + dir + zoomImages.length) % zoomImages.length;
+    document.getElementById('modal-zoom-image').src = zoomImages[zoomCurrentIdx];
+  }
+
+  function closeImageZoom() {
+    const overlay = document.getElementById('modal-zoom-overlay');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    overlay._cleanupZoom?.();
+    zoomImages = [];
+    zoomCurrentIdx = 0;
+  }
+
+  // Zoom overlay event listeners
+  document.getElementById('modal-zoom-overlay').onclick = closeImageZoom;
+  document.getElementById('modal-zoom-image').onclick = (e) => e.stopPropagation();
+  document.getElementById('modal-zoom-prev').onclick = (e) => { e.stopPropagation(); nextZoomImage(-1); };
+  document.getElementById('modal-zoom-next').onclick = (e) => { e.stopPropagation(); nextZoomImage(1); };
 
   // Event listeners
   document.getElementById('close-modal').onclick = closeModal;
@@ -494,10 +603,13 @@ export function openModal(product) {
 }
 
 export function closeModal() {
+  closeImageZoom();
   modal._cleanupSwipe?.();
   modal._cleanupSwipe = null;
   modal._cleanupImgSwipe?.();
   modal._cleanupImgSwipe = null;
+  modal._cleanupImgZoom?.();
+  modal._cleanupImgZoom = null;
   modal.classList.add('hidden');
   const modalBox = document.getElementById('modal-box');
   if (modalBox) { modalBox.style.transform = ''; modalBox.style.transition = ''; }
